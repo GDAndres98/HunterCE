@@ -1365,6 +1365,27 @@ static boolean mcc_import_bitmap_halvable(
 		!(bitmap->width & 1) && !(bitmap->height & 1);
 }
 
+/* whether a bitmap can be halved until it is 1/factor of its size (a
+compressed one by as many of its mipmaps) */
+static boolean mcc_import_bitmap_halvable_by(
+	struct bitmap_data const *bitmap,
+	short factor)
+{
+	struct bitmap_data step = *bitmap;
+
+	for (; factor > 1; factor /= 2)
+	{
+		if (!mcc_import_bitmap_halvable(&step))
+			return FALSE;
+		step.width /= 2;
+		step.height /= 2;
+		if (step.mipmap_count > 0)
+			step.mipmap_count--;
+	}
+
+	return TRUE;
+}
+
 /* The bitmap's pixels (linear, as MCC's bitmaps.map holds them) at half its
 size, each pixel the average of four, its colour weighted by its alpha (so
 that the colour of what is not drawn does not run into what is): FALSE if it
@@ -1986,13 +2007,17 @@ static void mcc_import_hud_others(
 			{
 				struct tag_block const *block = (struct tag_block const *)at;
 				struct tag_schema_definition const *element_definition = field->definition;
+				/* (the globals' interface references are the HUD's too: the
+				multiplayer icons, the small message icons) */
+				boolean element_hud_tag = hud_tag ||
+					(field->name && !strcmp(field->name, "interface_tag_references"));
 				long element_index;
 
 				for (element_index = 0; block->address && element_index < block->count; element_index++)
 				{
 					mcc_import_hud_others(hud, element_definition,
-						(byte const *)block->address + element_index * element_definition->size, hud_tag, others,
-						candidates);
+						(byte const *)block->address + element_index * element_definition->size, element_hud_tag,
+						others, candidates);
 				}
 			}
 		}
@@ -2151,8 +2176,7 @@ static void mcc_import_hud(
 		{
 			struct bitmap_data const *bitmap = TAG_BLOCK_GET_ELEMENT(&group->bitmaps, bitmap_index, struct bitmap_data);
 
-			if (!mcc_import_bitmap_halvable(bitmap) || mcc_import_block_bytes(bitmap->format) ||
-				bitmap->width % factor || bitmap->height % factor)
+			if (!mcc_import_bitmap_halvable_by(bitmap, factor) || bitmap->width % factor || bitmap->height % factor)
 				factor = 1;
 		}
 		mcc_import_globals.hud_factor[tag_index] = factor;
