@@ -187,7 +187,7 @@ MENU_ATTRIBUTES = {
                "color", "align", "description", "string_list", "list_flags", "text_flags", "header_bitmap",
                "footer_bitmap", "header_bounds", "footer_bounds", "child_controller", "x", "y", "left", "top",
                "width", "height", "text_x", "text_y", "auto_close", "auto_close_fade", "string_index", "platform"},
-    "child": {"widget", "controller", "x", "y", "platform"},
+    "child": {"widget", "controller", "x", "y", "map_has", "map_lacks", "platform"},
     "on": {"event", "run", "script", "open", "replace", "close", "widget", "focus", "reload", "sound", "otherwise",
            "label", "back", "branch", "platform"},
     "data": {"input", "platform"},
@@ -286,6 +286,9 @@ def test_menus_are_well_formed():
                 references.append((where, widgets, element.get("description")))
             elif element.tag == "child" or element.tag == "conditional":
                 references.append((where, widgets, element.get("widget")))
+                # (a widget tag of the map: menu_files.c's read_child)
+                for attribute in ("map_has", "map_lacks"):
+                    assert element.get(attribute) is None or "\\" in element.get(attribute), f"{where} {attribute}"
             elif element.tag == "on":
                 assert set(element.get("event").split()) <= set(events), where
                 run = element.get("run")
@@ -348,6 +351,29 @@ def test_vehicle_riding_settings(target, before, after):
     texts[target] = texts[target].replace(before, after)
     with pytest.raises(AssertionError):
         assert_vehicle_riding_settings(**texts)
+
+
+def test_add_player_quarters_have_three_children():
+    """ADD PLAYER's quarters (tools/port_settings.py's _join4) have three
+    children with either menus' map: the Xbox's split screen widgets
+    (map_has) or the port's (map_lacks). The game's update of a choosing
+    quarter's spinner (player_profile_1wide_list_update) halts on any other
+    count, or on a spinner not third; a quarter's background is its own
+    bitmap."""
+    import xml.etree.ElementTree as ElementTree
+
+    tree = ElementTree.parse(MENUS / "ce" / "main_menu.multiplayer_type_select.lobby.xml")
+    widgets = {widget.get("name"): widget for widget in tree.iter("widget")}
+    base = "main_menu/multiplayer_type_select/lobby"
+    for quarter in ("join4_qtr_select", "join4_qtr_ready", "join4_qtr_playing"):
+        children = widgets[f"{base}/{quarter}"].findall("child")
+        assert all(child.get("map_has") or child.get("map_lacks") for child in children), quarter
+        for attribute in ("map_has", "map_lacks"):
+            for_map = [child.get("widget") for child in children if child.get(attribute)]
+            assert len(for_map) == 3, (quarter, attribute, for_map)
+            if quarter == "join4_qtr_select":
+                assert "spinner" in for_map[2], (quarter, attribute, for_map)
+        assert widgets[f"{base}/{quarter}"].get("bitmap"), quarter
 
 
 def test_default_brokers_are_brokers_txt():

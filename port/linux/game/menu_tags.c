@@ -608,9 +608,11 @@ static long map_tag(long group_tag, char const *name, char const *file, long lin
 {
 	long index = tag_loaded(group_tag, name);
 
-	/* (a game map has few of ui.map's: those are none) */
+	/* (a game map has few of ui.map's: those are none; so are those a menus'
+	map lacks, another version's (Halo PC's) or a modified one: said in the
+	log, and drawn without them) */
 	if (index == NONE && !build.game_map)
-		problem(file, line, "the map has no tag", name);
+		platform_log("menus: %s:%ld: the menus' map has no tag %s: drawn without it", file, line, name);
 	return index;
 }
 
@@ -639,6 +641,15 @@ static long tag_named(long group_tag, char const *name, char const *file, long l
 	if (index == NONE)
 		problem(file, line, "there is nothing named", name);
 	return index;
+}
+
+/* whether a child is there with this map: map_has a widget tag the map has,
+map_lacks one it has not (a screen whose Xbox widgets a menus' map, as
+Halo PC's, has not got, drawn with the port's own instead) */
+static boolean child_for_map(struct halo_menu_child const *child)
+{
+	return (!child->map_has || tag_loaded(UI_WIDGET_DEFINITION_TAG, child->map_has) != NONE) &&
+		(!child->map_lacks || tag_loaded(UI_WIDGET_DEFINITION_TAG, child->map_lacks) == NONE);
 }
 
 /* "unwired <name>": a function the PC version has for these widgets, not
@@ -900,28 +911,31 @@ static void *bitmap_build(struct halo_menu_bitmap const *source, long tag_index)
 		struct bitmap_data *bitmap = &bitmaps[frame];
 		char const *png = data->png;
 		long width = data->width, height = data->height;
+		long group_index = data->map ? map_tag(BITMAP_GROUP_TAG, data->map, source->file, source->line) : NONE;
 
 		/* (a frame of the map's: a copy of its bitmap, which the texture cache
-		loads from the map as its own; in a game map that has not got it,
-		nothing) */
-		if (data->map && build.game_map && tag_loaded(BITMAP_GROUP_TAG, data->map) == NONE)
+		loads from the map as its own; one the map has not got, nothing: a game
+		map has few of ui.map's, and a menus' map may lack some of the Xbox's,
+		said in the log) */
+		if (data->map && group_index != NONE &&
+			(data->index < 0 || data->index >= bitmap_group_get(group_index)->bitmaps.count))
+		{
+			if (!build.game_map)
+			{
+				platform_log("menus: %s:%ld: the menus' map's %s has no frame %ld: drawn as nothing", source->file,
+					source->line, data->map, data->index);
+			}
+			group_index = NONE;
+		}
+		if (data->map && group_index == NONE)
 		{
 			png = BLANK_PNG;
 			width = height = PLACEHOLDER_SIZE;
 		}
 		else if (data->map)
 		{
-			long group_index = map_tag(BITMAP_GROUP_TAG, data->map, source->file, source->line);
-			struct bitmap_group *group_source;
+			struct bitmap_group *group_source = bitmap_group_get(group_index);
 
-			if (group_index == NONE)
-				return group;
-			group_source = bitmap_group_get(group_index);
-			if (data->index < 0 || data->index >= group_source->bitmaps.count)
-			{
-				problem(source->file, source->line, "the map's bitmap has no such frame:", data->map);
-				return group;
-			}
 			memcpy(bitmap, (struct bitmap_data *)group_source->bitmaps.address + data->index, sizeof(*bitmap));
 			bitmap->cache_block_index = NONE;
 			bitmap->base_address = NULL;
@@ -1305,9 +1319,9 @@ static void *widget_build(long widget_index)
 		reference_set(&definition->extended_description_widget, UI_WIDGET_DEFINITION_TAG,
 			tag_named(UI_WIDGET_DEFINITION_TAG, source->description, source->file, source->line));
 	}
-	/* the children */
+	/* the children (those for this map) */
 	for (count = 0, child = source->first_child; child != HALO_MENU_NONE; child = menus->children[child].next)
-		count++;
+		count += child_for_map(&menus->children[child]);
 	if (definition->type == _widget_type_spinner_list && count != 0 && count != 1 && count != 3)
 		problem(source->file, source->line, "a spinner has 0, 1 or 3 children:", source->name);
 	if (count)
@@ -1319,11 +1333,16 @@ static void *widget_build(long widget_index)
 		for (count = 0, child = source->first_child; children && child != HALO_MENU_NONE; child = menus->children[child].next)
 		{
 			struct halo_menu_child const *entry = &menus->children[child];
-			long tag_index = entry->nested != HALO_MENU_NONE ? build.widget_tags[entry->nested] :
-				tag_named(UI_WIDGET_DEFINITION_TAG, entry->widget, entry->file, entry->line);
-			char const *name = entry->nested != HALO_MENU_NONE ? menus->widgets[entry->nested].name : entry->widget;
-			char const *child_leaf = strrchr(name, '/') ? strrchr(name, '/') + 1 : name;
+			long tag_index;
+			char const *name;
+			char const *child_leaf;
 
+			if (!child_for_map(entry))
+				continue;
+			tag_index = entry->nested != HALO_MENU_NONE ? build.widget_tags[entry->nested] :
+				tag_named(UI_WIDGET_DEFINITION_TAG, entry->widget, entry->file, entry->line);
+			name = entry->nested != HALO_MENU_NONE ? menus->widgets[entry->nested].name : entry->widget;
+			child_leaf = strrchr(name, '/') ? strrchr(name, '/') + 1 : name;
 			reference_set(&children[count].widget_tag, UI_WIDGET_DEFINITION_TAG, tag_index);
 			strncpy(children[count].name, child_leaf, sizeof(children[count].name) - 1);
 			children[count].horizontal_offset = (short)entry->x;

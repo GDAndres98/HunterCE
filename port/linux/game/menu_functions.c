@@ -158,6 +158,8 @@ void pc_menu_game_data_function_invoke(struct widget_instance *widget, long func
 #define BUTTON_X 2
 #define BUTTON_Y 3
 #define BUTTON_START 12
+/* a widget's type, a spinner list (ui_widget.c's _ui_widget_type_spinner_list) */
+#define WIDGET_TYPE_SPINNER_LIST 2
 
 enum
 {
@@ -7062,8 +7064,10 @@ static boolean preview_join(struct widget_instance *widget, short controller, bo
 }
 
 /* ---- ADD PLAYER's screen: the Xbox's split screen profile select
-(tools/port_settings.py's _join4: its widgets and bitmaps), a quarter for
-each controller. A controller not playing presses A in its quarter to join,
+(tools/port_settings.py's _join4: its widgets and bitmaps; with a menus'
+map that has not got them, as Halo PC's, the port's own in their places,
+doing the same), a quarter for each
+controller. A controller not playing presses A in its quarter to join,
 chooses a profile on the Xbox's spinner, and presses A to select it ("1wide
 plyr prof set for game": the controller's active profile); B goes back a
 step. A selected or playing quarter's A (or Enter) brings the players who
@@ -8589,6 +8593,12 @@ boolean pc_menu_event_function_invoke(
 		}
 		else if (!strcmp(name, "player profile list initialize"))
 		{
+			/* (a spinner of profiles, ADD PLAYER's with a menus' map that has
+			not got the Xbox's: the game's, which gives it the profiles of its
+			controller, as its "player profile small menu update" and "1wide
+			plyr prof set for game" need; the PC version's list is ours) */
+			if (widget->type == WIDGET_TYPE_SPINNER_LIST)
+				return game_function(name, widget, event, widget_deleted);
 			return profile_list_initialize(widget);
 		}
 		else if (!strcmp(name, "profile manager select"))
