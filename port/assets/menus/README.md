@@ -115,8 +115,8 @@ A screen, or a part of one. Its children are `<widget>` elements in it, or
 be a child of many). A `<child>` with `map_has="<widget tag>"` is there only
 when the menus' map has that widget, and one with `map_lacks` only when it
 has not: a screen built of the Xbox's widgets names the port's own in their
-place for a menus' map imported from the Master Chief Collection (Halo
-PC's), which has not got them (ADD PLAYER's quarters).
+place for a menus' map that has not got them, as Halo PC's (ADD PLAYER's
+quarters).
 
 | Attribute | Value |
 | --- | --- |

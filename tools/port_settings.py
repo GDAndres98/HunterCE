@@ -2100,7 +2100,7 @@ def _join4(base: str) -> list:
     it shared to join (menu_functions.c's join4). Each quarter takes its own
     controller's presses (pc_menu_screen_routes_by_controller).
 
-    A menus' map imported from the Master Chief Collection (Halo PC's) has
+    A menus' map that is not the Xbox's (Halo PC's) has
     none of the Xbox's widgets for it, nor their pictures: each part of the
     Xbox's is there only if the map has them (map_has), and with any other
     map the port's own stand in (map_lacks), in the same places, doing the
@@ -2204,8 +2204,8 @@ def _join4(base: str) -> list:
 
 
 def _join4_port(base: str) -> list:
-    """ADD PLAYER's quarters with a menus' map that has not the Xbox's (one
-    imported from the Master Chief Collection): the Xbox's widgets' places,
+    """ADD PLAYER's quarters with a menus' map that has not the Xbox's (as
+    Halo PC's): the Xbox's widgets' places,
     texts, fonts and functions, as its tags have them, on the PC menus' flat
     panel (a dark fill with a blue edge, of the PC version's own tiles). The
     pictures are those both maps have: the profile's colours (colors_sm), the

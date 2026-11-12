@@ -7065,8 +7065,8 @@ static boolean preview_join(struct widget_instance *widget, short controller, bo
 
 /* ---- ADD PLAYER's screen: the Xbox's split screen profile select
 (tools/port_settings.py's _join4: its widgets and bitmaps; with a menus'
-map imported from the Master Chief Collection, which has not got them, the
-port's own in their places, doing the same), a quarter for each
+map that has not got them, as Halo PC's, the port's own in their places,
+doing the same), a quarter for each
 controller. A controller not playing presses A in its quarter to join,
 chooses a profile on the Xbox's spinner, and presses A to select it ("1wide
 plyr prof set for game": the controller's active profile); B goes back a
