@@ -1801,7 +1801,7 @@ static void mcc_import_hud_placement(
 		sheet written in the disc's layout: by how much smaller its sprites
 		are written) */
 		float factor = hud->disc_values ? mcc_import_globals.hud_scale[tag_index] :
-			(float)mcc_import_globals.hud_factor[tag_index] * mcc_import_sprite_layout_ratio(tag_index);
+			(float)MAX(mcc_import_globals.hud_factor[tag_index], 1) * mcc_import_sprite_layout_ratio(tag_index);
 		float scale;
 
 		if (factor == 1.0f)
