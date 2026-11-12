@@ -5,7 +5,7 @@ The game's data from a Steam installation of Halo: The Master Chief
 Collection, on a first start without it (sdl_platform.c,
 platform_offer_game_data): its Halo 1 folder, found through Steam's
 libraries, and the import of its maps as the Xbox's, which other copies of
-the game run (halo --import-mcc d:\maps --from <folder> <map>,
+the game run (halo --import-mcc d:\maps.partial --from <folder> <map>,
 port/linux/game/mcc_import.c), one map each and several at once, while this
 one shows how far they have got.
 */
@@ -26,17 +26,27 @@ one shows how far they have got.
 int mcc_import_default_maps(char names[][64], int maximum_count);
 
 #define MCC_HALO1_FOLDER "steamapps/common/Halo The Master Chief Collection/halo1"
+/* the folder the maps are written to, renamed maps once every one is (as
+xiso.c's copy of a disc's): a stopped import leaves no maps folder, and the
+next start offers the game data again */
+#define MCC_INSTALL_PARTIAL_FOLDER "maps.partial"
 
 /* ---------- finding it */
 
-static BOOL mcc_install_halo1(const char *library, char *path, int size)
+/* whether `folder` is MCC's Halo 1 folder (it has maps/a10.map) */
+static BOOL mcc_install_is_halo1(const char *folder)
 {
 	char map[2048];
 	SDL_PathInfo information;
 
-	snprintf(path, (size_t)size, "%s/%s", library, MCC_HALO1_FOLDER);
-	snprintf(map, sizeof(map), "%s/maps/a10.map", path);
+	snprintf(map, sizeof(map), "%s/maps/a10.map", folder);
 	return SDL_GetPathInfo(map, &information) && information.type == SDL_PATHTYPE_FILE;
+}
+
+static BOOL mcc_install_halo1(const char *library, char *path, int size)
+{
+	snprintf(path, (size_t)size, "%s/%s", library, MCC_HALO1_FOLDER);
+	return mcc_install_is_halo1(path);
 }
 
 BOOL mcc_install_find(char *path, int size)
@@ -192,7 +202,7 @@ static BOOL mcc_install_start(struct mcc_install_worker *worker, int map, const 
 	worker->map = map;
 	arguments[0] = executable;
 	arguments[1] = "--import-mcc";
-	arguments[2] = "d:\\maps";
+	arguments[2] = "d:\\" MCC_INSTALL_PARTIAL_FOLDER;
 	arguments[3] = "--from";
 	arguments[4] = halo1;
 	arguments[5] = mcc_install.names[map];
@@ -279,13 +289,25 @@ static void mcc_install_remove_map(const char *destination, int map)
 {
 	char path[1200];
 
-	snprintf(path, sizeof(path), "%s/maps/%s.map", destination, mcc_install.names[map]);
+	snprintf(path, sizeof(path), "%s/%s/%s.map", destination, MCC_INSTALL_PARTIAL_FOLDER, mcc_install.names[map]);
+	SDL_RemovePath(path);
+}
+
+/* the partial folder and the maps an import writes to it, removed */
+static void mcc_install_remove_partial(const char *destination, int total)
+{
+	char path[1200];
+	int map;
+
+	for (map = 0; map < total; map++)
+		mcc_install_remove_map(destination, map);
+	snprintf(path, sizeof(path), "%s/%s", destination, MCC_INSTALL_PARTIAL_FOLDER);
 	SDL_RemovePath(path);
 }
 
 BOOL mcc_install_import(const char *halo1, const char *destination, char *error, int error_size)
 {
-	char executable[1024], maps[1100];
+	char executable[1024], maps[1100], partial[1100], inside[1100];
 	SDL_Environment *environment;
 	SDL_Window *window;
 	SDL_Renderer *renderer = NULL;
@@ -293,6 +315,16 @@ BOOL mcc_install_import(const char *halo1, const char *destination, char *error,
 	Sint64 total_bytes = 0, done_bytes = 0;
 
 	memset(&mcc_install, 0, sizeof(mcc_install));
+	/* (the folder picked may be MCC's own, the halo1 folder in it) */
+	snprintf(inside, sizeof(inside), "%s/halo1", halo1);
+	if (!mcc_install_is_halo1(halo1) && mcc_install_is_halo1(inside))
+		halo1 = inside;
+	if (!mcc_install_is_halo1(halo1))
+	{
+		snprintf(error, (size_t)error_size, "%s is not the Master Chief Collection's halo1 folder (it has no "
+			"maps/a10.map).", halo1);
+		return FALSE;
+	}
 	total = mcc_import_default_maps(mcc_install.names, MCC_INSTALL_MAXIMUM_MAPS);
 	if (!total || !update_executable_path(executable, sizeof(executable)))
 	{
@@ -306,7 +338,10 @@ BOOL mcc_install_import(const char *halo1, const char *destination, char *error,
 	jobs = mcc_install_jobs(total);
 	platform_log("mcc install: %d maps, %d at once", total, jobs);
 	snprintf(maps, sizeof(maps), "%s/maps", destination);
-	SDL_CreateDirectory(maps);
+	snprintf(partial, sizeof(partial), "%s/%s", destination, MCC_INSTALL_PARTIAL_FOLDER);
+	/* (emptied first of an earlier attempt's maps) */
+	mcc_install_remove_partial(destination, total);
+	SDL_CreateDirectory(partial);
 	/* (the copies' data root is the folder the maps are written to) */
 	environment = SDL_CreateEnvironment(true);
 	if (environment)
@@ -337,11 +372,8 @@ BOOL mcc_install_import(const char *halo1, const char *destination, char *error,
 						continue;
 					SDL_KillProcess(worker->process, true);
 					SDL_WaitProcess(worker->process, true, NULL);
-					mcc_install_remove_map(destination, worker->map);
 				}
-				/* (the maps folder, if nothing is written to it: the next
-				start offers the game data again) */
-				SDL_RemovePath(maps);
+				mcc_install_remove_partial(destination, total);
 				exit(EXIT_SUCCESS);
 			}
 		}
@@ -443,10 +475,17 @@ BOOL mcc_install_import(const char *halo1, const char *destination, char *error,
 		SDL_DestroyWindow(window);
 	if (failed || done < total)
 	{
-		/* (removed only if empty) */
-		SDL_RemovePath(maps);
+		mcc_install_remove_partial(destination, total);
 		snprintf(error, (size_t)error_size, "%d of %d maps could not be imported (the log says why). %s",
 			total - done, total, mcc_install.last_error);
+		return FALSE;
+	}
+	/* (an empty maps folder, as an earlier start may leave, gives way) */
+	SDL_RemovePath(maps);
+	if (!SDL_RenamePath(partial, maps))
+	{
+		snprintf(error, (size_t)error_size, "The maps were imported to %s, but could not be renamed %s: %s",
+			partial, maps, SDL_GetError());
 		return FALSE;
 	}
 	return TRUE;

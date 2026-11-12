@@ -2883,15 +2883,16 @@ static boolean mcc_import_map(
 		fprintf(stderr, "mcc import: %s: tags (%d)\n", map_name, (int)success);
 	success = success && mcc_import_tags(&tags, loaded, instances_address);
 	/* (each structure BSP is loaded at the top of the tag cache, above the
-	tags: the game refuses one that does not fit there) */
+	tags: the game refuses one that does not fit there, when the level
+	switches to it. Said, not failed: the level plays until then. The MCC
+	tags the import keeps can make the tags too large for a level's largest) */
 	for (bsp_index = 0; success && bsp_index < mcc_import_globals.bsp_count; bsp_index++)
 	{
 		if (tags.used + mcc_import_globals.bsps[bsp_index].size > (unsigned long)V5_TAG_CACHE_BYTES)
 		{
 			mcc_import_error("mcc import: %s: structure bsp %d (0x%lX bytes) does not fit above the tags (0x%lX "
-				"bytes)", map_name, (int)bsp_index, (unsigned long)mcc_import_globals.bsps[bsp_index].size,
-				(unsigned long)tags.used);
-			success = FALSE;
+				"bytes): the game cannot load it", map_name, (int)bsp_index,
+				(unsigned long)mcc_import_globals.bsps[bsp_index].size, (unsigned long)tags.used);
 		}
 	}
 	if (getenv("HALO_MCC_IMPORT_TRACE"))
