@@ -262,9 +262,56 @@ static void put(void const *bytes, long size)
 	mcc_sha256_add(&section, bytes, (int)size);
 }
 
+/* HALO_MCC_FINGERPRINT_TRACE=<text>: the sections whose name has the text
+are printed as they are hashed, each element's bytes (as hashed) under its
+path, to find what differs in a part (diff two maps' traces) */
+static struct
+{
+	int on;
+	char path[1024];
+} trace;
+
+static void trace_bytes(char const *what, unsigned char const *bytes, long size)
+{
+	long row, i;
+
+	if (!trace.on)
+		return;
+	printf("trace\t%s\t%s\t%ld bytes\n", trace.path, what, size);
+	for (row = 0; row < size; row += 32)
+	{
+		printf("trace\t%s\t+%04lX", trace.path, row);
+		for (i = row; i < row + 32 && i < size; i++)
+			printf("%s%02X", (i - row) % 4 ? "" : " ", bytes[i]);
+		printf("\n");
+	}
+}
+
+static void trace_text(char const *what, char const *text)
+{
+	if (trace.on)
+		printf("trace\t%s\t%s\t%s\n", trace.path, what, text);
+}
+
+/* the path's length before a part is added, to cut it back after */
+static unsigned long trace_push(char const *name, long index)
+{
+	unsigned long length = (unsigned long)strlen(trace.path);
+
+	if (trace.on && length + strlen(name) + 16 < sizeof(trace.path))
+	{
+		if (index >= 0)
+			snprintf(trace.path + length, sizeof(trace.path) - length, ".%s[%ld]", name, index);
+		else
+			snprintf(trace.path + length, sizeof(trace.path) - length, ".%s", name);
+	}
+	return length;
+}
+
 static void put_text(char const *text)
 {
 	put(text, (long)strlen(text) + 1);
+	trace_text("text", text);
 }
 
 static void put_tag(unsigned long handle)
@@ -287,8 +334,10 @@ static void put_tag(unsigned long handle)
 
 static void section_begin(char const *kind, char const *name)
 {
-	(void)kind;
-	(void)name;
+	char const *traced = getenv("HALO_MCC_FINGERPRINT_TRACE");
+
+	trace.on = traced && *traced && name && strstr(name, traced);
+	snprintf(trace.path, sizeof(trace.path), "%s:%s", kind, name ? name : "");
 	mcc_sha256_begin(&section);
 }
 
@@ -313,6 +362,7 @@ static void walk_fields(struct schema_definition const *d, unsigned char *elemen
 {
 	struct schema_field const *f;
 	short n;
+	unsigned long trace_length = (unsigned long)strlen(trace.path);
 
 	for (f = d->fields; f->type != _schema_terminator; f++)
 	{
@@ -333,6 +383,15 @@ static void walk_fields(struct schema_definition const *d, unsigned char *elemen
 				unsigned char *elements;
 
 				put(&count, 4);
+				if (trace.on)
+				{
+					char text[32];
+
+					snprintf(text, sizeof(text), "%ld", count);
+					trace_push(f->name ? f->name : "?", -1);
+					trace_text("count", text);
+					trace.path[trace_length] = 0;
+				}
 				if (count <= 0)
 					break;
 				elements = translate_array(u32(p + 4), (unsigned long)count, (unsigned long)e->size);
@@ -342,7 +401,11 @@ static void walk_fields(struct schema_definition const *d, unsigned char *elemen
 					break;
 				}
 				for (i = 0; i < count; i++)
+				{
+					trace_push(f->name ? f->name : "?", i);
 					walk_element(e, elements + i * e->size, NULL);
+					trace.path[trace_length] = 0;
+				}
 				break;
 			}
 			case _schema_data:
@@ -355,7 +418,12 @@ static void walk_fields(struct schema_definition const *d, unsigned char *elemen
 					break;
 				bytes = translate(u32(p + 12), (unsigned long)size);
 				if (bytes)
+				{
 					put(bytes, size);
+					trace_push(f->name ? f->name : "?", -1);
+					trace_bytes("data", bytes, size);
+					trace.path[trace_length] = 0;
+				}
 				else
 					put_text("OUTSIDE");
 				break;
@@ -364,13 +432,19 @@ static void walk_fields(struct schema_definition const *d, unsigned char *elemen
 				put(p, 4);
 				break;
 			case _schema_reference:
+				trace_push(f->name ? f->name : "?", -1);
 				put_tag(u32(p + 12));
+				trace.path[trace_length] = 0;
 				break;
 			case _schema_tag_index:
+				trace_push(f->name ? f->name : "?", -1);
 				put_tag(u32(p));
+				trace.path[trace_length] = 0;
 				break;
 			case _schema_struct:
+				trace_push(f->name ? f->name : "?", -1);
 				walk_element(f->definition, p, NULL);
+				trace.path[trace_length] = 0;
 				break;
 			default:
 				break;
@@ -485,7 +559,10 @@ static void walk_element(struct schema_definition const *d, unsigned char *eleme
 			memset(bytes + o, 0, 4);
 	}
 	if (!only_fields)
+	{
 		put(bytes, d->size);
+		trace_bytes(d->name, bytes, d->size);
+	}
 	for (o = 0; o + 4 <= d->size; o += 4)
 	{
 		unsigned long w = u32(element + o);
