@@ -84,6 +84,12 @@ enum
 	V5_SCRIPT_NODE_COUNT_OFFSET = 0x2E,
 	V5_SCRIPT_NODES_OFFSET = 0x38,
 	V5_SCRIPT_NODE_BYTES = 0x14,
+	/* a menu widget: its type (a list's is 3), its children, and a child's
+	place (its vertical and horizontal offsets) */
+	V5_WIDGET_TYPE_COLUMN_LIST = 3,
+	V5_WIDGET_CHILD_WIDGETS_OFFSET = 0x3E0,
+	V5_WIDGET_CHILD_BYTES = 0x50,
+	V5_WIDGET_CHILD_PLACE_OFFSET = 0x36,
 	V5_IO_BYTES = 1 << 16,
 };
 
@@ -254,8 +260,10 @@ static struct
 	/* the tag being copied (for the trace) */
 	char const *copying;
 	long placeholders;
-	/* loaded tags kept after the disc's (mcc_import_keep) */
+	/* loaded tags kept after the disc's (mcc_import_keep), and the lists'
+	rows left out (mcc_import_lists_disc_rows) */
 	long kept;
+	long rows_dropped;
 	/* the disc's tags, the first of those written */
 	long disc_count;
 	/* the structure BSPs written (for the fingerprint) */
@@ -548,6 +556,63 @@ static void mcc_import_scripts_disc_objects(
 	return;
 }
 
+/* The rows of the disc's menu lists that the disc's map has not are left
+out, and the rows after them move up into their places. These are Halo PC's
+rows of the campaign pause menu: SAVE CHECKPOINT, whose function the Xbox's
+game has not, and CHANGE SETTINGS, which opens Halo PC's settings screens,
+some 300 tags that would push the largest structure BSPs out of the tag
+cache. Only a list's rows: the children of other widgets that the disc's
+map has not (Halo PC's button bars and pause box) draw what the disc's
+draws in other widgets, and stay. */
+static void mcc_import_lists_disc_rows(
+	void)
+{
+	long out_index;
+
+	for (out_index = 0; out_index < mcc_import_globals.disc_count; out_index++)
+	{
+		long old_index = mcc_import_globals.out_sources[out_index];
+		byte *widget = old_index == NONE ? NULL : mcc_import_globals.instances[old_index].base_address;
+		struct tag_block *children;
+		long child, kept = 0;
+
+		if (!widget || mcc_import_globals.out_groups[out_index] != 'DeLa' ||
+			*(short const *)widget != V5_WIDGET_TYPE_COLUMN_LIST)
+		{
+			continue;
+		}
+		children = (struct tag_block *)(widget + V5_WIDGET_CHILD_WIDGETS_OFFSET);
+		if (children->count <= 0 || !children->address)
+			continue;
+		for (child = 0; child < children->count; child++)
+		{
+			byte *row = (byte *)children->address + child * V5_WIDGET_CHILD_BYTES;
+			long handle = ((struct tag_reference const *)row)->index;
+
+			if (handle != NONE && (handle & 0xFFFF) < mcc_import_globals.tag_count &&
+				mcc_import_globals.old_to_new[handle & 0xFFFF] == NONE)
+			{
+				continue;
+			}
+			/* (the row takes the place of the one it moves into) */
+			if (kept != child)
+			{
+				byte *place = (byte *)children->address + kept * V5_WIDGET_CHILD_BYTES;
+				short offsets[2];
+
+				csmemcpy(offsets, place + V5_WIDGET_CHILD_PLACE_OFFSET, sizeof(offsets));
+				csmemcpy(place, row, V5_WIDGET_CHILD_BYTES);
+				csmemcpy(place + V5_WIDGET_CHILD_PLACE_OFFSET, offsets, sizeof(offsets));
+			}
+			kept++;
+		}
+		mcc_import_globals.rows_dropped += children->count - kept;
+		children->count = kept;
+	}
+
+	return;
+}
+
 /* Until the patch names the disc's tags in their place, the loaded tags the
 written ones name (by reference, tag index or script) are written too, after
 the disc's; the rest of what MCC added is left out. */
@@ -557,6 +622,7 @@ static boolean mcc_import_keep(
 	long out_index;
 
 	mcc_import_scripts_disc_objects();
+	mcc_import_lists_disc_rows();
 	/* the structure BSPs' first (they are read only to be written: read here
 	too, as they are then, for the tags they name) */
 	{
@@ -2959,11 +3025,13 @@ static boolean mcc_import_map(
 		fseek(body->file, 0, SEEK_SET);
 		success = success && fwrite(&header, 1, sizeof(header), body->file) == sizeof(header);
 		fprintf(stdout, "mcc import: %s: %d structure bsps, %ld bitmaps, %ld sounds (%ld silent), %ld tags (0x%lX bytes; "
-			"%ld empty in the disc's place, %ld of MCC's kept after the disc's, %ld without a schema; %ld references to "
-			"tags left out; %ld HUD bitmaps halved, %ld textures halved to fit), 0x%lX bytes before compression\n",
+			"%ld empty in the disc's place, %ld of MCC's kept after the disc's, %ld without a schema; %ld rows of lists "
+			"and %ld references to tags left out; %ld HUD bitmaps halved, %ld textures halved to fit), 0x%lX bytes "
+			"before compression\n",
 			map_name, (int)references->count, mcc_import_globals.bitmaps, mcc_import_globals.sounds,
 			mcc_import_sounds_silent(), mcc_import_globals.out_count, tags.used, mcc_import_globals.placeholders,
-			mcc_import_globals.kept, mcc_import_globals.schemaless, mcc_import_globals.references_dropped,
+			mcc_import_globals.kept, mcc_import_globals.schemaless, mcc_import_globals.rows_dropped,
+			mcc_import_globals.references_dropped,
 			mcc_import_globals.hud_bitmaps_halved, mcc_import_globals.fitted, (unsigned long)header.file_length);
 	}
 	deflateEnd(&body->stream);
