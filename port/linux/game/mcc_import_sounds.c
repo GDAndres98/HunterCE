@@ -587,9 +587,12 @@ static short mcc_sounds_chain(
 static short mcc_sounds_chain_count(
 	byte *pitch_range)
 {
+	long count = mcc_sounds_permutation_count(pitch_range);
 	short actual = *(short *)(pitch_range + PITCH_RANGE_ACTUAL_COUNT_OFFSET);
 
-	return mcc_sounds_permutation_count(pitch_range) ? MAX(actual, 1) : 0;
+	/* (no more than the range's permutations, and the 256 a range's chains
+	are read into: the tag is MCC's file, untrusted) */
+	return count ? (short)MIN(MAX(actual, 1), MIN(count, 256)) : 0;
 }
 
 /* sorted as the dialogue bank sorts a range's takes: by name as a file

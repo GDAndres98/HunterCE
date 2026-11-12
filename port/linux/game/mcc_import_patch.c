@@ -548,8 +548,13 @@ static void mcc_patch_read_pointers(
 				}
 				mcc_patch_read_bytes(reader, (byte *)text, length);
 				text[length] = 0;
+				/* (a tag this map lacks: the element's reference names none,
+				not the handle it was serialized with, another map's) */
 				if (!mcc_patch_set_reference(tags, at, field->type == _tag_schema_reference, text))
+				{
 					mcc_patch_globals.failed++;
+					mcc_patch_set_reference(tags, at, field->type == _tag_schema_reference, "NONE");
+				}
 				break;
 			}
 			case _tag_schema_struct:

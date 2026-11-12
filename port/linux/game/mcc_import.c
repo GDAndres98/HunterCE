@@ -879,10 +879,11 @@ static void mcc_import_copy_pointers(
 					if (address)
 						csmemcpy(mcc_import_at(space, address), (void const *)source_address, data->size);
 				}
-				else if (data->size > 0 && data->address)
+				else if (data->size > 0 && data->address && space->address != V5_TAG_ADDRESS)
 				{
-					/* (the BSPs' compressed vertices, made for the import
-					outside the tags) */
+					/* (a structure BSP's, read outside the tags, and its
+					compressed vertices, made for the import: never a tag's
+					pointer to elsewhere, which a map can hold) */
 					address = mcc_import_allocate(space, (unsigned long)data->size, 4);
 					if (address)
 						csmemcpy(mcc_import_at(space, address), data->address, data->size);
@@ -2633,6 +2634,32 @@ static boolean mcc_import_stock(
 
 /* ---------- private code: a map */
 
+/* what the import of a map holds, let go, on every exit: nothing of one map
+(its muted sounds) reaches the next */
+static void mcc_import_map_dispose(
+	void)
+{
+	short bsp_index;
+
+	mcc_import_free(mcc_import_globals.name_addresses);
+	mcc_import_free(mcc_import_globals.out_sources);
+	mcc_import_free(mcc_import_globals.out_groups);
+	mcc_import_free(mcc_import_globals.out_names);
+	mcc_import_free(mcc_import_globals.old_to_new);
+	mcc_import_data_free(mcc_import_globals.out_names_text);
+	mcc_import_free(mcc_import_globals.table.instances);
+	mcc_import_free(mcc_import_globals.hud_factor);
+	mcc_import_free(mcc_import_globals.hud_scale);
+	for (bsp_index = 0; bsp_index < mcc_import_globals.bsp_count; bsp_index++)
+		mcc_import_free(mcc_import_globals.bsps[bsp_index].bytes);
+	csmemset(&mcc_import_globals, 0, sizeof(mcc_import_globals));
+	mcc_import_operations_dispose();
+	mcc_import_sounds_map_done();
+	custom_edition_cache_tags_unload();
+
+	return;
+}
+
 /* the tags `tags` of the MCC map `donor_map`, as its fixes and operations
 leave them, written for the maps whose donor lines name them */
 static boolean mcc_import_donor_export(
@@ -2647,10 +2674,12 @@ static boolean mcc_import_donor_export(
 	long index;
 
 	csmemset(&mcc_import_globals, 0, sizeof(mcc_import_globals));
+	mcc_import_sounds_map_done();
 	loaded = (struct mcc_import_tag_header *)custom_edition_cache_tags_load(donor_map, loaded_header);
 	if (!loaded)
 	{
 		fprintf(stderr, "mcc import: %s: cannot be loaded to give its tags (the log says why)\n", donor_map);
+		mcc_import_sounds_map_done();
 		return FALSE;
 	}
 	mcc_import_globals.table.maximum_count = loaded->tag_count + 64;
@@ -2676,9 +2705,7 @@ static boolean mcc_import_donor_export(
 	}
 	else
 		success = FALSE;
-	mcc_import_free(mcc_import_globals.table.instances);
-	mcc_import_operations_dispose();
-	custom_edition_cache_tags_unload();
+	mcc_import_map_dispose();
 
 	return success;
 }
@@ -2766,6 +2793,8 @@ static boolean mcc_import_map(
 	csmemset(&mcc_import_globals, 0, sizeof(mcc_import_globals));
 	mcc_import_globals.fit_budget = fit_budget;
 	*overage = 0;
+	/* (the load lists the sounds it mutes: this map's alone) */
+	mcc_import_sounds_map_done();
 	loaded = (struct mcc_import_tag_header *)custom_edition_cache_tags_load(map_name, loaded_header);
 	if (!loaded)
 	{
@@ -2779,7 +2808,7 @@ static boolean mcc_import_map(
 		sizeof(struct mcc_import_tag_instance));
 	if (!mcc_import_globals.table.instances)
 	{
-		custom_edition_cache_tags_unload();
+		mcc_import_map_dispose();
 		return FALSE;
 	}
 	csmemcpy(mcc_import_globals.table.instances, loaded->tag_instances,
@@ -2800,7 +2829,7 @@ static boolean mcc_import_map(
 	if (!mcc_import_order(map_name))
 	{
 		fprintf(stderr, "mcc import: %s: out of memory for the tag order\n", map_name);
-		custom_edition_cache_tags_unload();
+		mcc_import_map_dispose();
 		return FALSE;
 	}
 	scenario = mcc_import_globals.instances[loaded->scenario_tag_index & 0xFFFF].base_address;
@@ -2818,7 +2847,7 @@ static boolean mcc_import_map(
 	{
 		fprintf(stderr, "mcc import: %s: cannot write %s\n", map_name, path);
 		mcc_import_free(body);
-		custom_edition_cache_tags_unload();
+		mcc_import_map_dispose();
 		return FALSE;
 	}
 	csmemset(&header, 0, sizeof(header));
@@ -2853,13 +2882,24 @@ static boolean mcc_import_map(
 	if (getenv("HALO_MCC_IMPORT_TRACE"))
 		fprintf(stderr, "mcc import: %s: tags (%d)\n", map_name, (int)success);
 	success = success && mcc_import_tags(&tags, loaded, instances_address);
+	/* (each structure BSP is loaded at the top of the tag cache, above the
+	tags: the game refuses one that does not fit there) */
+	for (bsp_index = 0; success && bsp_index < mcc_import_globals.bsp_count; bsp_index++)
+	{
+		if (tags.used + mcc_import_globals.bsps[bsp_index].size > (unsigned long)V5_TAG_CACHE_BYTES)
+		{
+			mcc_import_error("mcc import: %s: structure bsp %d (0x%lX bytes) does not fit above the tags (0x%lX "
+				"bytes)", map_name, (int)bsp_index, (unsigned long)mcc_import_globals.bsps[bsp_index].size,
+				(unsigned long)tags.used);
+			success = FALSE;
+		}
+	}
 	if (getenv("HALO_MCC_IMPORT_TRACE"))
 		fprintf(stderr, "mcc import: %s: checks (%d)\n", map_name, (int)success);
 	if (success && !tag_validate_tags(tags.bytes, (long)tags.used, 0x7FFFFFFF, map_name))
 	{
-		/* (written all the same for now: the game checks them again as it
-		loads the map, with its log open to say why) */
-		fprintf(stderr, "mcc import: %s: the written tags are refused (the game says why as it loads them)\n", map_name);
+		mcc_import_error("mcc import: %s: the written tags are refused by the game's checks: not written", map_name);
+		success = FALSE;
 	}
 	if (success)
 	{
@@ -2934,20 +2974,7 @@ static boolean mcc_import_map(
 		success = FALSE;
 	}
 	mcc_import_free(body);
-	mcc_import_free(mcc_import_globals.name_addresses);
-	mcc_import_free(mcc_import_globals.out_sources);
-	mcc_import_free(mcc_import_globals.out_groups);
-	mcc_import_free(mcc_import_globals.out_names);
-	mcc_import_free(mcc_import_globals.old_to_new);
-	mcc_import_data_free(mcc_import_globals.out_names_text);
-	mcc_import_free(mcc_import_globals.table.instances);
-	mcc_import_free(mcc_import_globals.hud_factor);
-	mcc_import_free(mcc_import_globals.hud_scale);
-	for (bsp_index = 0; bsp_index < mcc_import_globals.bsp_count; bsp_index++)
-		mcc_import_free(mcc_import_globals.bsps[bsp_index].bytes);
-	mcc_import_operations_dispose();
-	mcc_import_sounds_map_done();
-	custom_edition_cache_tags_unload();
+	mcc_import_map_dispose();
 	if (!success)
 	{
 		fprintf(stderr, "mcc import: %s: failed\n", map_name);
@@ -2992,8 +3019,15 @@ int mcc_import_run(
 			success = mcc_import_map(map_names[index], output_folder, budget, &overage);
 		}
 		if (success && overage > 0)
-			mcc_import_error("mcc import: %s: still 0x%lX bytes larger than its cache file: the game cannot load it",
-				map_names[index], (unsigned long)overage);
+		{
+			char path[512];
+
+			mcc_import_error("mcc import: %s: still 0x%lX bytes larger than its cache file, which the game cannot "
+				"load: not written", map_names[index], (unsigned long)overage);
+			snprintf(path, sizeof(path), "%s/%s.map", output_folder, map_names[index]);
+			remove(path);
+			success = FALSE;
+		}
 		if (!success)
 			failures++;
 		/* (each map's lines as it is done: stdout into a pipe, as the first
