@@ -19,6 +19,7 @@ bitmap_size	bitm:ui\hud\bitmaps\sniper\sniper_scope_crosshairs2	-	64	256
 bitmap_size	bitm:ui\hud\bitmaps\sniper\sniper_scope_crosshairs_sm	-	32	128
 bitmap_size	bitm:ui\hud\bitmaps\sniper\caption	-	128	128
 sprite_sizes	bitm:ui\hud\bitmaps\sniper\caption	-	128x32
+sprite_layout	bitm:ui\hud\bitmaps\sniper\caption	-	128x128	0,0,0,128,32,64,17
 bitmap_size	bitm:ui\hud\bitmaps\sniper\sniper_scope_mask2	-	512	256
 bitmap_size	bitm:ui\hud\bitmaps\sniper\sniper_scope_mask_sm	-	256	256
 bitmap_size	bitm:ui\hud\bitmaps\combined\hud_reticles	-	128	128
@@ -32,11 +33,13 @@ bitmap_size	bitm:ui\hud\bitmaps\combined\hud_waypoints	-	128	128
 sprite_sizes	bitm:ui\hud\bitmaps\combined\hud_waypoints	-	34x34,34x34,34x34,34x34,34x34,34x34,34x34
 bitmap_size	bitm:ui\hud\bitmaps\combined\hud_damage_arrows	-	256	256
 sprite_sizes	bitm:ui\hud\bitmaps\combined\hud_damage_arrows	-	231x40,165x29
+sprite_layout	bitm:ui\hud\bitmaps\combined\hud_damage_arrows	-	256x256	0,0,0,231,40,115,28|0,0,40,165,69,82,23
 bitmap_size	bitm:ui\hud\bitmaps\hud_sweeper	-	64	64
 bitmap_size	bitm:ui\hud\bitmaps\hud_sweeper_mask	-	64	64
 bitmap_size	bitm:ui\hud\bitmaps\hud_multiplayer	-	64	32
 bitmap_size	bitm:ui\hud\bitmaps\combined\hud_counter_numbers	-	128	128
 sprite_sizes	bitm:ui\hud\bitmaps\combined\hud_counter_numbers	-	18x12
+sprite_layout	bitm:ui\hud\bitmaps\combined\hud_counter_numbers	-	128x128	0,0,24,18,36,9,17;0,0,0,18,12,9,17;0,18,0,36,12,9,17;0,36,0,54,12,9,17;0,34,12,53,24,9,17;0,71,12,89,24,9,17;0,107,12,125,24,9,17;0,18,24,36,36,9,17;0,108,0,126,12,9,17;0,54,0,72,12,9,17;0,72,0,90,12,9,17;0,53,12,71,24,9,17;0,90,0,108,12,9,17;0,89,12,107,24,9,17;0,0,12,34,24,17,17
 bitmap_size	bitm:ui\hud\bitmaps\hud_sensor_blip	-	32	32
 bitmap_size	bitm:ui\hud\bitmaps\hud_sensor_blip_custom	-	32	32
 bitmap_size	bitm:ui\hud\bitmaps\hud_msg_icons_sm	-	128	128

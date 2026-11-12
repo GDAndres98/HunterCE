@@ -70,11 +70,14 @@ enum
 	MCC_IMPORT_HUD_PLACEMENT = 1,
 	MCC_IMPORT_HUD_ICONS,
 	MCC_IMPORT_HUD_MASK,
+	/* (a HUD tag's other bitmaps: the counter's digits, the HUD globals'
+	waypoints and damage arrows, a weapon HUD's zoom caption) */
+	MCC_IMPORT_HUD_TAG,
 	MCC_IMPORT_MAXIMUM_BSPS = 32,
 	/* the HUD sprite sheets written in the disc's layout (the operations'
-	sprite_layout: the meters' and the zoom reticles'), and each one's bitmaps
-	and sprites */
-	MCC_IMPORT_MAXIMUM_SPRITE_LAYOUTS = 4,
+	sprite_layout: the meters', the zoom reticles', the counter's digits, the
+	damage arrows and the zoom caption), and each one's bitmaps and sprites */
+	MCC_IMPORT_MAXIMUM_SPRITE_LAYOUTS = 8,
 	MCC_IMPORT_MAXIMUM_LAYOUT_BITMAPS = 8,
 	MCC_IMPORT_MAXIMUM_LAYOUT_SPRITES = 64,
 	/* (bitmap_group's flags) the digits drawn at half their size */
@@ -1503,12 +1506,12 @@ static boolean mcc_import_sprite_layout_number(
 	return TRUE;
 }
 
-/* The sheet `tag_index` (a sprite sheet only the HUD's placements draw) planned
-to be written in the disc's layout, from the operations' sprite_layout line,
-and its tag given that layout: its bitmaps the disc's (their pixels made by
-mcc_import_sprite_layout_pixels), its sprites where the disc has them. Not
-where the sheet already has the disc's layout, or where it does not have the
-disc's sequences and sprites, in uncompressed bitmaps without mipmaps. */
+/* The sheet `tag_index` (a sprite sheet only the HUD draws) planned to be
+written in the disc's layout, from the operations' sprite_layout line, and
+its tag given that layout: its bitmaps the disc's (their pixels made by
+mcc_import_sprite_layout_pixels, without mipmaps), its sprites where the disc
+has them. Not where the sheet already has the disc's layout, or where it does
+not have the disc's sequences and sprites, in uncompressed bitmaps. */
 static void mcc_import_sprite_layout_plan(
 	long tag_index)
 {
@@ -1537,7 +1540,7 @@ static void mcc_import_sprite_layout_plan(
 	{
 		struct bitmap_data const *bitmap = TAG_BLOCK_GET_ELEMENT(&group->bitmaps, index, struct bitmap_data);
 
-		if (bitmap->type != 0 || bitmap->depth > 1 || bitmap->mipmap_count != 0 || bitmap->format != format ||
+		if (bitmap->type != 0 || bitmap->depth > 1 || bitmap->mipmap_count < 0 || bitmap->format != format ||
 			!mcc_import_pixel_bytes(bitmap->format) || bitmap->width <= 0 || bitmap->height <= 0 ||
 			bitmap->pixels_size < (long)bitmap->width * bitmap->height * mcc_import_pixel_bytes(bitmap->format))
 		{
@@ -1682,6 +1685,8 @@ static void mcc_import_sprite_layout_plan(
 		bitmap->height = target_heights[index];
 		bitmap->registration_point.x = 0;
 		bitmap->registration_point.y = 0;
+		/* (its first level alone: the HUD draws a sheet at its own size) */
+		bitmap->mipmap_count = 0;
 		bitmap->pixels_size = (long)bitmap->width * bitmap->height * mcc_import_pixel_bytes(bitmap->format);
 	}
 	index = 0;
@@ -1920,11 +1925,13 @@ static void mcc_import_hud_walk(
 }
 
 /* marks every bitmap a reference names that HUD placements do not draw
-through (`hud` lists those they do) */
+through (`hud` lists those they do); a HUD tag's (`hud_tag`) are the HUD's
+too, drawn by their pixels as the placements' are */
 static void mcc_import_hud_others(
 	struct mcc_import_hud_context const *hud,
 	struct tag_schema_definition const *definition,
 	byte const *element,
+	boolean hud_tag,
 	boolean *others,
 	boolean *candidates)
 {
@@ -1964,12 +1971,16 @@ static void mcc_import_hud_others(
 					if (hud->references[listed] == (void const *)reference)
 						break;
 				}
-				if (listed == hud->reference_count)
+				if (listed < hud->reference_count)
+					continue;
+				if (hud_tag && !candidates[reference->index & 0xFFFF])
+					candidates[reference->index & 0xFFFF] = MCC_IMPORT_HUD_TAG;
+				else if (!hud_tag)
 					others[reference->index & 0xFFFF] = TRUE;
 			}
 			else if (field->type == _tag_schema_struct)
 			{
-				mcc_import_hud_others(hud, field->definition, at, others, candidates);
+				mcc_import_hud_others(hud, field->definition, at, hud_tag, others, candidates);
 			}
 			else if (field->type == _tag_schema_block)
 			{
@@ -1980,7 +1991,8 @@ static void mcc_import_hud_others(
 				for (element_index = 0; block->address && element_index < block->count; element_index++)
 				{
 					mcc_import_hud_others(hud, element_definition,
-						(byte const *)block->address + element_index * element_definition->size, others, candidates);
+						(byte const *)block->address + element_index * element_definition->size, hud_tag, others,
+						candidates);
 				}
 			}
 		}
@@ -2085,31 +2097,36 @@ static void mcc_import_hud(
 		struct mcc_import_tag_instance const *instance = &mcc_import_globals.instances[tag_index];
 		struct tag_schema_group const *schema = mcc_import_schema((unsigned long)instance->group_tag);
 
+		unsigned long group_tag = (unsigned long)instance->group_tag;
+		boolean hud_tag = group_tag == 'hud#' || group_tag == 'hudg' || group_tag == 'wphi' || group_tag == 'unhi' ||
+			group_tag == 'grhi';
+
 		if (instance->base_address && schema && schema->definition)
-			mcc_import_hud_others(&hud, schema->definition, instance->base_address, others, candidates);
+			mcc_import_hud_others(&hud, schema->definition, instance->base_address, hud_tag, others, candidates);
 	}
 	for (tag_index = 0; tag_index < hud.reference_count; tag_index++)
 	{
 		long bitmap_tag = ((struct tag_reference const *)hud.references[tag_index])->index & 0xFFFF;
 
-		if (!candidates[bitmap_tag])
+		if (!candidates[bitmap_tag] || candidates[bitmap_tag] == MCC_IMPORT_HUD_TAG)
 			candidates[bitmap_tag] = MCC_IMPORT_HUD_PLACEMENT;
 	}
-	/* a sprite sheet only placements draw, in the disc's layout where the
+	/* a sprite sheet only the HUD draws, in the disc's layout where the
 	operations give it, and the disc's placements, which draw it at their
 	own scale (mcc_import_sprite_layout_plan) */
 	mcc_import_globals.sprite_layout_count = 0;
 	for (tag_index = 0; mcc_import_operations_hud_values(NULL) && tag_index < mcc_import_globals.tag_count; tag_index++)
 	{
-		if (candidates[tag_index] == MCC_IMPORT_HUD_PLACEMENT && !others[tag_index] &&
-			mcc_import_globals.instances[tag_index].group_tag == 'bitm')
+		if ((candidates[tag_index] == MCC_IMPORT_HUD_PLACEMENT || candidates[tag_index] == MCC_IMPORT_HUD_TAG) &&
+			!others[tag_index] && mcc_import_globals.instances[tag_index].group_tag == 'bitm')
 		{
 			mcc_import_sprite_layout_plan(tag_index);
 		}
 	}
 	/* a bitmap the placements (or the icons and masks) draw, and nothing
 	else: brought to the disc's size (the operations' bitmap_size), or half
-	MCC's where they do not give it, if each of its images can be */
+	MCC's where they do not give it, if each of its images can be (a HUD
+	tag's other bitmaps only where they give it) */
 	for (tag_index = 0; tag_index < mcc_import_globals.tag_count; tag_index++)
 	{
 		struct mcc_import_tag_instance const *instance = &mcc_import_globals.instances[tag_index];
@@ -2128,6 +2145,8 @@ static void mcc_import_hud(
 			if ((factor != 1 && factor != 2 && factor != 4) || first->height != disc_height * factor)
 				factor = 1;
 		}
+		else if (candidates[tag_index] == MCC_IMPORT_HUD_TAG)
+			continue;
 		for (bitmap_index = 0; factor > 1 && bitmap_index < group->bitmaps.count; bitmap_index++)
 		{
 			struct bitmap_data const *bitmap = TAG_BLOCK_GET_ELEMENT(&group->bitmaps, bitmap_index, struct bitmap_data);
@@ -2996,17 +3015,8 @@ static boolean mcc_import_map(
 		header.footer_signature = 'foot';
 		if ((unsigned long)header.file_length > mcc_import_cache_file_size(scenario_type))
 			*overage = (long)((unsigned long)header.file_length - mcc_import_cache_file_size(scenario_type));
-		/* MCC's HUD, which is drawn as an MCC map's (mcc_cache_loaded), and
-		how much smaller its message icons and scopes' masks are written */
-		{
-			unsigned long mark = MCC_IMPORTED_HUD_MARK;
-			unsigned long icon_factor = (unsigned long)mcc_import_globals.icon_factor;
-			unsigned long mask_factor = (unsigned long)mcc_import_globals.mask_factor;
-
-			csmemcpy(header.reserved68 + (MCC_IMPORTED_HUD_MARK_OFFSET - 0x68), &mark, sizeof(mark));
-			csmemcpy(header.reserved68 + (MCC_IMPORTED_ICON_FACTOR_OFFSET - 0x68), &icon_factor, sizeof(icon_factor));
-			csmemcpy(header.reserved68 + (MCC_IMPORTED_MASK_FACTOR_OFFSET - 0x68), &mask_factor, sizeof(mask_factor));
-		}
+		/* (no HUD mark: the HUD's bitmaps are written at the disc's sizes and
+		layouts, mcc_import_hud, so the game draws them as the disc's) */
 		/* a map not shown to be the disc's plays on MCC's version
 		(mcc_imported_level_name) */
 		if (!stock)
