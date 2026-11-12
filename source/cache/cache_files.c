@@ -1184,14 +1184,16 @@ boolean cache_files_map_present(
 	{
 		char path[256];
 		HANDLE file;
+		/* port: and of the host's kind, MCC's or the disc's
+		(cache_files_map_version): their multiplayer maps differ, precached
+		or not */
+		boolean other_kind = version != cache_files_map_version(map_name);
 
-		if (cache_files_precache_map_loaded(map_name))
+		if (!other_kind && cache_files_precache_map_loaded(map_name))
 			return TRUE;
 		snprintf(path, sizeof(path), "%s%s.map", cache_files_map_directory(), name);
 		file = CreateFileA(path, GENERIC_READ, 0, NULL, OPEN_EXISTING, 0, NULL);
-		/* port: and of the host's kind, MCC's or the disc's
-		(cache_files_map_version): their multiplayer maps differ */
-		if (file != INVALID_HANDLE_VALUE && version != cache_files_map_version(map_name))
+		if (file != INVALID_HANDLE_VALUE && other_kind)
 		{
 			CloseHandle(file);
 			snprintf(message, sizeof(message), version == mcc_map_version() ?
