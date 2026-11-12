@@ -1,3 +1,18 @@
+<p align="center"><img src="hunterce/logo.png" width="140" alt="A Hunter of Halo: Combat Evolved, drawn simply"></p>
+
+<h1 align="center">HunterCE</h1>
+
+<p align="center"><i>Hunters always come in pairs. So should Halo players.</i></p>
+
+> **HunterCE is not OpenCE.** It is OpenCE with a few changes that play the maps
+> [Hunter Importer](https://github.com/GDAndres98/hunter-importer) makes from Halo: The Master
+> Chief Collection on Steam, so players without the Xbox disc can play with players who have it.
+> Each change is a branch of this fork, offered to OpenCE as its own small pull request. This
+> branch, `mcc-testing`, is all of them together; `main` stays equal to OpenCE's. What follows is
+> OpenCE's own README.
+
+---
+
 # OpenCE - Halo: Combat Evolved for Linux, Windows, Android and the web
 
 <p align="center">
