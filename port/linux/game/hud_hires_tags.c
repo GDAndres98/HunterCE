@@ -66,6 +66,7 @@ int hud_hires_sprites_drawable(long asset, unsigned long address, unsigned long 
 void hud_hires_register_placeholder(long asset, unsigned long const *texture);
 int hud_hires_asset_custom_edition(long asset);
 int hud_hires_asset_ce_only(long asset);
+int hud_hires_asset_sheet_matches(long asset, const long *rects, long count);
 long hud_hires_ce_stock_count_get(void);
 long hud_hires_ce_stock_find(char const *tag, long bitmap);
 char const *hud_hires_ce_stock_tag(long index);
@@ -80,6 +81,7 @@ void hud_hires_map_unloaded(void);
 void hud_hires_tags_loaded(long scenario_index);
 void hud_hires_tags_unloaded(void);
 long hud_hires_asset_at(unsigned long address, long width, long height);
+long hud_hires_asset_same_layout(unsigned long address, long width, long height, long asset);
 struct bitmap_data const *hud_hires_sprite_bitmap(struct bitmap_data const *bitmap, short sequence_index);
 
 #include "custom_edition_hud_buttons.h"
@@ -90,6 +92,11 @@ enum
 {
 	MAXIMUM_HIRES_BITMAPS = 128,
 	MAXIMUM_HIRES_SPRITE_BITMAPS = 8,
+	/* (a bitmap group's type: bitmap_extract.c) */
+	HIRES_SPRITES_GROUP_TYPE = 3,
+	/* the sprites of one bitmap compared with the disc's
+	(hud_hires_sprite_sheet_matches); the disc's sheets have at most 15 */
+	MAXIMUM_HIRES_SHEET_SPRITES = 64,
 };
 
 /* ---------- globals */
@@ -101,6 +108,10 @@ static struct
 	/* A compatible CE resource sheet: checked against CE's pixel signature
 	in the platform layer, rather than the Xbox signature. */
 	boolean stock_custom_edition;
+	/* With display.high_res_hud_by_layout, a sprite sheet whose sprites are
+	the disc's: the texture stands for it whatever its pixels (a map rebuilt
+	from another copy of the game's data). */
+	boolean same_layout;
 } hires_bitmaps[MAXIMUM_HIRES_BITMAPS];
 static long hires_bitmap_count = 0;
 
@@ -171,6 +182,94 @@ static void hud_hires_sprite_bitmaps_forget(
 	keyboard_glyphs_dispose();
 
 	return;
+}
+
+/* whether a sprite sheet has, on the bitmap, the sprites the disc's maps
+have there and no others */
+static boolean hud_hires_sprite_sheet_matches(
+	long group_index,
+	short bitmap_index,
+	struct bitmap_data const *bitmap,
+	long asset)
+{
+	struct bitmap_group *group = bitmap_group_get(group_index);
+	long rects[MAXIMUM_HIRES_SHEET_SPRITES][4];
+	long count = 0;
+	long sequence_index;
+
+	if (group->type != HIRES_SPRITES_GROUP_TYPE)
+		return FALSE;
+	for (sequence_index = 0; sequence_index < group->sequences.count; sequence_index++)
+	{
+		struct bitmap_group_sequence *sequence = TAG_BLOCK_GET_ELEMENT(&group->sequences, sequence_index,
+			struct bitmap_group_sequence);
+		long sprite_index;
+
+		for (sprite_index = 0; sprite_index < sequence->sprites.count; sprite_index++)
+		{
+			struct bitmap_group_sprite *sprite = TAG_BLOCK_GET_ELEMENT(&sequence->sprites, sprite_index,
+				struct bitmap_group_sprite);
+			long rect[4];
+			long at;
+			long field = 0;
+
+			if (sprite->bitmap_index != bitmap_index)
+				continue;
+			/* (bounds outside the bitmap, or not numbers, are no layout of the
+			disc's) */
+			if (!(sprite->bounds.x0 >= 0.0f && sprite->bounds.x0 <= 1.0f &&
+				sprite->bounds.x1 >= 0.0f && sprite->bounds.x1 <= 1.0f &&
+				sprite->bounds.y0 >= 0.0f && sprite->bounds.y0 <= 1.0f &&
+				sprite->bounds.y1 >= 0.0f && sprite->bounds.y1 <= 1.0f))
+			{
+				return FALSE;
+			}
+			rect[0] = (long)(sprite->bounds.x0 * bitmap->width + 0.5f);
+			rect[1] = (long)(sprite->bounds.y0 * bitmap->height + 0.5f);
+			rect[2] = (long)(sprite->bounds.x1 * bitmap->width + 0.5f);
+			rect[3] = (long)(sprite->bounds.y1 * bitmap->height + 0.5f);
+			/* (kept sorted and each once, as tools/embed_assets.py takes them) */
+			for (at = 0; at < count; at++)
+			{
+				for (field = 0; field < 4 && rects[at][field] == rect[field]; field++)
+					;
+				if (field == 4 || rects[at][field] > rect[field])
+					break;
+			}
+			if (at < count && field == 4)
+				continue;
+			if (count == MAXIMUM_HIRES_SHEET_SPRITES)
+				return FALSE;
+			csmemmove(rects[at + 1], rects[at], (count - at) * sizeof(rects[0]));
+			csmemcpy(rects[at], rect, sizeof(rect));
+			count++;
+		}
+	}
+
+	return hud_hires_asset_sheet_matches(asset, &rects[0][0], count) != 0;
+}
+
+/* the entry of hires_bitmaps of `asset` whose pixels are at address, or NONE */
+static long hud_hires_bitmap_find(
+	unsigned long address,
+	long width,
+	long height,
+	long asset)
+{
+	long index;
+
+	for (index = 0; index < hires_bitmap_count; index++)
+	{
+		struct bitmap_data *bitmap = hires_bitmaps[index].bitmap;
+
+		if (hires_bitmaps[index].asset == asset && hud_hires_bitmap_resident(bitmap) &&
+			(unsigned long)bitmap->base_address == address && bitmap->width == width && bitmap->height == height)
+		{
+			return index;
+		}
+	}
+
+	return NONE;
 }
 
 /* ---------- public code */
@@ -271,6 +370,14 @@ void hud_hires_tags_loaded(
 			hires_bitmaps[hires_bitmap_count].asset = asset;
 			hires_bitmaps[hires_bitmap_count].stock_custom_edition =
 				hud_hires_asset_custom_edition(asset) && custom_edition_cache_stock_tag(group_index);
+			hires_bitmaps[hires_bitmap_count].same_layout = config_boolean("display.high_res_hud_by_layout") &&
+				!hires_bitmaps[hires_bitmap_count].stock_custom_edition &&
+				hud_hires_sprite_sheet_matches(group_index, (short)hud_hires_asset_bitmap(asset), bitmap, asset);
+			if (hires_bitmaps[hires_bitmap_count].same_layout)
+			{
+				platform_log("high-res hud: %s bitmap %ld is laid out as the disc's: drawn whatever its pixels",
+					hud_hires_asset_tag(asset), hud_hires_asset_bitmap(asset));
+			}
 			hires_bitmap_count++;
 		}
 	}
@@ -399,20 +506,23 @@ long hud_hires_asset_stock_custom_edition(
 	long height,
 	long asset)
 {
-	long index;
+	long index = hud_hires_bitmap_find(address, width, height, asset);
 
-	for (index = 0; index < hires_bitmap_count; index++)
-	{
-		struct bitmap_data *bitmap = hires_bitmaps[index].bitmap;
+	return index != NONE && hires_bitmaps[index].stock_custom_edition;
+}
 
-		if (hires_bitmaps[index].asset == asset && hud_hires_bitmap_resident(bitmap) &&
-			(unsigned long)bitmap->base_address == address && bitmap->width == width && bitmap->height == height)
-		{
-			return hires_bitmaps[index].stock_custom_edition;
-		}
-	}
+/* whether the bitmap at address that `asset` stands for is a sprite sheet laid
+out as the disc's, which the texture stands for whatever its pixels
+(display.high_res_hud_by_layout) */
+long hud_hires_asset_same_layout(
+	unsigned long address,
+	long width,
+	long height,
+	long asset)
+{
+	long index = hud_hires_bitmap_find(address, width, height, asset);
 
-	return FALSE;
+	return index != NONE && hires_bitmaps[index].same_layout;
 }
 
 long hud_hires_asset_at(

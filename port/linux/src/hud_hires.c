@@ -40,6 +40,7 @@ zlib (port/third_party/zlib).
 /* the game's (port/linux/game/hud_hires_tags.c) */
 long hud_hires_asset_at(unsigned long address, long width, long height);
 long hud_hires_asset_stock_custom_edition(unsigned long address, long width, long height, long asset);
+long hud_hires_asset_same_layout(unsigned long address, long width, long height, long asset);
 
 /* Include every embedded HUD and button style, including stick frames. */
 #define MAXIMUM_TEXTURES 256
@@ -128,6 +129,30 @@ long hud_hires_asset_bitmap(long asset)
 	return hud_hires_embedded[asset].bitmap;
 }
 
+/* whether a sprite sheet's rectangles on the texture's bitmap (count of
+them, each left, top, right and bottom in texels, sorted and each once) are
+those of the disc's maps (tools/embed_assets.py: sheet_crc) */
+int hud_hires_asset_sheet_matches(long asset, const long *rects, long count)
+{
+	uLong crc = crc32(0L, Z_NULL, 0);
+	long index;
+
+	if (asset < 0 || asset >= hud_hires_asset_count() || !hud_hires_embedded[asset].sheet_crc || count <= 0)
+		return 0;
+	for (index = 0; index < count * 4; index++)
+	{
+		unsigned long value = (unsigned long)rects[index];
+		unsigned char bytes[4];
+
+		bytes[0] = (unsigned char)value;
+		bytes[1] = (unsigned char)(value >> 8);
+		bytes[2] = (unsigned char)(value >> 16);
+		bytes[3] = (unsigned char)(value >> 24);
+		crc = crc32(crc, bytes, 4);
+	}
+	return (unsigned int)crc == hud_hires_embedded[asset].sheet_crc;
+}
+
 /* whether the texture can stand for a bitmap of this size: a whole multiple
 of it, the same both ways */
 long hud_hires_asset_fits(long asset, long width, long height)
@@ -197,6 +222,10 @@ long hud_hires_override_find(unsigned long address, unsigned long width, unsigne
 	}
 	if (crc32(0L, (const Bytef *)address, (uInt)level0_size) != hud_hires_embedded[asset].crc)
 	{
+		/* (with display.high_res_hud_by_layout, a sprite sheet of other pixels
+		whose sprites are the disc's: hud_hires_tags.c) */
+		if (hud_hires_asset_same_layout(address, (long)width, (long)height, asset))
+			return asset;
 		if (!textures[asset].other_pixels_logged)
 		{
 			platform_log("high-res hud: %s bitmap %d is not the one its texture was drawn for here "

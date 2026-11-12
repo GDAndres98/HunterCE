@@ -176,6 +176,12 @@ static const struct config_setting config_settings[] =
 		"Draw the HUD (meters, counters, panels, motion sensor, reticles,\n"
 		"waypoints, scopes) from the high-res assets (8x the maps' bitmaps);\n"
 		"false draws the maps' own bitmaps." },
+	{ "display.high_res_hud_by_layout", _config_boolean, "false", "HALO_HIGH_RES_HUD_BY_LAYOUT", _environment_value,
+		_platform_all,
+		"With high_res_hud, draw the high-res HUD also over a HUD sprite sheet\n"
+		"whose pixels are not the disc's but whose sprites are laid out as the\n"
+		"disc's (a map rebuilt from another copy of the game's data). Read as a\n"
+		"map loads." },
 	{ "display.hud_button_style", _config_string, "\"classic\"", "HALO_HUD_BUTTON_STYLE", _environment_value, _platform_all,
 		"Manual high-res gameplay button style, preserved while automatic detection\n"
 		"is on. Xbox: classic, gems, menu_gems (dark gems), xbox_modern.\n"
