@@ -20,8 +20,8 @@ the sounds, from MCC's banks (mcc_import_sounds.c); and the tags last, copied
 by their schemas into the Xbox's tag cache at 0x803A6000 with the models'
 vertex and index buffers before them, then checked by tag_validate_tags as
 the game checks a map's. The written map's simulation data is fingerprinted
-and compared with the disc's (mcc_import_fingerprint.c), which decides
-whether it is written as the disc's map or as MCC's. The body is deflated by
+and compared with the disc's (mcc_import_fingerprint.c), and the report
+says whether it is the disc's map (the header carries no mark). The body is deflated by
 the game's own zlib after the header, as the disc's maps are (at its fastest
 level).
 */
@@ -2895,7 +2895,6 @@ static boolean mcc_import_map(
 	short bsp_index;
 	short scenario_type;
 	boolean success = FALSE;
-	boolean stock = FALSE;
 
 	if (!mcc_import_donors(map_name))
 		mcc_import_error("mcc import: %s: some tags of other maps it takes cannot be written: left out", map_name);
@@ -3015,7 +3014,7 @@ static boolean mcc_import_map(
 	{
 		if (getenv("HALO_MCC_IMPORT_TRACE"))
 			fprintf(stderr, "mcc import: %s: fingerprint\n", map_name);
-		stock = mcc_import_stock(map_name, &tags);
+		mcc_import_stock(map_name, &tags);
 	}
 	if (success)
 	{
@@ -3039,16 +3038,9 @@ static boolean mcc_import_map(
 		header.footer_signature = 'foot';
 		if ((unsigned long)header.file_length > mcc_import_cache_file_size(scenario_type))
 			*overage = (long)((unsigned long)header.file_length - mcc_import_cache_file_size(scenario_type));
-		/* (no HUD mark: the HUD's bitmaps are written at the disc's sizes and
-		layouts, mcc_import_hud, so the game draws them as the disc's) */
-		/* a map not shown to be the disc's plays on MCC's version
-		(mcc_imported_level_name) */
-		if (!stock)
-		{
-			unsigned long mark = MCC_MAP_VERSION;
-
-			csmemcpy(header.reserved68 + (MCC_IMPORTED_MAP_MARK_OFFSET - 0x68), &mark, sizeof(mark));
-		}
+		/* (no marks in the header, which is the disc's maps': the HUD's
+		bitmaps are written at the disc's sizes and layouts, mcc_import_hud;
+		whether a map is the disc's is said in the report, mcc_import_stock) */
 		{
 			/* the deflated body padded to 0x800, as the disc's maps are */
 			static byte const zeros[0x800];
