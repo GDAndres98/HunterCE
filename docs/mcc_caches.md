@@ -51,6 +51,20 @@ nothing is written to it. For each map:
    (beavercreek, bloodgulch, boardingaction, carousel, damnation, hangemhigh,
    sidewinder) have other collision, and are always MCC's.
 
+A map that is not the disc's (Halo PC's rebuilds, the multiplayer maps MCC
+has from Halo PC alone) is not imported as an Xbox map: `halo --mcc-package
+<folder> [--from <halo1 folder> | steam] <map>...` writes it as MCC's own, a
+package for OpenCE's MCC loader (`mcc_maps/<package>`, `docs/mcc_maps.md`).
+MCC's map file is kept as it is, but for its sounds: their tags name Halo PC's
+`sounds.map`, which MCC does not ship, and some are Ogg Vorbis. Each sound's
+samples are taken from MCC's banks as for an Xbox map (Xbox ADPCM), written
+into one `sounds.map` of the package under `<tag>__<range>__<permutation>`
+(the loader's resource format: `mcc_resources.c`), and the permutations'
+codec, size and offset patched in the file in place (a chain's permutations
+take a piece each, so the tag keeps its shape; a sound the banks lack is left
+empty, which the loader skips). With MCC's `bitmaps.map` beside them, the
+loader plays them, with other players of the same package only.
+
 A map larger than its cache file holds (the Xbox's: 0x11600000 bytes for a
 campaign level, 0x2F00000 for a multiplayer map, 0x2300000 for the menus' map)
 cannot be loaded: it is imported again with its largest level and effects
