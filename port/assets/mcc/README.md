@@ -31,7 +31,7 @@ fingerprint (`accepted_tags` and `accepted_parts` in
 | An overlay animation's default data | all | The game never reads it (`model_animations.c` reads a base animation's alone). A general rule. |
 | The cyborg's `W-passenger rifle idle` animation | all 10 | A still pose in MCC, a slight movement on the disc. A seated unit's root motion is never applied, so it changes only where a seated player's body is drawn, on the machine that draws it: a shot at or from a warthog's passenger can hit a few centimetres differently there. The host decides the damage. |
 | `c_field_generator`'s collision geometry | a10, a50, b30, b40, c10, c40, d20, d40 (c20 never places one) | Made again by Halo PC's tools: the same size, health and materials, its surfaces up to 0.07 world units (about 21 cm) apart. A step or a shot beside one can differ on the machine that makes it; the host decides its damage. |
-| The flamethrower's collision and first-person animations | c20, d20 | Never created: only two Flood variants carry it, which no squad uses and no script names. |
+| The flamethrower's collision and first-person animations | every map that has it (c20, d20 and the multiplayer maps) | Never created: no map of the disc's places it, no weapon set gives it (the globals' weapon list names it only to preload it), and in c20 and d20 only two Flood variants carry it, which no squad uses and no script names. |
 
 - No data of MCC's. A tag MCC has only in another map (the warthog, from
   a10; the ghost's gun, from b30) is named by a `donor` line, and the import

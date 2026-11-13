@@ -260,11 +260,9 @@ TAG	jpt!:weapons\pistol\trigger	f22643e36ed4480e7ccccfa34796f2c5
 TAG	itmc:item collections\single weapons\flame thrower	2de277629ea591bd979428be7d66f220
 TAG	weap:weapons\flamethrower\flamethrower	7f6158a8fc44b5c8dae23720bd016d07
 TAG	mode:weapons\flamethrower\flamethrower	fd7a902cdb5c525504d73478b1c53c89
-TAG	coll:weapons\flamethrower\flamethrower	30bfc95bf8099c2445e79f1e66d35577
 TAG	jpt!:weapons\flamethrower\melee	8817728945d22a3d05387d3a0c8def73
 TAG	jpt!:weapons\flamethrower\melee_response	cb7871c5da7bd5f48513065965185705
 TAG	mode:weapons\flamethrower\fp\fp	b00d845a7f90c19187ac2a5a908e0151
-TAG	antr:weapons\flamethrower\fp\fp	9dbe1937a216fc891bfa23dd20b101a8
 TAG	eqip:powerups\flamethrower ammo\flamethrower ammo	cbf071e83743cc8b6fa7587a4b4ac018
 TAG	mode:powerups\flamethrower ammo\flamethrower ammo	63daf1f373a008358c68401f41b0e831
 TAG	coll:powerups\flamethrower ammo\flamethrower ammo	c2c2c8a74a9c13b7baa3d25ad3cf1633
@@ -560,4 +558,4 @@ TAG	jpt!:globals\flaming_death	ebc4a76a902a7ae65a5aa7139f45ea0c
 SCENARIO	levels\test\carousel\carousel	90dad08fac8d5678bab46ac3ede04552
 SCRIPTS		e3b0c44298fc1c149afbf4c8996fb924
 BSP	levels\test\carousel\carousel	12ed5649509ef431597a4b679d0c5b2f
-MAP	levels\test\carousel\carousel	472cf3c9ed77255a7e9bf9c93afbc0afd86f77957d28403d64878b7cc2e2dda7
+MAP	levels\test\carousel\carousel	669751ff5cd3bdfe4c46a3453d2783e96bdb2da444eaa1b82a636c95f054e7e8

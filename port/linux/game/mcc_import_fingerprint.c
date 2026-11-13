@@ -146,18 +146,18 @@ otherwise than the disc's, but that change nothing the host decides, left
 out of the fingerprint so that the levels play with the disc's players.
 port/assets/mcc/README.md lists them, and why. */
 
-/* tags a level never creates: the flamethrower, which only two Flood
-variants carry, which no squad of c20's or d20's uses and no script names */
+/* tags a map ("*": any) never creates: the flamethrower, which no map of
+the disc's places, no weapon set gives (the globals' list's entry for it is
+read only to preload it) and, in c20 and d20, only two Flood variants carry,
+which no squad uses and no script names */
 static struct
 {
 	char const *map;
 	char const *tag;
 } const accepted_tags[] =
 {
-	{ "c20", "coll:weapons\\flamethrower\\flamethrower" },
-	{ "c20", "antr:weapons\\flamethrower\\fp\\fp" },
-	{ "d20", "coll:weapons\\flamethrower\\flamethrower" },
-	{ "d20", "antr:weapons\\flamethrower\\fp\\fp" },
+	{ "*", "coll:weapons\\flamethrower\\flamethrower" },
+	{ "*", "antr:weapons\\flamethrower\\fp\\fp" },
 	{ NULL, NULL }
 };
 
@@ -195,7 +195,8 @@ static int accepted_tag(char const *map_name, char const *tag)
 {
 	int i;
 	for (i = 0; accepted_tags[i].map; i++)
-		if (!strcmp(accepted_tags[i].map, map_name) && !strcmp(accepted_tags[i].tag, tag))
+		if ((!strcmp(accepted_tags[i].map, "*") || !strcmp(accepted_tags[i].map, map_name)) &&
+			!strcmp(accepted_tags[i].tag, tag))
 			return 1;
 	return 0;
 }

@@ -405,11 +405,9 @@ TAG	effe:weapons\plasma grenade\effects\material explosion	c1fc988c20f3c45edd979
 TAG	effe:weapons\plasma grenade\effects\bounce water	605589489a08c0416d8f1b1079a05f35
 TAG	weap:weapons\flamethrower\flamethrower	7f6158a8fc44b5c8dae23720bd016d07
 TAG	mode:weapons\flamethrower\flamethrower	fd7a902cdb5c525504d73478b1c53c89
-TAG	coll:weapons\flamethrower\flamethrower	30bfc95bf8099c2445e79f1e66d35577
 TAG	jpt!:weapons\flamethrower\melee	8817728945d22a3d05387d3a0c8def73
 TAG	jpt!:weapons\flamethrower\melee_response	cb7871c5da7bd5f48513065965185705
 TAG	mode:weapons\flamethrower\fp\fp	b00d845a7f90c19187ac2a5a908e0151
-TAG	antr:weapons\flamethrower\fp\fp	9dbe1937a216fc891bfa23dd20b101a8
 TAG	eqip:powerups\flamethrower ammo\flamethrower ammo	cbf071e83743cc8b6fa7587a4b4ac018
 TAG	mode:powerups\flamethrower ammo\flamethrower ammo	63daf1f373a008358c68401f41b0e831
 TAG	coll:powerups\flamethrower ammo\flamethrower ammo	c2c2c8a74a9c13b7baa3d25ad3cf1633
@@ -551,4 +549,4 @@ TAG	jpt!:globals\flaming_death	ebc4a76a902a7ae65a5aa7139f45ea0c
 SCENARIO	levels\test\chillout\chillout	d5ae07bfb374305f772b2ef74af56c0e
 SCRIPTS		e3b0c44298fc1c149afbf4c8996fb924
 BSP	levels\test\chillout\chillout	3914171d3a80ec86c7f280eaa383804b
-MAP	levels\test\chillout\chillout	945f5c82f79ce65cf686e0ecf128b2732acbcab2b76d20b58215d75918d3f447
+MAP	levels\test\chillout\chillout	045bf9bf4ab5037401e6b8f6e9e5a5f1fa9602a450fa117eb6b25e4f77350072

@@ -374,11 +374,9 @@ TAG	effe:weapons\plasma grenade\effects\material explosion	c1fc988c20f3c45edd979
 TAG	effe:weapons\plasma grenade\effects\bounce water	605589489a08c0416d8f1b1079a05f35
 TAG	weap:weapons\flamethrower\flamethrower	7f6158a8fc44b5c8dae23720bd016d07
 TAG	mode:weapons\flamethrower\flamethrower	fd7a902cdb5c525504d73478b1c53c89
-TAG	coll:weapons\flamethrower\flamethrower	30bfc95bf8099c2445e79f1e66d35577
 TAG	jpt!:weapons\flamethrower\melee	8817728945d22a3d05387d3a0c8def73
 TAG	jpt!:weapons\flamethrower\melee_response	cb7871c5da7bd5f48513065965185705
 TAG	mode:weapons\flamethrower\fp\fp	b00d845a7f90c19187ac2a5a908e0151
-TAG	antr:weapons\flamethrower\fp\fp	9dbe1937a216fc891bfa23dd20b101a8
 TAG	eqip:powerups\flamethrower ammo\flamethrower ammo	cbf071e83743cc8b6fa7587a4b4ac018
 TAG	mode:powerups\flamethrower ammo\flamethrower ammo	63daf1f373a008358c68401f41b0e831
 TAG	coll:powerups\flamethrower ammo\flamethrower ammo	c2c2c8a74a9c13b7baa3d25ad3cf1633
@@ -544,4 +542,4 @@ TAG	jpt!:globals\flaming_death	ebc4a76a902a7ae65a5aa7139f45ea0c
 SCENARIO	levels\test\prisoner\prisoner	e4d7e66eccc4dd80716eb2a648727c95
 SCRIPTS		e3b0c44298fc1c149afbf4c8996fb924
 BSP	levels\test\prisoner\prisoner	a5b1883b1ce7f7f1fd524725da559500
-MAP	levels\test\prisoner\prisoner	4762d9b5ffb3c983f2929763162b4b0950d2eb8ea643f1b32c5bb2b53a7eae97
+MAP	levels\test\prisoner\prisoner	54fb8b7c330e5d7cd4e2c44f46543d8ddc3e365c1a2a48dba0367570df7ac1c4

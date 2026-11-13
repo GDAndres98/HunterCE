@@ -514,11 +514,9 @@ TAG	effe:weapons\plasma grenade\effects\material explosion	c1fc988c20f3c45edd979
 TAG	effe:weapons\plasma grenade\effects\bounce water	605589489a08c0416d8f1b1079a05f35
 TAG	weap:weapons\flamethrower\flamethrower	7f6158a8fc44b5c8dae23720bd016d07
 TAG	mode:weapons\flamethrower\flamethrower	fd7a902cdb5c525504d73478b1c53c89
-TAG	coll:weapons\flamethrower\flamethrower	30bfc95bf8099c2445e79f1e66d35577
 TAG	jpt!:weapons\flamethrower\melee	8817728945d22a3d05387d3a0c8def73
 TAG	jpt!:weapons\flamethrower\melee_response	cb7871c5da7bd5f48513065965185705
 TAG	mode:weapons\flamethrower\fp\fp	b00d845a7f90c19187ac2a5a908e0151
-TAG	antr:weapons\flamethrower\fp\fp	9dbe1937a216fc891bfa23dd20b101a8
 TAG	eqip:powerups\flamethrower ammo\flamethrower ammo	cbf071e83743cc8b6fa7587a4b4ac018
 TAG	mode:powerups\flamethrower ammo\flamethrower ammo	63daf1f373a008358c68401f41b0e831
 TAG	coll:powerups\flamethrower ammo\flamethrower ammo	c2c2c8a74a9c13b7baa3d25ad3cf1633
@@ -593,4 +591,4 @@ TAG	jpt!:globals\flaming_death	ebc4a76a902a7ae65a5aa7139f45ea0c
 SCENARIO	levels\test\bloodgulch\bloodgulch	479beb9ea5dec87cf2352575dfb3b8b5
 SCRIPTS		e3b0c44298fc1c149afbf4c8996fb924
 BSP	levels\test\bloodgulch\bloodgulch	b464796c5c2d513b9f2d85fdb815ff90
-MAP	levels\test\bloodgulch\bloodgulch	178726167aee7b1c4ea8793647aa5fac34cce5ae7f66df982edd240ef8867309
+MAP	levels\test\bloodgulch\bloodgulch	e47db4a9add419abc321d6b947012549083531cfb911b5b8b963dcc4f5615ad4
