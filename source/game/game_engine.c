@@ -597,6 +597,7 @@ struct network_game *network_game_server_get_game(struct network_game_server *se
 #include "units/bipeds.h"
 #include "units/units.h"
 #include "custom_edition_cache.h" /* port: port/linux/game/custom_edition_cache.c */
+#include "custom_edition_maps.h" /* port: port/linux/game/custom_edition_maps.c */
 #include "mcc_cache.h" /* port: port/linux/game/mcc_cache.h */
 #include "mcc_objects.h" /* port: port/linux/game/mcc_objects.h */
 #include "mcc_player.h" /* port: port/linux/game/mcc_player.h */
@@ -5708,6 +5709,20 @@ void game_engine_playlist_next(
 	{
 		csstrncpy(global_stage.map_name, map_name, sizeof(global_stage.map_name) - 1);
 		global_stage.map_name[sizeof(global_stage.map_name) - 1] = 0;
+	}
+	/* port: a map this machine has: the first it has when that one is missing
+	(a maps folder without carousel, or without the map used last), which
+	precaching would otherwise take for a damaged disc
+	(port/linux/game/custom_edition_maps.c) */
+	if (!halo_server_mode() && !multiplayer_level_present(global_stage.map_name))
+	{
+		char const *present = multiplayer_level_first_present();
+
+		if (present)
+		{
+			csstrncpy(global_stage.map_name, present, sizeof(global_stage.map_name) - 1);
+			global_stage.map_name[sizeof(global_stage.map_name) - 1] = 0;
+		}
 	}
 
 	if (player_ui_game_variant_specified(&variant))

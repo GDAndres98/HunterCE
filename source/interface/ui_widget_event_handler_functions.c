@@ -6005,6 +6005,11 @@ boolean ui_widget_port_multiplayer_map_choose(
 	{
 		char build[0x20];
 
+		/* port: a map this machine has not (the Xbox's list names all
+		thirteen): said, not chosen, which precaching would take for a
+		damaged disc (port/linux/game/custom_edition_maps.c) */
+		if (!multiplayer_level_chosen_present(map_name))
+			return FALSE;
 		if (server && !network_game_is_splitscreen_local() &&
 			!cache_files_map_plays_multiplayer(map_name, build))
 		{

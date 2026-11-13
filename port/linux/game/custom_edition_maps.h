@@ -104,4 +104,19 @@ struct bitmap_data *custom_edition_maps_picture(
 	long bitmap_tag_index,
 	short *frame_index);
 
+/* Whether this machine has the multiplayer level `level_name`: an Xbox map
+in its maps folder, a Custom Edition map it can play, or an MCC map in
+mcc_maps (mcc_maps.c). */
+boolean multiplayer_level_present(
+	char const *level_name);
+/* The same for a level the player chose: when it is missing, says so (it is
+not loaded, which precaching would take for a damaged disc). */
+boolean multiplayer_level_chosen_present(
+	char const *level_name);
+/* The first multiplayer level this machine has: of the Xbox's, then the
+Custom Edition maps, in the level list's order, then MCC's; NULL when it has
+none. A new game starts on it when its own is missing. */
+char const *multiplayer_level_first_present(
+	void);
+
 #endif

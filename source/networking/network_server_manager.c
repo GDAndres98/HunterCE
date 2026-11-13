@@ -481,6 +481,7 @@ symbols in this file:
 #include "tag_files/tag_files.h"
 #include "map_share.h" /* port: port/linux/game/map_share.c */
 #include "server_director.h" /* port: port/linux/game/server_director.c */
+#include "custom_edition_maps.h" /* port: port/linux/game/custom_edition_maps.c */
 #include "bots.h" /* port: port/linux/game/bots.c */
 #include "network_coop.h" /* port: port/linux/game/network_coop.c */
 
@@ -4897,6 +4898,19 @@ static boolean network_game_server_setup_game_from_playlist(
 	{
 		wchar_t machine_name[MAXIMUM_MACHINE_NAME_LENGTH] = L"<unknown>";
 
+		/* port: no game on a map this machine has not (it has no multiplayer
+		map at all: game_engine_playlist_next takes the first it has), which
+		precaching would take for a damaged disc and restart the game for */
+		if (!halo_server_mode() && !multiplayer_level_present(server->game.map.name))
+		{
+			void platform_show_message(char const *title, char const *message);
+
+			error(_error_silent, "network game setup failed: map '%s' is missing, and no other multiplayer map is here",
+				server->game.map.name);
+			platform_show_message("Halo: no multiplayer maps",
+				"There are no multiplayer maps here: none in maps, custom_maps or mcc_maps.");
+			return FALSE;
+		}
 		network_game_generate_local_machine_name(machine_name);
 		ustrncpy(server->game.name, machine_name, NETWORK_GAME_NAME_LENGTH - 1);
 		server->game.name[NETWORK_GAME_NAME_LENGTH - 1] = L'\0';

@@ -1521,7 +1521,8 @@ static boolean level_choose(struct widget_instance *list, short controller)
 		char const *map_name = level_list.kind == MAP_KIND_MULTIPLAYER ? level_list.map_names[level_list.chosen] :
 			custom_map_level_name(level_list.kind, level_list.chosen);
 
-		if (!map_name || !campaign_profile(controller, &profile))
+		/* (a map this machine has not is said, not started: custom_edition_maps.c) */
+		if (!map_name || !multiplayer_level_chosen_present(map_name) || !campaign_profile(controller, &profile))
 			return campaign_fail();
 		campaign_start(map_name, main_get_difficulty(), controller);
 		return FALSE;

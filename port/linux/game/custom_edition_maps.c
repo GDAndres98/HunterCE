@@ -48,6 +48,8 @@ Each map can have, beside it in its folder:
 #include "custom_edition_cache.h"
 #include "custom_edition_maps.h"
 #include "map_share.h"
+#include "mcc_cache.h"
+#include "mcc_maps.h"
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -869,4 +871,79 @@ struct bitmap_data *custom_edition_maps_picture(
 	}
 
 	return map->picture;
+}
+
+boolean multiplayer_level_present(
+	char const *level_name)
+{
+	char path[256];
+	HANDLE file;
+
+	if (!level_name || !level_name[0])
+	{
+		return FALSE;
+	}
+	if (mcc_level_name(level_name))
+	{
+		return mcc_maps_find(level_name) != NONE;
+	}
+	if (custom_edition_level_name(level_name))
+	{
+		return custom_edition_cache_playable(level_name);
+	}
+	snprintf(path, sizeof(path), "%s%s.map", cache_files_map_directory(), tag_name_strip_path(level_name));
+	file = CreateFileA(path, GENERIC_READ, 0, NULL, OPEN_EXISTING, 0, NULL);
+	if (file == INVALID_HANDLE_VALUE)
+	{
+		return FALSE;
+	}
+	CloseHandle(file);
+
+	return TRUE;
+}
+
+boolean multiplayer_level_chosen_present(
+	char const *level_name)
+{
+	void platform_show_message(char const *title, char const *message);
+	char message[160];
+
+	if (multiplayer_level_present(level_name))
+	{
+		return TRUE;
+	}
+	snprintf(message, sizeof(message), "You don't have the map %.64s.map. If you have it, copy it into maps.",
+		level_name ? tag_name_strip_path(level_name) : "");
+	platform_show_message("Halo: map missing", message);
+
+	return FALSE;
+}
+
+char const *multiplayer_level_first_present(
+	void)
+{
+	/* source/interface/ui_widget_event_handler_functions.c */
+	short ui_widget_port_multiplayer_maps(char const *const **names, short *last_used);
+	char const *const *levels;
+	short level_count = ui_widget_port_multiplayer_maps(&levels, NULL);
+	short index;
+
+	for (index = 0; index < level_count; index++)
+	{
+		if (multiplayer_level_present(levels[index]))
+		{
+			return levels[index];
+		}
+	}
+	for (index = 0; index < mcc_maps_type_count(FALSE); index++)
+	{
+		char const *level_name = mcc_maps_level_name(mcc_maps_type_index(index, FALSE));
+
+		if (level_name)
+		{
+			return level_name;
+		}
+	}
+
+	return NULL;
 }
