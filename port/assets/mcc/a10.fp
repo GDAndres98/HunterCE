@@ -1,7 +1,7 @@
 ORDER		e97bccffaf3a0d3a369153f0d345892e
 TAG	mode:sky\space\space	5723246c7bc097c591ec69cccd94c4a0
 TAG	mode:sky\sky_x10\sky_x10	b7c509f7392560578d3029f2a2036cde
-TAG	antr:sky\sky_x10\sky_x10	d7545f44f87032cb4f4a2ce14ee4b984
+TAG	antr:sky\sky_x10\sky_x10	c9e4f255aa3b12dd8840f534ce967c8d
 TAG	matg:globals\globals	dc3c361c5a756a99fe076b9389059745
 TAG	scen:cinematics\scenery\pipe\pipe	f4ff50ee286a81926b6a72393d53a16b
 TAG	mode:cinematics\scenery\pipe\pipe	128bf9e08f8f5b1187bcb8c63ed9c5d2
@@ -43,7 +43,7 @@ TAG	scen:levels\c10\scenery\red point light\light red	1869b7f587465ded0cfb7e7dc0
 TAG	mode:levels\c10\scenery\red point light\red point light	7c7250c3a4f0dbb9bdfbe39ae9836eff
 TAG	bipd:characters\crewman\crewman	8419eef61dbf4a66e61e447239857e4b
 TAG	mode:characters\crewman\crewman	7de11a2c23736a988090772a7de33cd4
-TAG	antr:characters\marine\marine	7ad0a66ae0f41ac43deff6e5f543431c
+TAG	antr:characters\marine\marine	239aba23c8d0da449586d46522118356
 TAG	coll:characters\crewman\crewman	63ee7e238680662c30a3e7969d0a2443
 TAG	effe:characters\cyborg\localized damage	5d77490bec4e3f675d4ab504f6e32dcf
 TAG	effe:effects\blood aoe human	2110fe237cfca218b5676381c705a4b9
@@ -52,11 +52,11 @@ TAG	effe:effects\footsteps water	971d6eea8b30f01aa2cb7cd6913b5113
 TAG	effe:effects\blood collision elite large	813962a4de9d26885d93b488e092550f
 TAG	bipd:characters\cortana\cortana	9499e608d39429521dfdd58621a59521
 TAG	mode:characters\cortana\cortana	6d72ece27332e28eb998c1795646a748
-TAG	antr:characters\cortana\cortana	b1c445d03f68a00db13690f50005ac1f
+TAG	antr:characters\cortana\cortana	a78479205b00c7934dbc94b2c6e6f5cf
 TAG	coll:characters\cortana\cortana	47ff196008266aeabb79adb776138c86
 TAG	bipd:characters\captain\captain	012f4790a8b748dcf50a49587f5bf64d
 TAG	mode:characters\captain\captain	01b6723935c0ef71b3b0babbe84cb411
-TAG	antr:characters\captain\captain	a2d38016c5be37d9e4347be91e4d0579
+TAG	antr:characters\captain\captain	e3548676f6bfed5d67969e1ec6bb3179
 TAG	coll:characters\captain\captain	8ad3c1e398bb6036e8161b5f7aad2b7c
 TAG	effe:weapons\assault rifle\effects\impact h skin	9307e9a755dbcd81ff31e3cb958958fe
 TAG	bipd:characters\marine_armored\marine_armored	98eeffc84a788d8126d05b6deaef5850
@@ -69,7 +69,7 @@ TAG	jpt!:weapons\assault rifle\melee	b7b90f0946d5954eb13290ec4e0041b1
 TAG	jpt!:weapons\assault rifle\melee_response	cb7871c5da7bd5f48513065965185705
 TAG	effe:weapons\assault rifle\effects\flashlight	3f5542f28fb280eb194c885d52c1abd3
 TAG	mode:weapons\assault rifle\fp\fp	60032343c248333acf3af68cee556ec2
-TAG	antr:weapons\assault rifle\fp\fp	60e221f00a6243700e9d40b4d32ae3dd
+TAG	antr:weapons\assault rifle\fp\fp	6dffdfb29e7db4ec8c3155638ad9b07c
 TAG	eqip:powerups\assault rifle ammo\assault rifle ammo	50cca2f86f6c39b9a6db1b279c15f1b5
 TAG	mode:powerups\assault rifle ammo\assault rifle ammo	484fbb8af291669cebbd74188125c69c
 TAG	coll:powerups\assault rifle ammo\assault rifle ammo	8708dab8148a0c1c13b215b2ef441224
@@ -113,16 +113,16 @@ TAG	jpt!:weapons\assault rifle\trigger	d81854add8c71b1934da05ead7eb732f
 TAG	bipd:characters\marine_armored\marine_armored_unarmed	02a0af940177772429cce1b72fd7c8ee
 TAG	bipd:characters\cyborg\cyborg_unarmed	06347bc632c53e7da31102d8c62a93c0
 TAG	mode:characters\cyborg\cyborg	b37a1a35e88cebbeda6cc739382cc995
-TAG	antr:characters\cyborg\cyborg	8475bd0e94008c364780d015b85b0a89
+TAG	antr:characters\cyborg\cyborg	dbae48fdf0b269ef33a71a4acdd9a543
 TAG	coll:characters\cyborg\cyborg	d7df5ce74ac96d365d2ad14c33d3104d
 TAG	effe:characters\cyborg\cyborg shield depletion	bd094f2aef98a9c91bfb9cb2f6691759
 TAG	vehi:vehicles\pelican\pelican_astral	c41e15033f9bb9451833a751d93657a8
-TAG	antr:vehicles\pelican\pelican	0f88aab83501f8efcca024dd9f683dc3
+TAG	antr:vehicles\pelican\pelican	a2e4698a4dac986264e162d6b73c8b0c
 TAG	phys:vehicles\pelican\pelican	5e03ea553c9a3e159cc91b8bcae3296b
 TAG	effe:vehicles\pelican\effects\pelican landing dust	773e2b9c80041847b8c10929c31f2d9f
 TAG	vehi:vehicles\warthog\warthog	b22c3ada49601f604cc349ea1c50ea7e
 TAG	mode:vehicles\warthog\warthog	0b3fc874b773e75bbe86543e96f5b438
-TAG	antr:vehicles\warthog\warthog	46a25e0c8f23327ae76ac51384751a43
+TAG	antr:vehicles\warthog\warthog	81c52a740e63d5f4e2c5a7b1c4bdd785
 TAG	coll:vehicles\warthog\warthog	2ebe6631dd4b8dd2f000d52e08126da0
 TAG	phys:vehicles\warthog\warthog	ae362801de25353013524054114056fa
 TAG	weap:vehicles\warthog\warthog gun	70e94b2d8b35c76c76fa14f9c6c99953
@@ -187,7 +187,7 @@ TAG	antr:levels\a10\devices\chairs\chair pod\chair pod	20fa773bb99608ed6be5ca65c
 TAG	coll:levels\a10\devices\chairs\chair pod\chair pod	61a89a33eff4fe5e879afdc909f42f8b
 TAG	vehi:vehicles\scorpion\scorpion_cinematic	67a838ea9dca594c9b33a72556476cd1
 TAG	mode:vehicles\scorpion\scorpion	1d3b110dd7e2bd7b4e3a3d54cc28513c
-TAG	antr:vehicles\scorpion\scorpion	0239daf24657c9c7da0dc11db52bc87f
+TAG	antr:vehicles\scorpion\scorpion	8e4fbb98f041b86fca9b7930a5511dbe
 TAG	phys:vehicles\scorpion\scorpion	cf438c24d34cab3828dfd40d495057e6
 TAG	weap:vehicles\scorpion\scorpion cannon	a2602f65aa46355a0ec2129ebe568013
 TAG	actv:vehicles\scorpion\scorpion pilot	d467f62f93c441d0110dea28f968b195
@@ -222,7 +222,7 @@ TAG	mode:scenery\halo\halo	26cb831ee9e3f33efdef7c1baad6976d
 TAG	antr:scenery\halo\halo	a1cbc51a2edbde96825755cbaaf2cf87
 TAG	mach:levels\a10\devices\hushed casket\hushed_casket	2743383b9f33621800fe4c758dda1217
 TAG	mode:levels\a10\devices\hushed casket\hushed casket	e69390b329d8f7dd53e9dd31368a27aa
-TAG	antr:levels\a10\devices\hushed casket\hushed casket	eff5af31971bc24e8d068f90c12c81f0
+TAG	antr:levels\a10\devices\hushed casket\hushed casket	01241403eb8376d2cab553b39c62c30b
 TAG	mach:levels\a10\devices\command display\command display	a588fa40cb366126953ce8ea54bce403
 TAG	mode:levels\a10\devices\command display\command display	c8f41141e89ae562fce13f048d8d1a3b
 TAG	mach:levels\a10\devices\space_battle\space_battle	56042269fa2ee9274461a6ec5248fe40
@@ -230,7 +230,7 @@ TAG	mode:levels\a10\devices\space_battle\space_battle	cd7442133c6e35dacd37404d99
 TAG	effe:levels\a10\devices\space_battle\space_battle	b9943a8ecb75d06e8394b01187763ef0
 TAG	mach:levels\a10\devices\alert_light\alert_light	cf911ba8c5da4f4ec45f0cd3569fa43a
 TAG	mode:levels\a10\devices\alert_light\alert_light	aaf01f0339f0a929a5acb5cca19b34f5
-TAG	antr:levels\a10\devices\alert_light\alert_light	d095faa353fb586fdc9fc86eaaff5e1f
+TAG	antr:levels\a10\devices\alert_light\alert_light	2b7b84835a19bd7def1e8f050caf3b85
 TAG	coll:levels\a10\devices\alert_light\alert_light	4bb97fdae93c5a37906b947812a65507
 TAG	actv:characters\captain\captain	dc1314def8f4cb818e047e4b1db125d6
 TAG	actr:characters\captain\captain	2bffcf018174d6b0da483d20693d59e9
@@ -262,7 +262,7 @@ TAG	bipd:characters\cyborg\cyborg_cinematic	8f58a12ba915c044c164649069b35768
 TAG	antr:cinematics\animations\chief\x30\x30	4b801128fc5e34ee0cdb4a4c4997ada3
 TAG	bipd:characters\pilot\pilot	6dd811f00e819a8c49c1ccbf52a4e776
 TAG	mode:characters\pilot\pilot	bd3416ff0365f276134ed396eb6a7a54
-TAG	antr:cinematics\animations\pilot\x30\x30	d4ff4757f5fe8d9f58c8db78f72e7a7b
+TAG	antr:cinematics\animations\pilot\x30\x30	737b8c2fb98aa1e02f1fc354777391a3
 TAG	vehi:vehicles\lifepod_docked\lifepod_docked	238d603249fef45e85e76949b38ab2e4
 TAG	mode:vehicles\lifepod\lifepod	996573e123b2ae48598b5baed048eb80
 TAG	antr:vehicles\lifepod_docked\lifepod_docked	48a2791ec6337e9d8caf1f4f40529ab3
@@ -310,7 +310,7 @@ TAG	scen:scenery\emitters\sparks spurt\sparks spurt	1a1786058897249f23d6bf49efd6
 TAG	effe:scenery\emitters\sparks spurt\effects\sparks spurt	6cc9e83db6113ee15f9234de336197a4
 TAG	scen:scenery\c_field_generator\c_field_generator	e66627e7299c13ffdbae722658dc663d
 TAG	mode:scenery\c_field_generator\c_field_generator	13f49e42471e9bd29e89a40264d5f031
-TAG	coll:scenery\c_field_generator\c_field_generator	dde87cec06b39ea5cc1e03f01d065a33
+TAG	coll:scenery\c_field_generator\c_field_generator	73b8c7e36350616050efcab994dafac3
 TAG	effe:scenery\c_field_generator\effects\shield depletion	43c693ad3c5f4b5c2756f6f838053a98
 TAG	scen:scenery\light lens flare\light lens flare yellow	cc1e52197d3b2a237f677a83fc836be4
 TAG	scen:scenery\light lens flare\light lens flare green	3ee0d0a562f122ef331b00aebde12d3c
@@ -324,11 +324,11 @@ TAG	scen:levels\a10\devices\bulletin board\bulletin board	4c05bb03d5e2ff52caf053
 TAG	mode:levels\a10\devices\bulletin board\bulletin board	3b92b2ac03a3666873836619058c665c
 TAG	scen:scenery\emitters\burning_flame_nondynamic\burning_flame_nondynamic	634edde29318bf42d560cd9fd6e7b1a2
 TAG	bipd:characters\marine_wounded\prone_1\prone_1	264fbaec4b8dbf62b8031914549da1e8
-TAG	antr:characters\marine_wounded\prone_1\prone_1	342911727d747da34ab3f632ecc354e9
+TAG	antr:characters\marine_wounded\prone_1\prone_1	f01d1f1e5b62e1cdc60ffd4e93b0b8a1
 TAG	bipd:characters\marine_wounded\sitting_1\sitting_1	25151a4a9219957ca98a641c1cddb97c
-TAG	antr:characters\marine_wounded\sitting_1\sitting_1	17faada1b7f8739aa4050732f2aca9b7
+TAG	antr:characters\marine_wounded\sitting_1\sitting_1	64237df28ac4a9e242dcd279cc6fadd4
 TAG	bipd:characters\marine_wounded\sitting_2\sitting_2	790381ce6981561763271274e0cacd42
-TAG	antr:characters\marine_wounded\sitting_2\sitting_2	a136f51353210106d77dd6d4772462c5
+TAG	antr:characters\marine_wounded\sitting_2\sitting_2	d2845dc49038d3462ff5c4250e90ee4b
 TAG	eqip:powerups\health pack	dfcb9f75edba66a6c5855de776efa7ca
 TAG	mode:powerups\healthpack\healthpack	3c77ff75869d9b03763f44ba908775c1
 TAG	coll:powerups\healthpack\healthpack	df97053855cc48df6b7bededda403aa9
@@ -349,7 +349,7 @@ TAG	effe:weapons\pistol\effects\ready	8c8470e123e494c15161e12ec907e76b
 TAG	jpt!:weapons\pistol\melee	5774cf7f21494e7bf3595a530f37a87e
 TAG	jpt!:weapons\pistol\melee_response	cb7871c5da7bd5f48513065965185705
 TAG	mode:weapons\pistol\fp\fp	5d108223d7ee85f65afc5e9d69b4fda0
-TAG	antr:weapons\pistol\fp\fp	d0192e097a721165c4eb6e40cfa2b1a5
+TAG	antr:weapons\pistol\fp\fp	a0604676501bf011fcd83067574e00af
 TAG	effe:weapons\pistol\effects\reload	8c8470e123e494c15161e12ec907e76b
 TAG	proj:weapons\pistol\bullet	3854a7c8244a4c94f0f2b34e758f460a
 TAG	jpt!:weapons\pistol\bullet	10ab39385b4e65a1f84891d8efa861e6
@@ -385,7 +385,7 @@ TAG	jpt!:weapons\pistol\trigger	f22643e36ed4480e7ccccfa34796f2c5
 TAG	mach:levels\a10\devices\cryotube\cryotube	8d6b507b9418e99b14158de3096829f4
 TAG	mach:levels\a10\devices\doors\door small\door small	5eb0dcabb5a91b7de188fce9097ed051
 TAG	mode:levels\a10\devices\doors\door small\door small	df66f41e268f105982d1b0a0828b899b
-TAG	antr:levels\a10\devices\doors\door small\door small	9a2e1c4f539f59caefb818814bfa866b
+TAG	antr:levels\a10\devices\doors\door small\door small	0c1f9533c58b0057c8e0c6baf16fbc48
 TAG	coll:levels\a10\devices\doors\door small\door small	6f634f4ef72c9cccae3c51ee8509d2db
 TAG	effe:sound\sfx\impulse\doors\small_door3_open	05c2bd87957ae603feb918a4a02aa3ab
 TAG	effe:sound\sfx\impulse\doors\small_door3_close	029cadd5877cbbdc15ac48cf7624de1d
@@ -393,26 +393,26 @@ TAG	effe:sound\sfx\impulse\doors\small_door3_done_open	84bbf67cf966279d322857402
 TAG	effe:sound\sfx\impulse\doors\small_door3_done_close	7389d20e17286f65761670c731cf7661
 TAG	mach:levels\a10\devices\doors\door small no glass\door small no glass	ba0b8b84e88ac63635731a8ff2a28153
 TAG	mode:levels\a10\devices\doors\door small no glass\door small no glass	5c0afb01d9cf5a299bef9b77d3b3e8c5
-TAG	antr:levels\a10\devices\doors\door small no glass\door small no glass	73297c195557a87af526ab14fb3042d7
+TAG	antr:levels\a10\devices\doors\door small no glass\door small no glass	3f766631ebfc8a4303abe3a6da14544e
 TAG	coll:levels\a10\devices\doors\door small no glass\door small no glass	aad56efa618fdef332321263806bf0cf
 TAG	mach:levels\a10\devices\doors\door cryo chamber\door cryo chamber	a33d035889fbeceeb45573cf21fae6d7
 TAG	mode:levels\a10\devices\doors\door cryo chamber\door cryo chamber	87fb2705111460e684e7bb2ec20de9ab
-TAG	antr:levels\a10\devices\doors\door cryo chamber\door cryo chamber	7348099f577a6c2332a52dc6b0210ee1
+TAG	antr:levels\a10\devices\doors\door cryo chamber\door cryo chamber	82dd9d8ab93d2e2131ffcc96291b7b6e
 TAG	coll:levels\a10\devices\doors\door cryo chamber\door cryo chamber	aefccd354c64e6a86935a3837e38933d
 TAG	mach:levels\a10\devices\doors\door airlock\door airlock	c53a31773f794a9ef3fc772ed675e981
 TAG	mode:levels\a10\devices\doors\door airlock\door airlock	fc4750b6d8acb9248d9880f73d191428
-TAG	antr:levels\a10\devices\doors\door airlock\door airlock	35e71d71b3a82350903080c828857e5f
+TAG	antr:levels\a10\devices\doors\door airlock\door airlock	e91418d5971a744e69a2cacb82b7eb9d
 TAG	coll:levels\a10\devices\doors\door airlock\door airlock	a596815cfc5a645de2528d9d02454ac1
 TAG	mach:levels\a10\devices\doors\door blast\door blast	96688e306841443ba11689211bc30382
 TAG	mode:levels\a10\devices\doors\door blast\door blast	18059ecbaf1048b231e575981e63cfec
-TAG	antr:levels\a10\devices\doors\door blast\door blast	197d76a732dee163713158dc8c2c2c7c
+TAG	antr:levels\a10\devices\doors\door blast\door blast	19671a9c1def44fd37f2565f29bd2238
 TAG	coll:levels\a10\devices\doors\door blast\door blast	8a21e0fa50a48f1cb86dce4d9ff60e10
 TAG	mach:levels\a10\devices\doors\door blast closed\door blast closed	7b23be854107c28f48e958f9bf40ed0f
 TAG	mode:levels\a10\devices\doors\door blast closed\door blast closed	39563838829445d417ee18fe352d2a9d
 TAG	coll:levels\a10\devices\doors\door blast closed\door blast closed	3d66a5415153f2e7f3844761622d092e
 TAG	mach:levels\a10\devices\doors\door jeff tube\door jeff tube	2b266de7e2a6950fe03c44fc62a88d6c
 TAG	mode:levels\a10\devices\doors\door jeff tube\door jeff tube	d9ca41184906bdede25e41b2d8264b5c
-TAG	antr:levels\a10\devices\doors\door jeff tube\door jeff tube	0beb48d30fed6859c2849d18015d8dcc
+TAG	antr:levels\a10\devices\doors\door jeff tube\door jeff tube	651d15ae9acba2c3dc6f12272310591b
 TAG	coll:levels\a10\devices\doors\door jeff tube\door jeff tube	c75697ef32314fccf56c5a76e4408215
 TAG	effe:sound\sfx\impulse\doors\door_jeff_open	02dc9f9a0a7facc7a4cddbad613b9b4d
 TAG	effe:sound\sfx\impulse\doors\door_jeff_opened	6abd1818a81a051b777bec1ee2d6e50f
@@ -425,16 +425,16 @@ TAG	mode:levels\a10\devices\cryo vis test\cryo vis test	0d2cc0986d33736aff167886
 TAG	coll:levels\a10\devices\cryo vis test\cryo vis test	51e688c8cce3f062762484b1cfb8da08
 TAG	mach:levels\a10\devices\lifepod device\lifepod device	6f150b68e6d760d36b3f18bd5c69a56c
 TAG	mode:levels\a10\devices\lifepod device\lifepod device	8c220c09d47117157a59a6e09208c235
-TAG	antr:levels\a10\devices\lifepod device\lifepod device	48c08e28736b25482c0e83dc68cd0b7d
+TAG	antr:levels\a10\devices\lifepod device\lifepod device	eb08e89ddbb7582e94429efbd6c99621
 TAG	coll:levels\a10\devices\lifepod device\lifepod device	64df1d242747ae32e2f3b1f6388eafcf
 TAG	mach:levels\a10\devices\shield charge\shield charge	08df18f185d57324e97ef4fbe161244a
 TAG	mode:levels\a10\devices\shield charge\shield charge	9b5c58f5324f98022099868d7ec52bf8
-TAG	antr:levels\a10\devices\shield charge\shield charge	dc36ea6447255b0151a47a5804c9cad4
+TAG	antr:levels\a10\devices\shield charge\shield charge	96302b6f1ca8deabf9d59711f7866ea6
 TAG	coll:levels\a10\devices\shield charge\shield charge	594e867fe363a729741d047defb01b46
 TAG	effe:levels\a10\devices\shield charge\effects\shield charge ring	6f6f98fb12dd81afa40e265ff3c58c1a
 TAG	mach:levels\a10\devices\doors\door_small_noglass_bashed\door_small_noglass_bashed	a79b2f9a806394e56d183c669b719ec8
 TAG	mode:levels\d40\devices\d40_door_small_noglass_bashed\d40_door_small_noglass_bashed	e035d03e33cbab0308c870e312b2b79e
-TAG	antr:levels\d40\devices\d40_door_small_bashed\d40_door_small_bashed	26e658744c28c5bdc786322204e56815
+TAG	antr:levels\d40\devices\d40_door_small_bashed\d40_door_small_bashed	84f7de44a3669e920e4d828269ca74aa
 TAG	coll:levels\d40\devices\d40_door_small_noglass_bashed\d40_door_small_noglass_bashed	2123942243d30b69152affe023f5b9dc
 TAG	mach:levels\a10\devices\doors\door small burnt\door small burnt	3a4ff12c149ba200c3ccd0097dc0585e
 TAG	mode:levels\a10\devices\doors\door small burnt\door small burnt	618b89c6fdb1d961f5eb62bbfa46f722
@@ -460,7 +460,7 @@ TAG	actv:characters\elite\elite minor\elite minor plasma rifle	3d5b27f027c4a14f6
 TAG	actr:characters\elite\elite minor\elite minor	ea4d12485f3ce732a3d484159ad05ba1
 TAG	bipd:characters\elite\elite	c53453a6eb0716ae1ec4df4d4d013035
 TAG	mode:characters\elite\elite	f7fc3db50b21c897643db52666f144f6
-TAG	antr:characters\elite\elite	2c559a36322881737fcb1711ac1cd2cf
+TAG	antr:characters\elite\elite	0137c7e37035da063b4cc40958fa7a00
 TAG	coll:characters\elite\elite	911d76e8adfe504ada6c8b828091751e
 TAG	effe:effects\blood aoe elite	852e326bf02fa8741397e948dc70df7b
 TAG	effe:effects\blood collision elite	a514da0f80d7367233bb16a60c8d23e3
@@ -473,7 +473,7 @@ TAG	effe:weapons\plasma rifle\effects\overheated	41bb52c00296440d3df6cfa0c3afd8a
 TAG	jpt!:weapons\plasma rifle\melee	7bf8dddc0682da62577f3af5ee5ff27e
 TAG	jpt!:weapons\plasma rifle\melee_response	cb7871c5da7bd5f48513065965185705
 TAG	mode:weapons\plasma rifle\fp\fp	cd91722ab9e1e64412f9f1dbdb831d04
-TAG	antr:weapons\plasma rifle\fp\fp	2111213d678af994261a09edc9f9bc6b
+TAG	antr:weapons\plasma rifle\fp\fp	956aeaa7e83ce897f59f1d5f3746bc3d
 TAG	proj:weapons\plasma rifle\bolt	ad328b50cadde298cd67ba4c80f420f7
 TAG	jpt!:weapons\plasma rifle\bolt	e21f0a376f85c7d949bf0f9bda32874d
 TAG	effe:weapons\plasma rifle\effects\impact dirt	dde60ffab3249b3fb0d53be974625e4f
@@ -517,7 +517,7 @@ TAG	actv:characters\grunt\grunt minor plasma pistol	fc611f835c78d8ec8c1b9c63f752
 TAG	actr:characters\grunt\grunt minor	ef132098b91eb3f545b9be94c12194b2
 TAG	bipd:characters\grunt\grunt	18c12c97752bcf3625b75e67ca3a3888
 TAG	mode:characters\grunt\grunt	7ec9531dedad47ad9768d739b6347863
-TAG	antr:characters\grunt\grunt	a8430f3dfe0a762bed637b117b5a5303
+TAG	antr:characters\grunt\grunt	10e442c1aae3d8cc36174ad5b8554079
 TAG	coll:characters\grunt\grunt	19df5afccf769f18cfe8f01c3621070f
 TAG	effe:characters\grunt\effects\localized damge	cfb59b6b93a9c3e429eebd3cea52b3ac
 TAG	effe:effects\blood aoe grunt	23604c1df59fd2768f940872022f6816
@@ -528,7 +528,7 @@ TAG	effe:weapons\plasma pistol\effects\overheated	295598ed6ede8326add33583e9e5cc
 TAG	jpt!:weapons\plasma pistol\melee	c6e10e86afbe1f0ab39b623475d87aba
 TAG	jpt!:weapons\plasma pistol\melee_response	cb7871c5da7bd5f48513065965185705
 TAG	mode:weapons\plasma pistol\fp\fp	5ebe43733cfb0c1b5f671539c2078f1c
-TAG	antr:weapons\plasma pistol\fp\fp	502f4730c8a2aecd05537a7503fe6bd9
+TAG	antr:weapons\plasma pistol\fp\fp	41e75a0f4c2647f17476b8a3f8caa5a2
 TAG	proj:weapons\plasma pistol\bolt	24d4acf514e9f6aa82b2721b8cebde08
 TAG	jpt!:weapons\plasma pistol\bolt	d0ba51ab3349150244a0f071dbfa6f07
 TAG	effe:weapons\plasma pistol\effects\impact dirt	06ff11abe3980c2bf8d890a2b460b6e8
@@ -622,4 +622,4 @@ BSP	levels\a10\a10f	6f03796cc4c5bc2f1dde8b0d9118c282
 BSP	levels\a10\a10g	cc2bf72b078b67e8ac2e34bcd6f658f4
 BSP	levels\a10\a10_space	44a730bfe27e6cd45b84c82250e2ccb5
 BSP	levels\a10\x10hangar	db0146a512dee15ec5e2e49491887161
-MAP	levels\a10\a10	c942086822e52ce4d532dc9f82416e489d4ad498a8c4e979312044ca0b2a300d
+MAP	levels\a10\a10	21795f352bc0f824af1031fcbdb47e19ac35bf6936bfb8b6a6746bcd35b75c2d

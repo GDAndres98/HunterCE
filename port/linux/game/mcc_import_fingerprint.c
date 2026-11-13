@@ -3,8 +3,10 @@ MCC_IMPORT_FINGERPRINT.C
 
 The fingerprint of what the simulation reads in an Xbox map, made from the
 map the MCC import writes (mcc_import.c), to compare with the disc's: equal,
-the map is the disc's and plays with the disc's players (version 0); else it
-is an MCC map (MCC_MAP_VERSION). halo --fingerprint <map> prints a map's,
+the map is the disc's and plays with the disc's players; else it is MCC's
+own, which the import's report says. A few differences that change nothing
+the host decides are accepted (accepted_tags, accepted_parts below). halo
+--fingerprint <map> prints a map's,
 the disc's or an imported one's, as port/assets/mcc/<map>.fp has the disc's
 (mcc_import_fingerprint_print).
 
@@ -138,6 +140,86 @@ static char const *const MODEL_FIELDS[] =
 
 /* the disc's tag count: ORDER hashes that many */
 static long order_limit;
+
+/* The differences accepted (2026-11-12): parts that MCC's maps have
+otherwise than the disc's, but that change nothing the host decides, left
+out of the fingerprint so that the levels play with the disc's players.
+port/assets/mcc/README.md lists them, and why. */
+
+/* tags a level never creates: the flamethrower, which only two Flood
+variants carry, which no squad of c20's or d20's uses and no script names */
+static struct
+{
+	char const *map;
+	char const *tag;
+} const accepted_tags[] =
+{
+	{ "c20", "coll:weapons\\flamethrower\\flamethrower" },
+	{ "c20", "antr:weapons\\flamethrower\\fp\\fp" },
+	{ "d20", "coll:weapons\\flamethrower\\flamethrower" },
+	{ "d20", "antr:weapons\\flamethrower\\fp\\fp" },
+	{ NULL, NULL }
+};
+
+/* a tag's field, or an element of a block by its name, left out */
+static struct
+{
+	char const *tag;
+	char const *field;
+	char const *element;
+} const accepted_parts[] =
+{
+	/* the field generator's collision, made again by Halo PC's tools: the
+	same size, health and materials, its surfaces up to 0.07 world units
+	apart (a shot or a step beside it, on the machine that makes it) */
+	{ "coll:scenery\\c_field_generator\\c_field_generator", "bsps", NULL },
+	/* the cyborg as a warthog's passenger with a rifle: a still pose in
+	MCC, the disc's moves a little (a seated unit's root motion is never
+	applied: only where its body is, on the machine that draws it) */
+	{ "antr:characters\\cyborg\\cyborg", NULL, "W-passenger rifle idle" },
+	{ NULL, NULL, NULL }
+};
+
+/* the tag being walked (its section's name) */
+static char const *walk_tag = "";
+
+/* an animation's type, of which an overlay's default data is never read
+(model_animations.c reads it for base animations alone) */
+enum
+{
+	ANIMATION_TYPE_OFFSET = 0x20,
+	ANIMATION_TYPE_OVERLAY = 1
+};
+
+static int accepted_tag(char const *map_name, char const *tag)
+{
+	int i;
+	for (i = 0; accepted_tags[i].map; i++)
+		if (!strcmp(accepted_tags[i].map, map_name) && !strcmp(accepted_tags[i].tag, tag))
+			return 1;
+	return 0;
+}
+
+static int accepted_field(char const *field)
+{
+	int i;
+	for (i = 0; field && accepted_parts[i].tag; i++)
+		if (accepted_parts[i].field && !strcmp(accepted_parts[i].tag, walk_tag) &&
+			!strcmp(accepted_parts[i].field, field))
+			return 1;
+	return 0;
+}
+
+static int accepted_element(char const *definition, unsigned char const *element, long size)
+{
+	int i;
+	for (i = 0; accepted_parts[i].tag; i++)
+		if (accepted_parts[i].element && !strcmp(accepted_parts[i].tag, walk_tag) &&
+			!strcmp(definition, "animation") && size >= 32 && !strncmp((char const *)element,
+			accepted_parts[i].element, 32))
+			return 1;
+	return 0;
+}
 
 static char const *const BSP_FIELDS[] =
 {
@@ -366,8 +448,15 @@ static void walk_fields(struct schema_definition const *d, unsigned char *elemen
 
 	for (f = d->fields; f->type != _schema_terminator; f++)
 	{
-		if (f->type == _schema_check || name_in(f->name, EXCLUDED_FIELDS))
+		if (f->type == _schema_check || name_in(f->name, EXCLUDED_FIELDS) || accepted_field(f->name))
 			continue;
+		/* (an overlay's default data: never read) */
+		if (f->name && !strcmp(f->name, "default_data") && d->name && !strcmp(d->name, "animation") &&
+			d->size > ANIMATION_TYPE_OFFSET + 1 &&
+			(element[ANIMATION_TYPE_OFFSET] | element[ANIMATION_TYPE_OFFSET + 1] << 8) == ANIMATION_TYPE_OVERLAY)
+		{
+			continue;
+		}
 		if (only_fields && !name_in(f->name, only_fields))
 			continue;
 		for (n = 0; n < f->count; n++)
@@ -472,6 +561,16 @@ static void walk_element(struct schema_definition const *d, unsigned char *eleme
 	if (walk_depth >= MAXIMUM_WALK_DEPTH)
 	{
 		put_text("TOO DEEP");
+		return;
+	}
+	/* (an element accepted as it is: its name alone) */
+	if (d->name && accepted_element(d->name, element, d->size))
+	{
+		char name[33];
+
+		memcpy(name, element, 32);
+		name[32] = 0;
+		put_text(name);
 		return;
 	}
 	bytes = malloc((size_t)d->size + 4);
@@ -799,10 +898,12 @@ static void fingerprint_map(void)
 			continue;
 		}
 		root = translate(t->address, (unsigned long)schema->definition->size);
-		if (!root)
+		if (!root || accepted_tag(fingerprint_map_name, name))
 			continue;
 		section_begin("TAG", name);
+		walk_tag = name;
 		walk_element(schema->definition, root, t->group == 'mode' ? MODEL_FIELDS : NULL);
+		walk_tag = "";
 		section_end("TAG", name);
 	}
 

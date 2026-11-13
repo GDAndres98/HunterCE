@@ -41,11 +41,11 @@ nothing is written to it. For each map:
    CELT decoded and encoded as Xbox ADPCM, music in the disc's 65,520-byte
    pieces) and the models' vertex buffers.
 5. The written map's simulation data is fingerprinted and compared with the
-   disc's (`port/assets/mcc/<map>.fp`). A map that matches is written as the
-   disc's and plays with players of the disc; any other is marked with
-   `MCC_MAP_VERSION` in its header and plays only with other such maps
-   (`cache_files_map_version`; network version 44,
-   `port/linux/NETCODE.md`). `halo --fingerprint <map>` prints a map's
+   disc's (`port/assets/mcc/<map>.fp`), leaving out the few differences
+   accepted (`port/assets/mcc/README.md`). A map that matches is the disc's
+   and plays with players of the disc. The import's report says which maps
+   match; the map's header carries no mark (maps that do not match are to be
+   kept out of the maps folder). `halo --fingerprint <map>` prints a map's
    fingerprint, the disc's or an imported one's, as the `.fp` files have it
    (`port/assets/mcc/README.md`). Halo PC's seven rebuilds of the multiplayer maps
    (beavercreek, bloodgulch, boardingaction, carousel, damnation, hangemhigh,

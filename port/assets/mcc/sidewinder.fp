@@ -34,7 +34,7 @@ TAG	mode:levels\a10\devices\doors\door_blast_collision\door_blast_collision	8526
 TAG	coll:levels\a10\devices\doors\door_blast_collision\door_blast_collision	08174ede782e2a361fc487bb791c4876
 TAG	bipd:characters\cyborg_mp\cyborg_mp	71e5c0b1894e8ad088e498cc0a7f21a3
 TAG	mode:characters\cyborg\cyborg	b37a1a35e88cebbeda6cc739382cc995
-TAG	antr:characters\cyborg\cyborg	8475bd0e94008c364780d015b85b0a89
+TAG	antr:characters\cyborg\cyborg	dbae48fdf0b269ef33a71a4acdd9a543
 TAG	coll:characters\cyborg\cyborg	d7df5ce74ac96d365d2ad14c33d3104d
 TAG	effe:characters\cyborg\localized damage	5d77490bec4e3f675d4ab504f6e32dcf
 TAG	effe:effects\blood aoe human	2110fe237cfca218b5676381c705a4b9
@@ -48,7 +48,7 @@ TAG	jpt!:weapons\assault rifle\melee	b7b90f0946d5954eb13290ec4e0041b1
 TAG	jpt!:weapons\assault rifle\melee_response	cb7871c5da7bd5f48513065965185705
 TAG	effe:weapons\assault rifle\effects\flashlight	3f5542f28fb280eb194c885d52c1abd3
 TAG	mode:weapons\assault rifle\fp\fp	60032343c248333acf3af68cee556ec2
-TAG	antr:weapons\assault rifle\fp\fp	60e221f00a6243700e9d40b4d32ae3dd
+TAG	antr:weapons\assault rifle\fp\fp	6dffdfb29e7db4ec8c3155638ad9b07c
 TAG	eqip:powerups\assault rifle ammo\assault rifle ammo	50cca2f86f6c39b9a6db1b279c15f1b5
 TAG	mode:powerups\assault rifle ammo\assault rifle ammo	484fbb8af291669cebbd74188125c69c
 TAG	coll:powerups\assault rifle ammo\assault rifle ammo	8708dab8148a0c1c13b215b2ef441224
@@ -99,7 +99,7 @@ TAG	effe:weapons\pistol\effects\ready	8c8470e123e494c15161e12ec907e76b
 TAG	jpt!:weapons\pistol\melee	5774cf7f21494e7bf3595a530f37a87e
 TAG	jpt!:weapons\pistol\melee_response	cb7871c5da7bd5f48513065965185705
 TAG	mode:weapons\pistol\fp\fp	5d108223d7ee85f65afc5e9d69b4fda0
-TAG	antr:weapons\pistol\fp\fp	d0192e097a721165c4eb6e40cfa2b1a5
+TAG	antr:weapons\pistol\fp\fp	a0604676501bf011fcd83067574e00af
 TAG	effe:weapons\pistol\effects\reload	8c8470e123e494c15161e12ec907e76b
 TAG	eqip:powerups\pistol ammo\pistol ammo	d6e70753663d05c3454ecbd52a3be93b
 TAG	mode:powerups\pistol ammo\pistol ammo	484fbb8af291669cebbd74188125c69c
@@ -138,7 +138,7 @@ TAG	jpt!:weapons\pistol\trigger	f22643e36ed4480e7ccccfa34796f2c5
 TAG	effe:effects\footsteps water	971d6eea8b30f01aa2cb7cd6913b5113
 TAG	vehi:vehicles\warthog\warthog	b22c3ada49601f604cc349ea1c50ea7e
 TAG	mode:vehicles\warthog\warthog	0b3fc874b773e75bbe86543e96f5b438
-TAG	antr:vehicles\warthog\warthog	46a25e0c8f23327ae76ac51384751a43
+TAG	antr:vehicles\warthog\warthog	81c52a740e63d5f4e2c5a7b1c4bdd785
 TAG	coll:vehicles\warthog\warthog	2ebe6631dd4b8dd2f000d52e08126da0
 TAG	phys:vehicles\warthog\warthog	ae362801de25353013524054114056fa
 TAG	weap:vehicles\warthog\warthog gun	70e94b2d8b35c76c76fa14f9c6c99953
@@ -195,7 +195,7 @@ TAG	effe:effects\vehicle effects\slip glass	d1d6bae2756aa42219740db67534b32a
 TAG	effe:effects\glass collision	8cf98597fe3e1115fd9f088aef5e0f9f
 TAG	vehi:vehicles\scorpion\scorpion_mp	98da488a633bb2c714845de9b999cd89
 TAG	mode:vehicles\scorpion\scorpion_mp\scorpion_mp	4d31166b8ab95e914f33af2d9b5ae5c8
-TAG	antr:vehicles\scorpion\scorpion	0239daf24657c9c7da0dc11db52bc87f
+TAG	antr:vehicles\scorpion\scorpion	8e4fbb98f041b86fca9b7930a5511dbe
 TAG	coll:vehicles\scorpion\scorpion_mp\scorpion_mp	b5bf2eadeeed8ff7cdcf231861e7a08d
 TAG	phys:vehicles\scorpion\scorpion	cf438c24d34cab3828dfd40d495057e6
 TAG	weap:vehicles\scorpion\scorpion cannon	a2602f65aa46355a0ec2129ebe568013
@@ -222,7 +222,7 @@ TAG	effe:vehicles\scorpion\secondary fire bullet	c64ba86c14b1a88aaae2940318d699e
 TAG	jpt!:vehicles\scorpion\secondary trigger	c62a4559f3186dbc334898baa01eabcb
 TAG	vehi:vehicles\ghost\ghost_mp	055b56fa1731f4a86ffd81ee033703e8
 TAG	mode:vehicles\ghost\ghost	d257c5ce3b84fc1fd55d3cba6403dc1c
-TAG	antr:vehicles\ghost\ghost	de4e9107fb1d50f3fb6b06f7e604ae25
+TAG	antr:vehicles\ghost\ghost	620f093458264bc6ccea6f5d19e933d9
 TAG	coll:vehicles\ghost\ghost_mp	0360598685d17d7201a0f84622370cb8
 TAG	phys:vehicles\ghost\ghost	94d25256ff9fcd2d27a78570fb2b42bf
 TAG	weap:vehicles\ghost\ghost gun	b10c9b90550b0b578f75d5e9a4443e97
@@ -267,7 +267,7 @@ TAG	coll:weapons\sniper rifle\sniper rifle	01b9918a54bb44f500645b1533c17226
 TAG	jpt!:weapons\sniper rifle\melee	04c74e8c37a434c842690136ab469e3a
 TAG	jpt!:weapons\sniper rifle\melee_response	cb7871c5da7bd5f48513065965185705
 TAG	mode:weapons\sniper rifle\fp\fp	c966c73f186d8999124b126293e88562
-TAG	antr:weapons\sniper rifle\fp\fp	672ddc70961ddc37f1b8920bd051ab34
+TAG	antr:weapons\sniper rifle\fp\fp	0b005ab4375a99d18545773eee4da1e6
 TAG	eqip:powerups\sniper rifle ammo\sniper rifle ammo	29519655a3b9117e9444146bf69e1d93
 TAG	mode:powerups\sniper rifle ammo\sniper rifle ammo	2e091236a48d5a65d4c4a9a3efe6c904
 TAG	coll:powerups\sniper rifle ammo\sniper rifle ammo	6996f3956959e6f63699208d2efce3ec
@@ -316,7 +316,7 @@ TAG	effe:weapons\plasma rifle\effects\overheated	41bb52c00296440d3df6cfa0c3afd8a
 TAG	jpt!:weapons\plasma rifle\melee	7bf8dddc0682da62577f3af5ee5ff27e
 TAG	jpt!:weapons\plasma rifle\melee_response	cb7871c5da7bd5f48513065965185705
 TAG	mode:weapons\plasma rifle\fp\fp	cd91722ab9e1e64412f9f1dbdb831d04
-TAG	antr:weapons\plasma rifle\fp\fp	2111213d678af994261a09edc9f9bc6b
+TAG	antr:weapons\plasma rifle\fp\fp	956aeaa7e83ce897f59f1d5f3746bc3d
 TAG	proj:weapons\plasma rifle\bolt	ad328b50cadde298cd67ba4c80f420f7
 TAG	jpt!:weapons\plasma rifle\bolt	e21f0a376f85c7d949bf0f9bda32874d
 TAG	effe:weapons\plasma rifle\effects\impact glass	0d5620a8615167607efa74b51a5f4806
@@ -345,7 +345,7 @@ TAG	coll:weapons\rocket launcher\rocket launcher	e0e0848e406200bf51ce1948ebef26a
 TAG	jpt!:weapons\rocket launcher\melee	e81b4e71b718e300b4bd01f111784ee3
 TAG	jpt!:weapons\rocket launcher\melee_response	cb7871c5da7bd5f48513065965185705
 TAG	mode:weapons\rocket launcher\fp\fp	38b40e27d3804c36875b2a704e5d89f0
-TAG	antr:weapons\rocket launcher\fp\fp	7cfb3b741d38a8fe2f63f00663b3238b
+TAG	antr:weapons\rocket launcher\fp\fp	e175f0bc02cf60b263695fcdb99a6465
 TAG	eqip:powerups\rocket launcher ammo\rocket launcher ammo	b491e4314f8c1186974755d928c21f88
 TAG	mode:powerups\rocket launcher ammo\rocket launcher ammo	72fd0d23fcf38a921ac5198d390fab0d
 TAG	coll:powerups\rocket launcher ammo\rocket launcher ammo	704f27e8a329c31a127965f5ba42fba3
@@ -382,7 +382,7 @@ TAG	coll:weapons\shotgun\shotgun	760ead7da7373ef0e8cbf15deeee7482
 TAG	jpt!:weapons\shotgun\melee	a79335d4004e9b23c763ac4d29ce7779
 TAG	jpt!:weapons\shotgun\melee_response	cb7871c5da7bd5f48513065965185705
 TAG	mode:weapons\shotgun\fp\fp	053271e4b7f8cc1d46526c2b565c454a
-TAG	antr:weapons\shotgun\fp\fp	bc9f32a3751fbf47c58b7fccb484451f
+TAG	antr:weapons\shotgun\fp\fp	ad2c4dc44b93d54c4ecb531b8e60c1cf
 TAG	eqip:powerups\shotgun ammo\shotgun ammo	a62fb63fa66e9821292a7561e92e5379
 TAG	mode:powerups\shotgun ammo\shotgun ammo	2e091236a48d5a65d4c4a9a3efe6c904
 TAG	coll:powerups\shotgun ammo\shotgun ammo	8b097ea240bc10b43a6a5486ef1351ff
@@ -429,7 +429,7 @@ TAG	effe:weapons\needler\effects\ready	8c8470e123e494c15161e12ec907e76b
 TAG	jpt!:weapons\needler\melee	5e4de3cdbb976dfd400f3e173bb1793f
 TAG	jpt!:weapons\needler\melee_response	cb7871c5da7bd5f48513065965185705
 TAG	mode:weapons\needler\fp\fp	f0bce43626456c0995f2df0a54849403
-TAG	antr:weapons\needler\fp\fp	39d8bafb332a4e363f8783143c7a68f8
+TAG	antr:weapons\needler\fp\fp	25f2d58eb3c243eb705385a3d2216f56
 TAG	eqip:powerups\needler ammo\needler ammo	81cf42279aea177afc6785000387fd98
 TAG	mode:powerups\needler ammo\needler ammo	39bc0f023e6d7752529b739852e2d15d
 TAG	coll:powerups\needler ammo\needler ammo	d005993b1aeb6a3e43fe8527b3794046
@@ -471,7 +471,7 @@ TAG	effe:weapons\plasma pistol\effects\overheated	295598ed6ede8326add33583e9e5cc
 TAG	jpt!:weapons\plasma pistol\melee	c6e10e86afbe1f0ab39b623475d87aba
 TAG	jpt!:weapons\plasma pistol\melee_response	cb7871c5da7bd5f48513065965185705
 TAG	mode:weapons\plasma pistol\fp\fp	5ebe43733cfb0c1b5f671539c2078f1c
-TAG	antr:weapons\plasma pistol\fp\fp	502f4730c8a2aecd05537a7503fe6bd9
+TAG	antr:weapons\plasma pistol\fp\fp	41e75a0f4c2647f17476b8a3f8caa5a2
 TAG	proj:weapons\plasma pistol\bolt	24d4acf514e9f6aa82b2721b8cebde08
 TAG	jpt!:weapons\plasma pistol\bolt	d0ba51ab3349150244a0f071dbfa6f07
 TAG	effe:weapons\plasma pistol\effects\impact dirt	06ff11abe3980c2bf8d890a2b460b6e8
@@ -533,7 +533,7 @@ TAG	coll:weapons\flamethrower\flamethrower	30bfc95bf8099c2445e79f1e66d35577
 TAG	jpt!:weapons\flamethrower\melee	8817728945d22a3d05387d3a0c8def73
 TAG	jpt!:weapons\flamethrower\melee_response	cb7871c5da7bd5f48513065965185705
 TAG	mode:weapons\flamethrower\fp\fp	b00d845a7f90c19187ac2a5a908e0151
-TAG	antr:weapons\flamethrower\fp\fp	0af083708641e117778f7cb3b2998016
+TAG	antr:weapons\flamethrower\fp\fp	9dbe1937a216fc891bfa23dd20b101a8
 TAG	eqip:powerups\flamethrower ammo\flamethrower ammo	cbf071e83743cc8b6fa7587a4b4ac018
 TAG	mode:powerups\flamethrower ammo\flamethrower ammo	63daf1f373a008358c68401f41b0e831
 TAG	coll:powerups\flamethrower ammo\flamethrower ammo	c2c2c8a74a9c13b7baa3d25ad3cf1633
@@ -550,13 +550,13 @@ TAG	coll:weapons\ball\ball	06a035e1500205b2cdf3dd47c67fceca
 TAG	jpt!:weapons\ball\melee	4759302549a7b687938e8af856c95d0e
 TAG	jpt!:weapons\ball\melee_response	cb7871c5da7bd5f48513065965185705
 TAG	mode:weapons\ball\fp\fp	d3503f1255f62f60ccddc2a9f63b3923
-TAG	antr:weapons\ball\fp\fp	fd2c8a17752cf44e77b90d9d0a4c9afd
+TAG	antr:weapons\ball\fp\fp	c26e372f7ea35a67462d36c233ddd3fb
 TAG	weap:weapons\flag\flag	b60eee956b9ac659680c917d65fb450f
 TAG	mode:weapons\flag\flag	0c925559a8c45ea7ac1b3fb9a6ad6203
 TAG	jpt!:weapons\flag\melee	4759302549a7b687938e8af856c95d0e
 TAG	jpt!:weapons\flag\melee_response	cb7871c5da7bd5f48513065965185705
 TAG	mode:weapons\flag\fp\fp	7b72c37582628c6759b1aeed41f96781
-TAG	antr:weapons\flag\fp\fp	86c994c546f0d31a242244544f14b33e
+TAG	antr:weapons\flag\fp\fp	2b862b385949cac03b86a4f177b3962f
 TAG	eqip:powerups\double speed	59e9b6bb6db43ed45c0a9f608c892753
 TAG	mode:item collections\powerups\powerups	4c5a8bea142920b30853795a82df7040
 TAG	eqip:powerups\full-spectrum vision	a46dbd15f6e47c0b7acbf3aea441aa9d
@@ -574,4 +574,4 @@ TAG	jpt!:globals\flaming_death	ebc4a76a902a7ae65a5aa7139f45ea0c
 SCENARIO	levels\test\sidewinder\sidewinder	a253375fd366e23619427dfb58b2ea8c
 SCRIPTS		e3b0c44298fc1c149afbf4c8996fb924
 BSP	levels\test\sidewinder\sidewinder	47d96a05b422c3a6c40251f337d80097
-MAP	levels\test\sidewinder\sidewinder	abe79ff8c231d648561ae3f2d0b707966ae30d448c95b4d5593fd00dd9405064
+MAP	levels\test\sidewinder\sidewinder	ddc6d79b12bcb59565b0fb73497ec50db4c4c1217b68cbe4bada5c978e59f53a

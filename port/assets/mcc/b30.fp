@@ -45,7 +45,7 @@ TAG	mode:scenery\c_storage\c_storage	e44014c04206f01cdf4d549fe13559eb
 TAG	coll:scenery\c_storage\c_storage	a934709d7dc762808289d16f9ef862a7
 TAG	scen:scenery\c_field_generator\c_field_generator	e66627e7299c13ffdbae722658dc663d
 TAG	mode:scenery\c_field_generator\c_field_generator	13f49e42471e9bd29e89a40264d5f031
-TAG	coll:scenery\c_field_generator\c_field_generator	dde87cec06b39ea5cc1e03f01d065a33
+TAG	coll:scenery\c_field_generator\c_field_generator	73b8c7e36350616050efcab994dafac3
 TAG	effe:scenery\c_field_generator\effects\shield depletion	43c693ad3c5f4b5c2756f6f838053a98
 TAG	scen:scenery\c_uplink\c_uplink	41074d52449f100929525b2e3db8e4e3
 TAG	mode:scenery\c_uplink\c_uplink	c586c9b5df2b8d437c5d04be8f710b24
@@ -76,7 +76,7 @@ TAG	mode:levels\a10\devices\doors\door_blast_collision\door_blast_collision	8526
 TAG	coll:levels\a10\devices\doors\door_blast_collision\door_blast_collision	08174ede782e2a361fc487bb791c4876
 TAG	bipd:characters\cyborg\cyborg	049c550d3336a3863ec4cff0569678ba
 TAG	mode:characters\cyborg\cyborg	b37a1a35e88cebbeda6cc739382cc995
-TAG	antr:characters\cyborg\cyborg	8475bd0e94008c364780d015b85b0a89
+TAG	antr:characters\cyborg\cyborg	dbae48fdf0b269ef33a71a4acdd9a543
 TAG	coll:characters\cyborg\cyborg	d7df5ce74ac96d365d2ad14c33d3104d
 TAG	effe:characters\cyborg\localized damage	5d77490bec4e3f675d4ab504f6e32dcf
 TAG	effe:effects\blood aoe human	2110fe237cfca218b5676381c705a4b9
@@ -88,7 +88,7 @@ TAG	coll:weapons\assault rifle\assault rifle	6e9c2e42d661caf54a2f65852522d2ed
 TAG	jpt!:weapons\assault rifle\melee	b7b90f0946d5954eb13290ec4e0041b1
 TAG	jpt!:weapons\assault rifle\melee_response	cb7871c5da7bd5f48513065965185705
 TAG	mode:weapons\assault rifle\fp\fp	60032343c248333acf3af68cee556ec2
-TAG	antr:weapons\assault rifle\fp\fp	60e221f00a6243700e9d40b4d32ae3dd
+TAG	antr:weapons\assault rifle\fp\fp	6dffdfb29e7db4ec8c3155638ad9b07c
 TAG	eqip:powerups\assault rifle ammo\assault rifle ammo	50cca2f86f6c39b9a6db1b279c15f1b5
 TAG	mode:powerups\assault rifle ammo\assault rifle ammo	484fbb8af291669cebbd74188125c69c
 TAG	coll:powerups\assault rifle ammo\assault rifle ammo	8708dab8148a0c1c13b215b2ef441224
@@ -139,7 +139,7 @@ TAG	effe:weapons\pistol\effects\ready	8c8470e123e494c15161e12ec907e76b
 TAG	jpt!:weapons\pistol\melee	5774cf7f21494e7bf3595a530f37a87e
 TAG	jpt!:weapons\pistol\melee_response	cb7871c5da7bd5f48513065965185705
 TAG	mode:weapons\pistol\fp\fp	5d108223d7ee85f65afc5e9d69b4fda0
-TAG	antr:weapons\pistol\fp\fp	d0192e097a721165c4eb6e40cfa2b1a5
+TAG	antr:weapons\pistol\fp\fp	a0604676501bf011fcd83067574e00af
 TAG	effe:weapons\pistol\effects\reload	8c8470e123e494c15161e12ec907e76b
 TAG	eqip:powerups\pistol ammo\pistol ammo	d6e70753663d05c3454ecbd52a3be93b
 TAG	mode:powerups\pistol ammo\pistol ammo	484fbb8af291669cebbd74188125c69c
@@ -178,11 +178,11 @@ TAG	jpt!:weapons\pistol\trigger	f22643e36ed4480e7ccccfa34796f2c5
 TAG	effe:effects\footsteps water	971d6eea8b30f01aa2cb7cd6913b5113
 TAG	bipd:characters\marine_armored\marine_armored	98eeffc84a788d8126d05b6deaef5850
 TAG	mode:characters\marine_armored\marine_armored	e6bc3679ad48b260ccd5ec0e45e26da9
-TAG	antr:characters\marine\marine	7ad0a66ae0f41ac43deff6e5f543431c
+TAG	antr:characters\marine\marine	239aba23c8d0da449586d46522118356
 TAG	coll:characters\marine_armored\marine_armored	2fdd7691020a4e8fc38857cc238e18a0
 TAG	bipd:characters\elite\elite	c53453a6eb0716ae1ec4df4d4d013035
 TAG	mode:characters\elite\elite	f7fc3db50b21c897643db52666f144f6
-TAG	antr:characters\elite\elite	2c559a36322881737fcb1711ac1cd2cf
+TAG	antr:characters\elite\elite	0137c7e37035da063b4cc40958fa7a00
 TAG	coll:characters\elite\elite	911d76e8adfe504ada6c8b828091751e
 TAG	effe:effects\blood aoe elite	852e326bf02fa8741397e948dc70df7b
 TAG	effe:effects\blood collision elite	a514da0f80d7367233bb16a60c8d23e3
@@ -195,7 +195,7 @@ TAG	effe:weapons\plasma rifle\effects\overheated	41bb52c00296440d3df6cfa0c3afd8a
 TAG	jpt!:weapons\plasma rifle\melee	7bf8dddc0682da62577f3af5ee5ff27e
 TAG	jpt!:weapons\plasma rifle\melee_response	cb7871c5da7bd5f48513065965185705
 TAG	mode:weapons\plasma rifle\fp\fp	cd91722ab9e1e64412f9f1dbdb831d04
-TAG	antr:weapons\plasma rifle\fp\fp	2111213d678af994261a09edc9f9bc6b
+TAG	antr:weapons\plasma rifle\fp\fp	956aeaa7e83ce897f59f1d5f3746bc3d
 TAG	proj:weapons\plasma rifle\bolt	ad328b50cadde298cd67ba4c80f420f7
 TAG	jpt!:weapons\plasma rifle\bolt	e21f0a376f85c7d949bf0f9bda32874d
 TAG	effe:weapons\plasma rifle\effects\impact dirt	dde60ffab3249b3fb0d53be974625e4f
@@ -234,7 +234,7 @@ TAG	effe:weapons\plasma rifle\effects\misfire	6fcdc7518f3bece1a24486144f201af0
 TAG	bipd:characters\cyborg\cyborg_unarmed	06347bc632c53e7da31102d8c62a93c0
 TAG	vehi:vehicles\warthog\warthog	b22c3ada49601f604cc349ea1c50ea7e
 TAG	mode:vehicles\warthog\warthog	0b3fc874b773e75bbe86543e96f5b438
-TAG	antr:vehicles\warthog\warthog	46a25e0c8f23327ae76ac51384751a43
+TAG	antr:vehicles\warthog\warthog	81c52a740e63d5f4e2c5a7b1c4bdd785
 TAG	coll:vehicles\warthog\warthog	2ebe6631dd4b8dd2f000d52e08126da0
 TAG	phys:vehicles\warthog\warthog	ae362801de25353013524054114056fa
 TAG	weap:vehicles\warthog\warthog gun	70e94b2d8b35c76c76fa14f9c6c99953
@@ -291,7 +291,7 @@ TAG	effe:effects\vehicle effects\slip glass	d1d6bae2756aa42219740db67534b32a
 TAG	effe:effects\glass collision	8cf98597fe3e1115fd9f088aef5e0f9f
 TAG	vehi:vehicles\banshee\banshee	efcf1826beccaa65db6b1061bc5c3141
 TAG	mode:vehicles\banshee\banshee	9e6cfb6d5811b7ec481b10a0df662cb5
-TAG	antr:vehicles\banshee\banshee	fa98fb146935fcf35659edaff41c1bd4
+TAG	antr:vehicles\banshee\banshee	51ae03d70b242027d534adc16b63fd47
 TAG	coll:vehicles\banshee\banshee	0ecb45fb6378941c30d9b8ffe786959d
 TAG	effe:vehicles\banshee\effects\partial damage	1375410818e8d4580e0c238a0064f2f5
 TAG	effe:vehicles\wraith\effects\death explosion	079571b90b52e7518dd6543ad2d255d8
@@ -327,7 +327,7 @@ TAG	coll:vehicles\lifepod\lifepod	004b5bd7eefeaf9e780a38129bded583
 TAG	phys:vehicles\lifepod\lifepod	0136bfc271503c19af7bce5e4129bbe6
 TAG	vehi:vehicles\pelican\pelican	714c1bf18f32d98d656524541c4a607a
 TAG	mode:vehicles\pelican\pelican	972ad4f72132f63bda731d72683bd455
-TAG	antr:vehicles\pelican\pelican	0f88aab83501f8efcca024dd9f683dc3
+TAG	antr:vehicles\pelican\pelican	a2e4698a4dac986264e162d6b73c8b0c
 TAG	coll:vehicles\pelican\pelican	2c533c8a269081ea727b8094d35308a8
 TAG	effe:vehicles\pelican\effects\pelican explosion	04e19c92c01827b6880e727ac7fa8c31
 TAG	garb:effects\debris objects\forerunner dark structure\forerunner dark structure	6e3e758d8baa48472e1ed48189f7ba24
@@ -354,7 +354,7 @@ TAG	actv:vehicles\c_dropship\cd_gun\cd gun turret gunner	bf156af8aff7727619447cc
 TAG	actr:vehicles\c_dropship\cd_gun\cd gun turret gunner	ed3569a556e924c41e3ca15ffb1e38ab
 TAG	bipd:vehicles\c_dropship\cd_gun\cd_gun	1e3fb24961f42440169e2f5072bc0edd
 TAG	mode:vehicles\c_dropship\cd_gun\cd_gun	5577e304a395855266a8ecea1d0f7614
-TAG	antr:vehicles\c_dropship\cd_gun\cd_gun	aeb62d2a4339ea8b529f7546c6251981
+TAG	antr:vehicles\c_dropship\cd_gun\cd_gun	314b0004a1bdfa69e5f2b67a4430cb27
 TAG	coll:vehicles\c_dropship\cd_gun\cd_gun	bb5b5f48293bc9880f68a20c795700c4
 TAG	weap:vehicles\c_dropship\cd_gun\cd gun turret gun	720e74cc4ffb2850cf1b7427b5cd9ed5
 TAG	effe:vehicles\c_dropship\effects\antigravity particles	1bce332a3f819dc6d6af7a17a0b3ca42
@@ -362,7 +362,7 @@ TAG	vehi:cinematics\props\b30_falling_box	7589566d18b408ef83e661509d4ff41e
 TAG	antr:scenery\c_storage\c_storage	585aabae0eaa9d31b9b9872860a8b156
 TAG	vehi:vehicles\ghost\ghost	b00298709bcbcd8d6328ad7cae080f8d
 TAG	mode:vehicles\ghost\ghost	d257c5ce3b84fc1fd55d3cba6403dc1c
-TAG	antr:vehicles\ghost\ghost	de4e9107fb1d50f3fb6b06f7e604ae25
+TAG	antr:vehicles\ghost\ghost	620f093458264bc6ccea6f5d19e933d9
 TAG	coll:vehicles\ghost\ghost	357b100bfbde5443c39ded51e1c1825d
 TAG	effe:vehicles\wraith\effects\partial damage	72c79d110712c9b94a28cd9f7db9ae7e
 TAG	phys:vehicles\ghost\ghost	94d25256ff9fcd2d27a78570fb2b42bf
@@ -401,7 +401,7 @@ TAG	coll:weapons\rocket launcher\rocket launcher	e0e0848e406200bf51ce1948ebef26a
 TAG	jpt!:weapons\rocket launcher\melee	e81b4e71b718e300b4bd01f111784ee3
 TAG	jpt!:weapons\rocket launcher\melee_response	cb7871c5da7bd5f48513065965185705
 TAG	mode:weapons\rocket launcher\fp\fp	38b40e27d3804c36875b2a704e5d89f0
-TAG	antr:weapons\rocket launcher\fp\fp	7cfb3b741d38a8fe2f63f00663b3238b
+TAG	antr:weapons\rocket launcher\fp\fp	e175f0bc02cf60b263695fcdb99a6465
 TAG	proj:weapons\rocket launcher\rocket	01cec099592657218bae423b8fa589cd
 TAG	mode:weapons\rocket launcher\projectile\projectile	8aaae840c788835b855a7faef1cc110f
 TAG	effe:weapons\rocket launcher\effects\exhaust	51295520a482c982bb0abd909b46e916
@@ -425,7 +425,7 @@ TAG	effe:weapons\rocket launcher\effects\fire rocket	912ebb16778b7d7b78c1d58b0b3
 TAG	jpt!:weapons\rocket launcher\trigger	6e84006cc031b116368cc53ac0831d33
 TAG	mach:levels\b30\devices\interior tech objects\holo control room display\holo control room display	5566f8779c8e63daacb1b59c4873f6fd
 TAG	mode:levels\b30\devices\interior tech objects\holo control room display\holo control room display	381d559fe2a36eb91d8faf95c96fa397
-TAG	antr:levels\b30\devices\interior tech objects\holo control room display\holo control room display	41399c694a47f7b149f95eb92baf575e
+TAG	antr:levels\b30\devices\interior tech objects\holo control room display\holo control room display	c3860c34708316a8227f8f2de1e5c662
 TAG	mach:levels\b30\devices\interior tech objects\holo beam tube\holo beam tube	d99d20396b7c239d88b23ea2c627ccc5
 TAG	mode:levels\b30\devices\interior tech objects\holo beam tube\holo beam tube	d3cc61ef115382957e4625d1e80f3a5d
 TAG	mach:levels\b30\devices\interior tech objects\holo display tall\holo display tall	cff9e23fd5956465d480d4d7545aff33
@@ -436,10 +436,10 @@ TAG	mach:levels\b30\devices\interior tech objects\holo display square\holo displ
 TAG	mode:levels\b30\devices\interior tech objects\holo display square\holo display square	cdd65efcbe46a2085e511e8da2c93aeb
 TAG	mach:levels\b30\devices\interior tech objects\holo panel\holo panel	1286e08c05d96d8ff445f28fba6e1207
 TAG	mode:levels\b30\devices\interior tech objects\holo panel\holo panel	445d1fe76e8246a28d79297f5cb7dff0
-TAG	antr:levels\b30\devices\interior tech objects\holo panel\holo panel	4144ddf155f1d27aad2d754d1f0a09f2
+TAG	antr:levels\b30\devices\interior tech objects\holo panel\holo panel	40ec1c7deaef3e348b3cb183e2006288
 TAG	mach:levels\b30\devices\doors\door small\door small	8d5c96689085f6d046b50291626b4d33
 TAG	mode:levels\b30\devices\doors\door small\door small	a2fdf80a41db93f0c6bcdda51a4c1323
-TAG	antr:levels\b30\devices\doors\door small\door small	21416066ef9ffe24a6f6b794a70ffdc7
+TAG	antr:levels\b30\devices\doors\door small\door small	6acd261d7ad7df8ea062e699a6859089
 TAG	coll:levels\b30\devices\doors\door small\door small	ab5102f4cbbe8f617bb070c542ee109e
 TAG	effe:sound\sfx\impulse\doors\b30_door_open	300aad5d36beb4b62e4bf53915130d2c
 TAG	effe:sound\sfx\impulse\doors\b30_door_close	375f7f1b5cd7b8e7af16125b072bbe5d
@@ -447,18 +447,18 @@ TAG	effe:sound\sfx\impulse\doors\b30_door_done	21ef35655347d04b2c6bedbec47e8752
 TAG	mach:levels\b30\devices\doors\door small\door small platform	6036c085f45c1baec82f3060498f84a0
 TAG	mach:cinematics\effects\lights\shaft open lens\shaft open lens	7fb0376bc6fd4d8fe8eaadb93e09f396
 TAG	mode:cinematics\effects\lights\shaft open lens\shaft open lens	8642c2a4bdf34b5e13e764319c3f762c
-TAG	antr:cinematics\effects\lights\shaft open lens\shaft open lens	75e1316bb72fce4b7ec0937d6dfcee3e
+TAG	antr:cinematics\effects\lights\shaft open lens\shaft open lens	a291b8343f29805f09b5aa964d79c74c
 TAG	coll:cinematics\effects\lights\shaft open lens\shaft open lens	5af7c69eb9523feac713a7c26d86bfd5
 TAG	mach:levels\b30\devices\interior tech objects\holo control ring\holo control ring	6f31d1608c9c63e4b557d54dcbd714ce
 TAG	mode:levels\b30\devices\interior tech objects\holo control ring\holo control ring	1cf65d273eede610418e63822fa02873
-TAG	antr:levels\b30\devices\interior tech objects\holo control ring\holo control ring	6d531aea45fb7c6cfe107da312b497ff
+TAG	antr:levels\b30\devices\interior tech objects\holo control ring\holo control ring	0ff86cdd237769b34073ff9685610144
 TAG	ctrl:levels\b30\devices\interior tech objects\holo control\holo control	27fd248d3fcc1a2665aec416aea202f9
 TAG	mode:levels\b30\devices\interior tech objects\holo control\holo control	41b18cd0b7a6627abbb53d3613d94419
 TAG	coll:levels\b30\devices\interior tech objects\holo control\holo control	356c245b3c6c271b943f8f91b92de2d0
 TAG	effe:sound\sfx\impulse\panel\activate_panel	4f33a58f2feec72135354cb1348b5d50
 TAG	ctrl:levels\b30\devices\interior tech objects\holo control equipment\holo control equipment	41ef325ec39b5b2185a8ccc42180d654
 TAG	mode:levels\b30\devices\interior tech objects\holo control equipment\holo control equipment	f92b26f3b00b1cadd6355c212be1ff62
-TAG	antr:levels\b30\devices\interior tech objects\holo control equipment\holo control equipment	61bd37352313617c0e48ae53ac9be7b5
+TAG	antr:levels\b30\devices\interior tech objects\holo control equipment\holo control equipment	c39bc18b7931a9b7aecd713196537d30
 TAG	coll:levels\b30\devices\interior tech objects\holo control equipment\holo control equipment	19747a20fa25ec1e5f36f31a3334db84
 TAG	ctrl:levels\b30\devices\interior tech objects\holo panel\holo panel	7a85cdf2e2beef2a5d722f47f035ba10
 TAG	lifi:levels\b30\devices\light fixtures\light fixture wall3\light fixture wall3	b9cb39bf3f453c6d6f497170e65a3166
@@ -486,7 +486,7 @@ TAG	effe:weapons\plasma pistol\effects\overheated	295598ed6ede8326add33583e9e5cc
 TAG	jpt!:weapons\plasma pistol\melee	c6e10e86afbe1f0ab39b623475d87aba
 TAG	jpt!:weapons\plasma pistol\melee_response	cb7871c5da7bd5f48513065965185705
 TAG	mode:weapons\plasma pistol\fp\fp	5ebe43733cfb0c1b5f671539c2078f1c
-TAG	antr:weapons\plasma pistol\fp\fp	502f4730c8a2aecd05537a7503fe6bd9
+TAG	antr:weapons\plasma pistol\fp\fp	41e75a0f4c2647f17476b8a3f8caa5a2
 TAG	proj:weapons\plasma pistol\bolt	24d4acf514e9f6aa82b2721b8cebde08
 TAG	jpt!:weapons\plasma pistol\bolt	d0ba51ab3349150244a0f071dbfa6f07
 TAG	effe:weapons\plasma pistol\effects\impact dirt	06ff11abe3980c2bf8d890a2b460b6e8
@@ -529,7 +529,7 @@ TAG	actv:characters\grunt\grunt minor plasma pistol	fc611f835c78d8ec8c1b9c63f752
 TAG	actr:characters\grunt\grunt minor	ef132098b91eb3f545b9be94c12194b2
 TAG	bipd:characters\grunt\grunt	18c12c97752bcf3625b75e67ca3a3888
 TAG	mode:characters\grunt\grunt	7ec9531dedad47ad9768d739b6347863
-TAG	antr:characters\grunt\grunt	a8430f3dfe0a762bed637b117b5a5303
+TAG	antr:characters\grunt\grunt	10e442c1aae3d8cc36174ad5b8554079
 TAG	coll:characters\grunt\grunt	19df5afccf769f18cfe8f01c3621070f
 TAG	effe:characters\grunt\effects\localized damge	cfb59b6b93a9c3e429eebd3cea52b3ac
 TAG	effe:effects\blood aoe grunt	23604c1df59fd2768f940872022f6816
@@ -547,7 +547,7 @@ TAG	actv:characters\hunter\hunter	8f7ee29d4e75c9f180f71928f9ddccf3
 TAG	actr:characters\hunter\hunter	d638f01dc9875868318829a8029efe78
 TAG	bipd:characters\hunter\hunter	869fb717e984bc02860b7bf1e4800442
 TAG	mode:characters\hunter\hunter	a7d8f1285615c04a14b1de240adae569
-TAG	antr:characters\hunter\hunter	30f2d4698259e5a26c3f72b48e4ada62
+TAG	antr:characters\hunter\hunter	f6d1f11577ee8085cc90d0f715422265
 TAG	coll:characters\hunter\hunter	9db3b7a1ded80d83ff9b0ed1c9c750b1
 TAG	effe:characters\hunter\effects\localized damage	dc0a01199e0d747d397583d041352b08
 TAG	effe:effects\blood aoe hunter	15e2ff46ea87d05d0d9c1874268fa8e6
@@ -562,7 +562,7 @@ TAG	actv:characters\jackal\jackal minor plasma pistol	beb060b957a6147820c1f519dc
 TAG	actr:characters\jackal\jackal minor	8bccabbffde10967e8485970077550d3
 TAG	bipd:characters\jackal\jackal	d977a342f1dd075fda622753d31cab7d
 TAG	mode:characters\jackal\jackal	64c64dcb833074892ba5b857a79412e1
-TAG	antr:characters\jackal\jackal	8c7ee1e65575494b91ab84b329293ae8
+TAG	antr:characters\jackal\jackal	eaaf145da5f5b8ff3976ed5d2a1a5cd6
 TAG	coll:characters\jackal\jackal	2243ecfae909eaf8fc7dfb57398a8061
 TAG	effe:characters\elite\effects\localized damage	7955554c856da76580421468c9191a02
 TAG	effe:characters\jackal\effects\shield depletion	e13cd9fe8889e9c6a49f1bdb05fd44d9
@@ -583,7 +583,7 @@ TAG	effe:weapons\needler\effects\ready	8c8470e123e494c15161e12ec907e76b
 TAG	jpt!:weapons\needler\melee	5e4de3cdbb976dfd400f3e173bb1793f
 TAG	jpt!:weapons\needler\melee_response	cb7871c5da7bd5f48513065965185705
 TAG	mode:weapons\needler\fp\fp	f0bce43626456c0995f2df0a54849403
-TAG	antr:weapons\needler\fp\fp	39d8bafb332a4e363f8783143c7a68f8
+TAG	antr:weapons\needler\fp\fp	25f2d58eb3c243eb705385a3d2216f56
 TAG	eqip:powerups\needler ammo\needler ammo	81cf42279aea177afc6785000387fd98
 TAG	mode:powerups\needler ammo\needler ammo	39bc0f023e6d7752529b739852e2d15d
 TAG	coll:powerups\needler ammo\needler ammo	d005993b1aeb6a3e43fe8527b3794046
@@ -616,7 +616,7 @@ TAG	actv:characters\engineer\engineer major plasma pistol	d1fe7666b7b55105d97831
 TAG	actr:characters\engineer\engineer	d8dfdc946224423037f9d68952756f48
 TAG	bipd:characters\engineer\engineer	1982d615511a8c972721c80e62c3088e
 TAG	mode:characters\engineer\engineer	1798af32bf80223e7110b627d63a5688
-TAG	antr:characters\engineer\engineer	4270f3a6e05fac3595de7fc543577440
+TAG	antr:characters\engineer\engineer	557a57200c564e67a0881c9ec79c66bd
 TAG	coll:characters\engineer\engineer	3175b6abfcaa0b61696f1a3f64417136
 TAG	effe:characters\engineer\effects\body destroyed	adc91142f7f9992e1857113eb5bdec67
 TAG	jpt!:characters\floodcarrier\bdoy destroyed	5d2152dd12824bf4d271d7a1241e5f12
@@ -667,4 +667,4 @@ TAG	jpt!:globals\flaming_death	ebc4a76a902a7ae65a5aa7139f45ea0c
 SCENARIO	levels\b30\b30	d597d80ec2e3d4bd9793de115c6a86e9
 BSP	levels\b30\b30a	b0ad1130e1aeed4fa55d89ba8cafb1bf
 BSP	levels\b30\b30b	bd4574501c0ae66002a97e11997d77a6
-MAP	levels\b30\b30	223160909e7b5986dccfcbb1b94b567b8daf313aea21193763a40293d5a95385
+MAP	levels\b30\b30	af2f8891a9d99f9ec3891c28ee68af55642ebec44f4362cdd4f8c3c57256667f
