@@ -33,7 +33,9 @@ title: a menu title (port/assets/titles, made by tools/title_assets.py) or a
 button icon (port/assets/buttons, made by tools/button_assets.py), drawn with
 display.high_res_text rather than display.high_res_hud; sprites: the sequences
 of its bitmap's group (a bit each) whose sprites it is drawn for, through a
-placeholder, or 0: the whole bitmap, in its place */
+placeholder, or 0: the whole bitmap, in its place; sheet_crc: the CRC-32 of
+the sprite rectangles of its bitmap in the disc's maps, in texels
+(hud_hires_asset_sheet_matches), or 0 for a bitmap that is no sprite sheet */
 struct hud_hires_embedded
 {
 	const char *tag;
@@ -44,6 +46,7 @@ struct hud_hires_embedded
 	int point_threshold; /* red: exact discrete meter thresholds, zero elsewhere */
 	int title;
 	unsigned int sprites;
+	unsigned int sheet_crc;
 	/* drawn for a Custom Edition map's stock bitmap of its name too, whose
 	layout is its own (port/assets/hud/custom_edition.json) */
 	int custom_edition;
@@ -76,7 +79,8 @@ int hud_hires_bitmap_affected(unsigned long address, long width, long height, un
 or -1: none, its setting (display.high_res_hud, or display.high_res_text for
 the menus') off, or pixels other than those the
 texture was drawn for (another language's maps, which have their own text,
-or modified ones) */
+or modified ones), unless display.high_res_hud_by_layout finds a sprite sheet
+laid out as the disc's (port/linux/game/hud_hires_tags.c) */
 long hud_hires_override_find(unsigned long address, unsigned long width, unsigned long height,
 	unsigned long level0_size);
 /* its GL texture (decoded and uploaded, mipmapped, on first use; 0 if it

@@ -28,6 +28,7 @@ operands (it keeps .ascii strings as they are, but once garbled them).
 import json
 import struct
 import sys
+import zlib
 from pathlib import Path
 from typing import Any, List
 
@@ -66,6 +67,15 @@ def font_files() -> List[str]:
         return []
     fonts = json.loads((ROOT / FONT_LIST).read_text())["fonts"]
     return sorted({font["file"] for font in fonts})
+
+
+def sheet_crc(asset: dict) -> int:
+    """The CRC-32 of the sprite rectangles of a texture's bitmap in the disc's
+    maps (layout.json's sheet_sprites), each once and sorted, as
+    port/linux/src/hud_hires.c's hud_hires_asset_sheet_matches takes them; 0
+    for a bitmap that is no sprite sheet."""
+    cells = sorted({tuple(cell) for cell in asset.get("sheet_sprites", [])})
+    return zlib.crc32(b"".join(struct.pack("<4i", *cell) for cell in cells))
 
 
 def textures() -> List[tuple]:
@@ -206,7 +216,7 @@ def main() -> None:
         if ce.get("replacement", asset["name"]) != asset["name"]:
             ce = {}
         table.append(f'\t{{ "{tag}", {asset["bitmap"]}, {width}, {height}, 0x{asset["crc"]:08x}u, {coverage}, '
-                     f'{point_threshold}, {int(title)}, 0x{sprites:x}u, '
+                     f'{point_threshold}, {int(title)}, 0x{sprites:x}u, 0x{sheet_crc(asset):08x}u, '
                      f'{int(bool(ce))}, {int(asset.get("ce_only", False))}, {ce.get("width", 0)}, {ce.get("height", 0)}, '
                      f'{ce.get("size", 0)}, 0x{ce.get("crc", 0):08x}u, asset{index}, {len(data)} }},')
     lines.append("const struct hud_hires_embedded hud_hires_embedded[] =")
