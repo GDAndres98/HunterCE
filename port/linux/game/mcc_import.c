@@ -3135,3 +3135,205 @@ int mcc_import_run(
 
 	return failures ? 1 : 0;
 }
+
+/* ---------- private code: MCC's own maps, a package for OpenCE's MCC loader */
+
+/* the package's sounds.map, as OpenCE's MCC loader reads one
+(mcc_resources.c): a header of four words (2, for sounds; the names'
+offset; the index's offset; the count), the samples from offset 16, then the
+names, then the index (each entry's name's offset among the names, its size
+and its offset). Each name once: the same tag's permutation in two maps is
+the same samples. */
+struct mcc_package_sounds
+{
+	FILE *file;
+	unsigned long end;
+	char *names;
+	unsigned long names_used, names_size;
+	struct mcc_package_sound
+	{
+		unsigned long name, size, offset, crc;
+	} *items;
+	long count, maximum;
+	long conflicts;
+};
+
+static unsigned long mcc_package_sound_add(
+	void *context,
+	char const *name,
+	void const *bytes,
+	unsigned long size)
+{
+	struct mcc_package_sounds *sounds = context;
+	unsigned long crc = crc32(0L, bytes, (uInt)size);
+	unsigned long length = (unsigned long)strlen(name) + 1;
+	long index;
+
+	for (index = 0; index < sounds->count; index++)
+	{
+		struct mcc_package_sound const *item = &sounds->items[index];
+
+		if (strcmp(sounds->names + item->name, name))
+			continue;
+		if (item->size == size && item->crc == crc)
+			return item->offset;
+		/* (the same name with other samples: the second map's sound left
+		empty, as the loader takes each name once) */
+		sounds->conflicts++;
+		mcc_import_error("mcc package: %s: other samples than another map's of that name: left empty", name);
+		return 0;
+	}
+	if (sounds->count == sounds->maximum)
+	{
+		long maximum = sounds->maximum ? sounds->maximum * 2 : 4096;
+		struct mcc_package_sound *grown = sounds->items ? realloc(sounds->items, (size_t)maximum * sizeof(*grown)) :
+			malloc((size_t)maximum * sizeof(*grown));
+
+		if (!grown)
+			return 0;
+		sounds->items = grown;
+		sounds->maximum = maximum;
+	}
+	if (sounds->names_used + length > sounds->names_size)
+	{
+		unsigned long names_size = (sounds->names_size + length) * 2;
+		char *grown = sounds->names ? realloc(sounds->names, names_size) : malloc(names_size);
+
+		if (!grown)
+			return 0;
+		sounds->names = grown;
+		sounds->names_size = names_size;
+	}
+	if (fwrite(bytes, 1, size, sounds->file) != size)
+		return 0;
+	csmemcpy(sounds->names + sounds->names_used, name, length);
+	sounds->items[sounds->count].name = sounds->names_used;
+	sounds->items[sounds->count].size = size;
+	sounds->items[sounds->count].offset = sounds->end;
+	sounds->items[sounds->count].crc = crc;
+	sounds->count++;
+	sounds->names_used += length;
+	sounds->end += size;
+
+	return sounds->end - size;
+}
+
+/* the names and the index after the samples, and the header */
+static boolean mcc_package_sounds_finish(
+	struct mcc_package_sounds *sounds)
+{
+	unsigned long header[4];
+	long index;
+	boolean success;
+
+	header[0] = 2;
+	header[1] = sounds->end;
+	header[2] = sounds->end + sounds->names_used;
+	header[3] = (unsigned long)sounds->count;
+	success = sounds->count > 0 && fwrite(sounds->names, 1, sounds->names_used, sounds->file) == sounds->names_used;
+	for (index = 0; success && index < sounds->count; index++)
+	{
+		unsigned long entry[3];
+
+		entry[0] = sounds->items[index].name;
+		entry[1] = sounds->items[index].size;
+		entry[2] = sounds->items[index].offset;
+		success = fwrite(entry, 1, sizeof(entry), sounds->file) == sizeof(entry);
+	}
+	success = success && !fseek(sounds->file, 0, SEEK_SET) && fwrite(header, 1, sizeof(header), sounds->file) ==
+		sizeof(header);
+
+	return success;
+}
+
+/* ---------- public code: MCC's own maps */
+
+int mcc_import_package_run(
+	char const *output_folder,
+	char const *const *map_names,
+	int map_count)
+{
+	struct mcc_package_sounds sounds;
+	char path[512], final_path[512];
+	int index, failures = 0;
+	byte zeros[16];
+
+	setvbuf(stderr, NULL, _IONBF, 0);
+	if (!mcc_import_sounds_open())
+	{
+		fprintf(stderr, "mcc package: MCC's sound banks cannot be read (sound\\pc): nothing written\n");
+		return 1;
+	}
+	csmemset(&sounds, 0, sizeof(sounds));
+	csmemset(zeros, 0, sizeof(zeros));
+	snprintf(path, sizeof(path), "%s/sounds.map.partial", output_folder);
+	sounds.file = fopen(path, "wb");
+	if (!sounds.file || fwrite(zeros, 1, sizeof(zeros), sounds.file) != sizeof(zeros))
+	{
+		fprintf(stderr, "mcc package: cannot write %s\n", path);
+		if (sounds.file)
+			fclose(sounds.file);
+		mcc_import_sounds_close();
+		return 1;
+	}
+	sounds.end = sizeof(zeros);
+	for (index = 0; index < map_count; index++)
+	{
+		char source[512];
+		FILE *file;
+		byte *map = NULL;
+		long size = 0, given = NONE;
+
+		snprintf(source, sizeof(source), "%smaps\\%s.map", mcc_source_directory(), map_names[index]);
+		file = fopen(source, "rb");
+		if (file && !fseek(file, 0, SEEK_END) && (size = ftell(file)) > 0 && size < 0x10000000 && !fseek(file, 0, SEEK_SET))
+		{
+			map = malloc((size_t)size);
+			if (map && fread(map, 1, (size_t)size, file) != (size_t)size)
+			{
+				free(map);
+				map = NULL;
+			}
+		}
+		if (file)
+			fclose(file);
+		if (map)
+			given = mcc_import_sounds_package(map, (unsigned long)size, mcc_package_sound_add, &sounds);
+		snprintf(final_path, sizeof(final_path), "%s/%s.map", output_folder, map_names[index]);
+		if (given == NONE || !(file = fopen(final_path, "wb")) ||
+			fwrite(map, 1, (size_t)size, file) != (size_t)size || fclose(file) != 0)
+		{
+			mcc_import_error("mcc package: %s: %s", map_names[index], given == NONE ? "not MCC's map file: not written" :
+				"cannot be written");
+			remove(final_path);
+			failures++;
+		}
+		else
+		{
+			fprintf(stdout, "mcc package: %s: %ld sounds given their samples, %ld left empty\n", map_names[index], given,
+				mcc_import_sounds_silent());
+		}
+		if (map)
+			free(map);
+		fflush(stdout);
+	}
+	if (!mcc_package_sounds_finish(&sounds))
+	{
+		fprintf(stderr, "mcc package: %s cannot be written\n", path);
+		failures++;
+	}
+	fclose(sounds.file);
+	snprintf(final_path, sizeof(final_path), "%s/sounds.map", output_folder);
+	remove(final_path);
+	if (!failures && rename(path, final_path))
+		failures++;
+	else if (failures)
+		remove(path);
+	fprintf(stdout, "mcc package: sounds.map: %ld samples, 0x%lX bytes, %ld names with other samples in another map\n",
+		sounds.count, sounds.end, sounds.conflicts);
+	mcc_import_free(sounds.names);
+	mcc_import_free(sounds.items);
+	mcc_import_sounds_close();
+
+	return failures ? 1 : 0;
+}

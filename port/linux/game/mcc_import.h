@@ -48,6 +48,15 @@ int mcc_import_run(
 	char const *output_folder,
 	char const *const *map_names,
 	int map_count);
+/* halo --mcc-package <output folder> [--from <halo1 folder> | steam] <map>...:
+MCC's own maps, as a package for OpenCE's MCC loader (mcc_maps): each map's
+file as MCC has it, its sounds given from MCC's banks (patched in place:
+mcc_import_sounds_package), and one sounds.map of their samples. Returns 0
+when every map and the sounds.map are written. */
+int mcc_import_package_run(
+	char const *output_folder,
+	char const *const *map_names,
+	int map_count);
 
 /* ---------- prototypes/MCC_IMPORT_PATCH.C */
 
@@ -183,6 +192,22 @@ long mcc_import_sounds_silent(
 /* Lets go of what the map's sounds needed, once the map is written. */
 void mcc_import_sounds_map_done(
 	void);
+
+/* adds `size` bytes of a permutation's samples to the package's sounds.map
+under `name`: their offset there (0: they cannot be) */
+typedef unsigned long (*mcc_import_sound_resource_proc)(void *context, char const *name, void const *bytes,
+	unsigned long size);
+
+/* MCC's own map file (`map`, `size` bytes, as MCC's halo1\maps has it) given
+its sounds for OpenCE's MCC loader: each sound's samples, from the banks,
+added as Xbox ADPCM (`add`), and its permutations' codec, size and offset
+patched in the file in place. Returns how many sounds have samples (NONE: not
+MCC's map file); mcc_import_sounds_silent how many are left empty. */
+long mcc_import_sounds_package(
+	unsigned char *map,
+	unsigned long size,
+	mcc_import_sound_resource_proc add,
+	void *context);
 
 /* ---------- prototypes/MCC_IMPORT_FINGERPRINT.C */
 

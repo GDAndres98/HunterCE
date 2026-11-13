@@ -998,6 +998,170 @@ static boolean mcc_sounds_sound(
 	return TRUE;
 }
 
+/* ---------- private code: MCC's own maps */
+
+/* a permutation of MCC's own map given `size` bytes of Xbox ADPCM at
+`file_offset` of the package's sounds.map (an external one: bit 0 of the
+samples' flags), or emptied (no size: the loader skips it) */
+static void mcc_sounds_package_permutation_set(
+	byte *permutation,
+	unsigned long size,
+	unsigned long file_offset)
+{
+	struct tag_data *samples = (struct tag_data *)(permutation + PERMUTATION_SAMPLES_OFFSET);
+
+	*(short *)(permutation + PERMUTATION_COMPRESSION_OFFSET) = SOUND_COMPRESSION_XBOX_ADPCM;
+	*(unsigned long *)(permutation + PERMUTATION_BUFFER_SIZE_OFFSET) = 0;
+	samples->size = (long)size;
+	samples->pad = 1;
+	samples->file_offset = (long)file_offset;
+
+	return;
+}
+
+/* every permutation of a sound of MCC's own map emptied, as Xbox ADPCM */
+static void mcc_sounds_package_empty(
+	byte *sound)
+{
+	long pitch_range_count = ((struct tag_block *)(sound + SOUND_PITCH_RANGES_OFFSET))->count;
+	long range, index;
+
+	for (range = 0; range < pitch_range_count; range++)
+	{
+		byte *pitch_range = mcc_sounds_pitch_range(sound, range);
+
+		for (index = 0; index < mcc_sounds_permutation_count(pitch_range); index++)
+			mcc_sounds_package_permutation_set(mcc_sounds_permutation(pitch_range, index), 0, 0);
+	}
+	*(short *)(sound + SOUND_COMPRESSION_OFFSET) = SOUND_COMPRESSION_XBOX_ADPCM;
+
+	return;
+}
+
+/* One sound of MCC's own map (`sound` a copy of its tag whose blocks point
+into the copy): every permutation emptied, then each unit's samples added
+as Xbox ADPCM under <tag>__<range>__<permutation>, a chain's permutations
+taking a piece each in its order, so that the tag keeps MCC's shape. FALSE
+(the sound left empty) when the banks lack its samples. */
+static boolean mcc_sounds_package_sound(
+	byte *sound,
+	char const *tag_name,
+	mcc_import_sound_resource_proc add,
+	void *context)
+{
+	static struct mcc_sound_unit units[1024];
+	static long samples[1024];
+	short banks[6];
+	char names[6][300];
+	short name_count = mcc_sounds_classic_names(tag_name, banks, names), name_index;
+	struct mcc_sound_bank const *bank = NULL;
+	long pitch_range_count = ((struct tag_block *)(sound + SOUND_PITCH_RANGES_OFFSET))->count;
+	short channels = *(short *)(sound + SOUND_ENCODING_OFFSET) == 1 ? 2 : 1;
+	long rate = channels == 1 || *(short *)(sound + SOUND_SAMPLE_RATE_OFFSET) == 0 ? 22050 : 44100;
+	unsigned long block = (unsigned long)MCC_SOUND_ADPCM_BLOCK_BYTES * (unsigned long)channels;
+	long sample_count = 0, unit_count = 0, unit, range;
+	boolean per_chain = FALSE;
+
+	mcc_sounds_package_empty(sound);
+	/* the bank entries: the tag's, or one per pitch range named after it
+	(as mcc_sounds_sound finds them) */
+	for (name_index = 0; name_index < name_count && !sample_count; name_index++)
+	{
+		struct mcc_sound_bank const *candidate = &mcc_sounds.banks[banks[name_index]];
+		struct mcc_sound_entry const *entry = mcc_sounds_entry(candidate, names[name_index]);
+
+		if (entry)
+		{
+			for (unit = 0; unit < entry->count && unit < 1024; unit++)
+				samples[unit] = entry->first + unit;
+			sample_count = MIN(entry->count, 1024);
+			bank = candidate;
+		}
+		else if (pitch_range_count > 0)
+		{
+			for (range = 0; range < pitch_range_count; range++)
+			{
+				char name[340];
+
+				snprintf(name, sizeof(name), "%s\\%s", names[name_index], (char const *)mcc_sounds_pitch_range(sound, range));
+				entry = mcc_sounds_entry(candidate, name);
+				if (!entry)
+					break;
+				for (unit = 0; unit < entry->count && sample_count < 1024; unit++)
+					samples[sample_count++] = entry->first + unit;
+			}
+			if (range < pitch_range_count)
+				sample_count = 0;
+			else
+				bank = candidate;
+		}
+	}
+	for (unit = 0; unit < sample_count; unit++)
+	{
+		if (samples[unit] < 0 || samples[unit] >= bank->sample_count)
+			sample_count = 0;
+	}
+	if (sample_count)
+	{
+		unit_count = mcc_sounds_units(sound, sample_count, bank == &mcc_sounds.banks[_bank_dialogs], units, 1024,
+			&per_chain);
+	}
+	if (!unit_count)
+	{
+		mcc_sounds_log("mcc package: %s: %s", tag_name, sample_count ? "the bank's samples are neither its chains nor its "
+			"permutations: empty" : "no classic samples in MCC's banks: empty");
+		return FALSE;
+	}
+	if (bank == &mcc_sounds.banks[_bank_dialogs])
+		mcc_sounds_match_lengths(sound, bank, samples, units, unit_count);
+	for (unit = 0; unit < unit_count; unit++)
+	{
+		struct mcc_sound_unit const *u = &units[unit];
+		byte *pitch_range = mcc_sounds_pitch_range(sound, u->pitch_range);
+		unsigned long size = 0, blocks, per_piece;
+		boolean celt = FALSE;
+		byte *bytes = mcc_sounds_convert(bank, samples[unit], channels, rate, &size, &celt);
+		short piece;
+
+		if (!bytes || u->permutation_count <= 0)
+		{
+			if (bytes)
+				free(bytes);
+			mcc_sounds_log("mcc package: %s: a sample cannot be converted: empty", tag_name);
+			mcc_sounds_package_empty(sound);
+			return FALSE;
+		}
+		/* (whole blocks, as even a share as the chain's permutations take) */
+		blocks = size / block;
+		per_piece = (blocks + (unsigned long)u->permutation_count - 1) / (unsigned long)u->permutation_count;
+		for (piece = 0; piece < u->permutation_count; piece++)
+		{
+			unsigned long first = (unsigned long)piece * per_piece;
+			unsigned long count = first < blocks ? MIN(per_piece, blocks - first) : 0;
+			byte *permutation = mcc_sounds_permutation(pitch_range, u->permutations[piece]);
+			char name[340];
+			unsigned long at = 0;
+
+			if (count)
+			{
+				snprintf(name, sizeof(name), "%s__%d__%d", tag_name, (int)u->pitch_range, (int)u->permutations[piece]);
+				at = add(context, name, bytes + first * block, count * block);
+				if (!at)
+				{
+					free(bytes);
+					mcc_sounds_log("mcc package: %s: its samples cannot be added: empty", tag_name);
+					mcc_sounds_package_empty(sound);
+					return FALSE;
+				}
+			}
+			mcc_sounds_package_permutation_set(permutation, count * block, at);
+		}
+		free(bytes);
+	}
+
+	return TRUE;
+}
+
 /* ---------- public code */
 
 void mcc_import_sounds_muted(
@@ -1124,4 +1288,113 @@ void mcc_import_sounds_map_done(
 	mcc_sounds.muted_count = 0;
 
 	return;
+}
+
+/* (MCC's own map: the address its tag data is at, as the file has it) */
+#define MCC_PACKAGE_TAG_BASE 0x50000000UL
+
+/* `bytes` of the copy of MCC's tag data at `address`, or NULL outside it */
+static byte *mcc_sounds_package_at(
+	byte *copy,
+	unsigned long copy_size,
+	unsigned long address,
+	unsigned long bytes)
+{
+	unsigned long offset = address - MCC_PACKAGE_TAG_BASE;
+
+	if (address < MCC_PACKAGE_TAG_BASE || offset > copy_size || bytes > copy_size - offset)
+		return NULL;
+
+	return copy + offset;
+}
+
+long mcc_import_sounds_package(
+	unsigned char *map,
+	unsigned long size,
+	mcc_import_sound_resource_proc add,
+	void *context)
+{
+	unsigned long tag_offset, tag_size, instances, count, index;
+	byte *copy;
+	long given = 0;
+
+	mcc_sounds.silent = 0;
+	if (!mcc_sounds.open || size < 0x800 || mcc_sounds_u32(map) != 'head' || mcc_sounds_u32(map + 4) != 13)
+		return NONE;
+	tag_offset = mcc_sounds_u32(map + 0x10);
+	tag_size = mcc_sounds_u32(map + 0x14);
+	if (tag_offset > size || tag_size > size - tag_offset || tag_size < 0x28)
+		return NONE;
+	/* (the tags read from a copy, whose blocks are made to point into it;
+	only the permutations' fields are written back into the file) */
+	copy = malloc(tag_size);
+	if (!copy)
+		return NONE;
+	csmemcpy(copy, map + tag_offset, tag_size);
+	instances = mcc_sounds_u32(copy);
+	count = mcc_sounds_u32(copy + 0xC);
+	if (count > 0x10000 || !mcc_sounds_package_at(copy, tag_size, instances, count * 0x20))
+	{
+		free(copy);
+		return NONE;
+	}
+	for (index = 0; index < count; index++)
+	{
+		byte *entry = mcc_sounds_package_at(copy, tag_size, instances + index * 0x20, 0x20);
+		byte *name = mcc_sounds_package_at(copy, tag_size, mcc_sounds_u32(entry + 0x10), 1);
+		byte *sound = mcc_sounds_package_at(copy, tag_size, mcc_sounds_u32(entry + 0x14), 0xA4);
+		unsigned long range_count, range;
+		byte *ranges;
+		boolean valid;
+
+		if (mcc_sounds_u32(entry) != 'snd!' || !name || !sound ||
+			!memchr(name, 0, MIN(256, (unsigned long)(copy + tag_size - name))))
+		{
+			continue;
+		}
+		range_count = mcc_sounds_u32(sound + SOUND_PITCH_RANGES_OFFSET);
+		ranges = range_count ? mcc_sounds_package_at(copy, tag_size, mcc_sounds_u32(sound + SOUND_PITCH_RANGES_OFFSET + 4),
+			range_count * PITCH_RANGE_BYTES) : NULL;
+		valid = !range_count || (range_count <= 1024 && ranges);
+		for (range = 0; valid && range < range_count; range++)
+		{
+			byte *pitch_range = ranges + range * PITCH_RANGE_BYTES;
+			unsigned long permutation_count = mcc_sounds_u32(pitch_range + PITCH_RANGE_PERMUTATIONS_OFFSET);
+			byte *permutations = permutation_count ? mcc_sounds_package_at(copy, tag_size,
+				mcc_sounds_u32(pitch_range + PITCH_RANGE_PERMUTATIONS_OFFSET + 4), permutation_count * PERMUTATION_BYTES) :
+				NULL;
+
+			valid = !permutation_count || (permutation_count <= 0x7FFF && permutations);
+			if (valid)
+				((struct tag_block *)(pitch_range + PITCH_RANGE_PERMUTATIONS_OFFSET))->address = permutations;
+		}
+		if (!valid || !range_count)
+			continue;
+		((struct tag_block *)(sound + SOUND_PITCH_RANGES_OFFSET))->address = ranges;
+		if (mcc_sounds_package_sound(sound, (char const *)name, add, context))
+			given++;
+		else
+			mcc_sounds.silent++;
+		/* the fields given, back into the file: the sound's codec, and each
+		permutation's codec, buffer size and samples */
+		csmemcpy(map + tag_offset + (sound - copy) + SOUND_COMPRESSION_OFFSET, sound + SOUND_COMPRESSION_OFFSET, 2);
+		for (range = 0; range < range_count; range++)
+		{
+			byte *pitch_range = ranges + range * PITCH_RANGE_BYTES;
+			long permutation;
+
+			for (permutation = 0; permutation < mcc_sounds_permutation_count(pitch_range); permutation++)
+			{
+				byte *from = mcc_sounds_permutation(pitch_range, permutation);
+				byte *to = map + tag_offset + (from - copy);
+
+				csmemcpy(to + PERMUTATION_COMPRESSION_OFFSET, from + PERMUTATION_COMPRESSION_OFFSET, 2);
+				csmemcpy(to + PERMUTATION_BUFFER_SIZE_OFFSET, from + PERMUTATION_BUFFER_SIZE_OFFSET, 4);
+				csmemcpy(to + PERMUTATION_SAMPLES_OFFSET, from + PERMUTATION_SAMPLES_OFFSET, 12);
+			}
+		}
+	}
+	free(copy);
+
+	return given;
 }

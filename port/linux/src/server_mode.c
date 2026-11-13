@@ -34,6 +34,7 @@ without a display to wait for, and its exits.
 
 /* port/linux/game/mcc_import.c */
 int mcc_import_run(char const *output_folder, char const *const *map_names, int map_count);
+int mcc_import_package_run(char const *output_folder, char const *const *map_names, int map_count);
 /* (port/linux/game/mcc_import_patch.c) the maps the game has the disc's values of */
 int mcc_import_default_maps(char names[][64], int maximum_count);
 /* (port/linux/game/mcc_import_fingerprint.c) */
@@ -213,7 +214,7 @@ static void answer_command_line(void)
 			}
 			exit(mcc_import_fingerprint_print(name));
 		}
-		if (!strcmp(argument, "--import-mcc"))
+		if (!strcmp(argument, "--import-mcc") || !strcmp(argument, "--mcc-package"))
 		{
 			/* halo --import-mcc <output folder> [--from <MCC's halo1 folder> |
 			steam] [<map>...]: MCC's maps (the data root's, or those of the
@@ -251,6 +252,14 @@ static void answer_command_line(void)
 			{
 				maps[count] = names[count];
 				count++;
+			}
+			/* (--mcc-package: only the maps named, as MCC's own:
+			mcc_import_package_run) */
+			if (!strcmp(argument, "--mcc-package"))
+			{
+				if (!count)
+					fprintf(stderr, "--mcc-package: name the maps to write as MCC's own\n");
+				exit(count ? mcc_import_package_run(output, maps, count) : SERVER_EXIT_CONFIGURATION);
 			}
 			if (!count)
 				count = mcc_import_default_maps(names, 64);
