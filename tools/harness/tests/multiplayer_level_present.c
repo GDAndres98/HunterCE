@@ -53,12 +53,16 @@ static HANDLE CreateFileA(char const *path, int access, int share, void *securit
 #define mcc_maps_type_count(campaign) (campaign ? 0 : count_of(mcc_multiplayer))
 #define mcc_maps_type_index(row, campaign) (row)
 #define mcc_maps_level_name(index) (mcc_multiplayer[index])
-static int messages;
+#include <wchar.h>
+#define NUMBEROF(array) ((short)(sizeof(array) / sizeof((array)[0])))
 
-static void platform_show_message(char const *title, char const *message)
+static int messages;
+static wchar_t const *message_text;
+
+static void display_error_text_deferred(wchar_t const *text, short local_player_index)
 {
-	(void)title;
-	(void)message;
+	(void)local_player_index;
+	message_text = text;
 	messages++;
 }
 
@@ -125,6 +129,7 @@ int main(int argc, char **argv)
 		CHECK(!multiplayer_level_first_present(), "no multiplayer map at all");
 		CHECK(!multiplayer_level_chosen_present("levels\\test\\carousel\\carousel"), "a missing map chosen is refused");
 		CHECK(messages == 1, "and said once, not %d times", messages);
+		CHECK(message_text && wcsstr(message_text, L"carousel.map"), "naming the map");
 		return 0;
 	}
 	fprintf(stderr, "no case %s\n", mode);

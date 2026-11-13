@@ -47,6 +47,7 @@ Each map can have, beside it in its folder:
 #include "bmp_files.h"
 #include "custom_edition_cache.h"
 #include "custom_edition_maps.h"
+#include "interface/ui_widget.h"
 #include "map_share.h"
 #include "mcc_cache.h"
 #include "mcc_maps.h"
@@ -905,8 +906,10 @@ boolean multiplayer_level_present(
 boolean multiplayer_level_chosen_present(
 	char const *level_name)
 {
-	void platform_show_message(char const *title, char const *message);
+	/* (the menus' error dialog keeps the text until it is closed) */
+	static wchar_t text[160];
 	char message[160];
+	short index;
 
 	if (multiplayer_level_present(level_name))
 	{
@@ -914,7 +917,12 @@ boolean multiplayer_level_chosen_present(
 	}
 	snprintf(message, sizeof(message), "You don't have the map %.64s.map. If you have it, copy it into maps.",
 		level_name ? tag_name_strip_path(level_name) : "");
-	platform_show_message("Halo: map missing", message);
+	for (index = 0; message[index] && index < NUMBEROF(text) - 1; index++)
+	{
+		text[index] = (wchar_t)(unsigned char)message[index];
+	}
+	text[index] = 0;
+	display_error_text_deferred(text, NONE);
 
 	return FALSE;
 }
