@@ -4903,12 +4903,9 @@ static boolean network_game_server_setup_game_from_playlist(
 		precaching would take for a damaged disc and restart the game for */
 		if (!halo_server_mode() && !multiplayer_level_present(server->game.map.name))
 		{
-			void platform_show_message(char const *title, char const *message);
-
 			error(_error_silent, "network game setup failed: map '%s' is missing, and no other multiplayer map is here",
 				server->game.map.name);
-			platform_show_message("Halo: no multiplayer maps",
-				"There are no multiplayer maps here: none in maps, custom_maps or mcc_maps.");
+			display_error_text_deferred(L"There are no multiplayer maps here: none in maps, custom_maps or mcc_maps.", NONE);
 			return FALSE;
 		}
 		network_game_generate_local_machine_name(machine_name);
