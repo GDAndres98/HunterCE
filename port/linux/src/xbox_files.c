@@ -206,6 +206,19 @@ const char *platform_mcc_source_root(void)
 	return mcc_source_root;
 }
 
+static char mcc_data_root[1024];
+
+void platform_set_mcc_data_root(const char *path)
+{
+	snprintf(mcc_data_root, sizeof(mcc_data_root), "%s", path ? path : "");
+	trim_separators(mcc_data_root);
+}
+
+const char *platform_mcc_data_root(void)
+{
+	return mcc_data_root;
+}
+
 const char *platform_custom_edition_root(void)
 {
 	static char root[MAX_PATH];
@@ -344,6 +357,10 @@ void platform_translate_path(const char *xbox_path, char *host_path, unsigned lo
 		else if (drive == 'm' && mcc_source_root[0])
 		{
 			snprintf(resolved, sizeof(resolved), "%s", mcc_source_root);
+		}
+		else if (drive == 'i' && mcc_data_root[0])
+		{
+			snprintf(resolved, sizeof(resolved), "%s", mcc_data_root);
 		}
 		else if (drive == 'd' && translate_elsewhere(cursor + 2, resolved, sizeof(resolved), &cursor))
 		{

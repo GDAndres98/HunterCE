@@ -110,6 +110,10 @@ const char *platform_custom_edition_root(void);
 imported from (m:\), or "" */
 void platform_set_mcc_source_root(const char *path);
 const char *platform_mcc_source_root(void);
+/* the folder of the MCC import's data (the disc's values: <map>.p2, <map>.fp,
+accepted.txt, version.txt) that the import reads (i:\), or "" */
+void platform_set_mcc_data_root(const char *path);
+const char *platform_mcc_data_root(void);
 /* on the desktop, when the data root has no maps folder: offers to copy it
 out of an Xbox disc image into destination (sdl_platform.c), and quits if
 the player declines; nonzero once destination has one */

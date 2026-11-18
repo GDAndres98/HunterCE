@@ -5,10 +5,9 @@ The fingerprint of what the simulation reads in an Xbox map, made from the
 map the MCC import writes (mcc_import.c), to compare with the disc's: equal,
 the map is the disc's and plays with the disc's players; else it is MCC's
 own, which the import's report says. A few differences that change nothing
-the host decides are accepted (accepted_tags, accepted_parts below). halo
---fingerprint <map> prints a map's,
-the disc's or an imported one's, as port/assets/mcc/<map>.fp has the disc's
-(mcc_import_fingerprint_print).
+the host decides are accepted (the import's data's accepted.txt, below).
+halo --fingerprint <map> prints a map's, the disc's or an imported one's, as
+the import's data's <map>.fp has the disc's (mcc_import_fingerprint_print).
 
 A canonical stream of the map's simulation data is hashed (SHA-256), in
 sections, each with its own hash so that a difference can be found:
@@ -141,36 +140,24 @@ static char const *const MODEL_FIELDS[] =
 /* the disc's tag count: ORDER hashes that many */
 static long order_limit;
 
-/* The differences accepted (2026-11-12, the bases 2026-11-18): parts that
-MCC's maps have otherwise than the disc's, but that change nothing the host
-decides, or little, left
-out of the fingerprint so that the levels play with the disc's players.
-port/assets/mcc/README.md lists them, and why. */
+/* The differences accepted: parts that MCC's maps have otherwise than the
+disc's, but that change nothing the host decides, or little, left out of the
+fingerprint so that the maps play with the disc's players. They are the
+import's data's accepted.txt (Hunter Importer's data/README.md says why each
+one is), a line each of tab-separated fields:
+	tag   <map, or * for every map>  <group:path>  a whole tag
+	part  <group:path>  <field>  -                  a field of the tag's
+	part  <group:path>  -  <animation's name>       an animation of a graph
+and comments, lines that start with #. */
 
-/* tags a map ("*": any) never creates: the flamethrower, which no map of
-the disc's places, no weapon set gives (the globals' list's entry for it is
-read only to preload it) and, in c20 and d20, only two Flood variants carry,
-which no squad uses and no script names */
+#define MAXIMUM_ACCEPTED 64
+
+/* tags a map ("*": any) never creates (each list ends at an empty entry) */
 static struct
 {
 	char const *map;
 	char const *tag;
-} const accepted_tags[] =
-{
-	{ "*", "coll:weapons\\flamethrower\\flamethrower" },
-	{ "*", "antr:weapons\\flamethrower\\fp\\fp" },
-	/* the multiplayer bases' collision, which MCC lacks, built from MCC's
-	visible model (mcc_import_collision.c): within a few centimetres of the
-	disc's (accepted 2026-11-18, after games with it) */
-	{ "chillout", "coll:scenery\\flag_base\\flag_base" },
-	{ "chillout", "coll:scenery\\teleporter_base\\teleporter_base" },
-	{ "longest", "coll:scenery\\flag_base\\flag_base" },
-	{ "prisoner", "coll:scenery\\flag_base\\flag_base" },
-	{ "putput", "coll:scenery\\flag_base\\flag_base" },
-	{ "ratrace", "coll:scenery\\flag_base\\flag_base" },
-	{ "wizard", "coll:scenery\\flag_base\\flag_base" },
-	{ NULL, NULL }
-};
+} accepted_tags[MAXIMUM_ACCEPTED + 1];
 
 /* a tag's field, or an element of a block by its name, left out */
 static struct
@@ -178,18 +165,77 @@ static struct
 	char const *tag;
 	char const *field;
 	char const *element;
-} const accepted_parts[] =
+} accepted_parts[MAXIMUM_ACCEPTED + 1];
+
+/* accepted.txt's text, which the lists point into */
+static char *accepted_text;
+
+/* Reads accepted.txt, once. Without it, or with a line it does not
+understand, the lists stay empty, so that every difference counts: FALSE,
+and stderr says why. */
+static boolean accepted_load(void)
 {
-	/* the field generator's collision, made again by Halo PC's tools: the
-	same size, health and materials, its surfaces up to 0.07 world units
-	apart (a shot or a step beside it, on the machine that makes it) */
-	{ "coll:scenery\\c_field_generator\\c_field_generator", "bsps", NULL },
-	/* the cyborg as a warthog's passenger with a rifle: a still pose in
-	MCC, the disc's moves a little (a seated unit's root motion is never
-	applied: only where its body is, on the machine that draws it) */
-	{ "antr:characters\\cyborg\\cyborg", NULL, "W-passenger rifle idle" },
-	{ NULL, NULL, NULL }
-};
+	static boolean tried = FALSE, loaded = FALSE;
+	long size, tag_count = 0, part_count = 0;
+	char *line;
+
+	if (tried)
+		return loaded;
+	tried = TRUE;
+	accepted_text = mcc_import_data_read("accepted.txt", &size);
+	if (!accepted_text)
+	{
+		fprintf(stderr, "mcc import: the import's data has no accepted.txt: no difference is accepted\n");
+		return FALSE;
+	}
+	for (line = accepted_text; *line; )
+	{
+		char *end = line + strcspn(line, "\n");
+		char *next = *end ? end + 1 : end;
+		char *fields[5];
+		char *cursor = line;
+		int field_count = 0;
+
+		*end = 0;
+		if (end > line && end[-1] == '\r')
+			end[-1] = 0;
+		if (*line && *line != '#')
+		{
+			fields[field_count++] = cursor;
+			while (field_count < (int)NUMBEROF(fields) && (cursor = strchr(cursor, '\t')) != NULL)
+			{
+				*cursor++ = 0;
+				fields[field_count++] = cursor;
+			}
+			if (!strcmp(fields[0], "tag") && field_count == 3 && tag_count < MAXIMUM_ACCEPTED)
+			{
+				accepted_tags[tag_count].map = fields[1];
+				accepted_tags[tag_count].tag = fields[2];
+				tag_count++;
+			}
+			else if (!strcmp(fields[0], "part") && field_count == 4 && part_count < MAXIMUM_ACCEPTED &&
+				(strcmp(fields[2], "-") != 0) != (strcmp(fields[3], "-") != 0))
+			{
+				accepted_parts[part_count].tag = fields[1];
+				accepted_parts[part_count].field = strcmp(fields[2], "-") ? fields[2] : NULL;
+				accepted_parts[part_count].element = strcmp(fields[3], "-") ? fields[3] : NULL;
+				part_count++;
+			}
+			else
+			{
+				fprintf(stderr, "mcc import: accepted.txt: a line not understood (%s): no difference is accepted\n",
+					fields[0]);
+				csmemset(accepted_tags, 0, sizeof(accepted_tags));
+				csmemset(accepted_parts, 0, sizeof(accepted_parts));
+				return FALSE;
+			}
+		}
+		line = next;
+	}
+	loaded = TRUE;
+
+	return TRUE;
+}
 
 /* the tag being walked (its section's name) */
 static char const *walk_tag = "";
@@ -1030,6 +1076,7 @@ char const *mcc_import_fingerprint(
 	if (mcc_fingerprint_lines.text)
 		free(mcc_fingerprint_lines.text);
 	csmemset(&mcc_fingerprint_lines, 0, sizeof(mcc_fingerprint_lines));
+	accepted_load();
 	csmemset(&map, 0, sizeof(map));
 	map.tags.address = XBOX_TAG_ADDRESS;
 	map.tags.bytes = tag_data;
@@ -1154,6 +1201,8 @@ int mcc_import_fingerprint_print(
 	FILE *file;
 	int success = 0;
 
+	if (!mcc_import_data_check())
+		return 1;
 	csmemset(bsp_ranges, 0, sizeof(bsp_ranges));
 	csmemset(bsps, 0, sizeof(bsps));
 	snprintf(path, sizeof(path), "d:\\maps\\%s.map", map_name);

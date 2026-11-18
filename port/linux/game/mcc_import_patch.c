@@ -5,7 +5,7 @@ What the MCC import changes in an MCC map's tags before it writes them as
 the disc's (mcc_import.c): the importer's own fixes of what Halo PC and MCC
 changed, which need no data of the disc's, and the operations of the map's
 patch, which give its tags the disc's values where they differ
-(port/assets/mcc/README.md says how they were made). Both walk the tags by
+(Hunter Importer's data/README.md says how they were made). Both walk the tags by
 the checks' schemas (tag_schema.h).
 
 An operation is a line of tab-separated fields: its kind, the tag
@@ -60,7 +60,6 @@ structure's own fields.
 #include "tag_files/tag_groups.h"
 #include "tag_schema.h"
 #include "mcc_import.h"
-#include "memory/zlib/zlib.h"
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -1193,20 +1192,14 @@ void mcc_import_fixes_apply(
 	return;
 }
 
-/* the files of port/assets/mcc, deflated (made by tools/mcc_patches_embed.py,
-which the desktop builds generate) */
-#if !defined(HALO_ANDROID) && !defined(HALO_WEB)
-struct mcc_patch_embedded
-{
-	const char *name;
-	const unsigned int *data;
-	unsigned int size;
-	unsigned int inflated_size;
-};
+/* the folder of the import's data: the one --mcc-data names (Hunter
+Importer's data folder, i:\), else the data root's mcc_patches folder */
+char const *platform_mcc_data_root(void);
 
-extern const struct mcc_patch_embedded mcc_patches_embedded[];
-extern const unsigned int mcc_patches_embedded_count;
-#endif
+static char const *mcc_import_data_folder(void)
+{
+	return platform_mcc_data_root()[0] ? "i:\\" : "d:\\mcc_patches\\";
+}
 
 char *mcc_import_file_read(
 	char const *path,
@@ -1246,71 +1239,76 @@ char *mcc_import_data_read(
 	long *size)
 {
 	char path[256];
-	FILE *file;
 
 	*size = 0;
-	/* (a file of the data root's mcc_patches folder first: one being made) */
-	snprintf(path, sizeof(path), "d:\\mcc_patches\\%s", file_name);
-	file = fopen(path, "rb");
-	if (file)
+	if (snprintf(path, sizeof(path), "%s%s", mcc_import_data_folder(), file_name) >= (int)sizeof(path))
+		return NULL;
+
+	return mcc_import_file_read(path, size);
+}
+
+boolean mcc_import_data_check(void)
+{
+	char const *folder = platform_mcc_data_root()[0] ? platform_mcc_data_root() : "the data root's mcc_patches folder";
+	long size, version;
+	char *text = mcc_import_data_read("version.txt", &size);
+
+	version = text ? strtol(text, NULL, 10) : 0;
+	mcc_import_data_free(text);
+	if (!text)
 	{
-		fclose(file);
-		return mcc_import_file_read(path, size);
+		fprintf(stderr, "mcc import: no import data in %s (its version.txt): name Hunter Importer's data folder "
+			"with --mcc-data\n", folder);
+		return FALSE;
 	}
-#if !defined(HALO_ANDROID) && !defined(HALO_WEB)
+	if (version != MCC_IMPORT_DATA_VERSION)
 	{
-		unsigned int index;
-		char *text;
-
-		for (index = 0; index < mcc_patches_embedded_count; index++)
-		{
-			struct mcc_patch_embedded const *embedded = &mcc_patches_embedded[index];
-			uLongf length = embedded->inflated_size;
-
-			if (!embedded->name || strcmp(embedded->name, file_name))
-				continue;
-			text = malloc((size_t)embedded->inflated_size + 1);
-			if (text && uncompress((Bytef *)text, &length, (Bytef const *)embedded->data, embedded->size) == Z_OK &&
-				length == embedded->inflated_size)
-			{
-				text[length] = 0;
-				*size = (long)length;
-				return text;
-			}
-			free(text);
-			mcc_patch_log("mcc import: the game's %s cannot be inflated", file_name);
-			return NULL;
-		}
+		fprintf(stderr, "mcc import: the import data in %s is of version %ld, and this game reads version %d: "
+			"use the importer's own game, or data of its version\n", folder, version, MCC_IMPORT_DATA_VERSION);
+		return FALSE;
 	}
-#endif
 
-	return NULL;
+	return TRUE;
+}
+
+static int mcc_import_name_compare(
+	void const *a,
+	void const *b)
+{
+	return strcmp((char const *)a, (char const *)b);
 }
 
 int mcc_import_default_maps(
 	char names[][64],
 	int maximum_count)
 {
+	WIN32_FIND_DATAA data;
+	HANDLE find;
+	char pattern[256];
 	int count = 0;
-#if !defined(HALO_ANDROID) && !defined(HALO_WEB)
-	unsigned int index;
 
-	for (index = 0; index < mcc_patches_embedded_count && count < maximum_count; index++)
+	snprintf(pattern, sizeof(pattern), "%s*.p2", mcc_import_data_folder());
+	find = FindFirstFileA(pattern, &data);
+	if (find == INVALID_HANDLE_VALUE)
+		return 0;
+	do
 	{
-		char const *name = mcc_patches_embedded[index].name;
-		unsigned long length = name ? mcc_patch_length(name) : 0;
+		char name[sizeof(data.cFileName) + 1];
+		unsigned long length;
 
-		if (length > 3 && length - 3 < 64 && !strcmp(name + length - 3, ".p2"))
+		csmemcpy(name, data.cFileName, sizeof(data.cFileName));
+		name[sizeof(data.cFileName)] = 0;
+		length = mcc_patch_length(name);
+		if (!(data.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY) && length > 3 && length - 3 < 64 &&
+			!strcmp(name + length - 3, ".p2"))
 		{
 			csmemcpy(names[count], name, length - 3);
 			names[count][length - 3] = 0;
 			count++;
 		}
-	}
-#else
-	(void)names;
-	(void)maximum_count;
-#endif
+	} while (count < maximum_count && FindNextFileA(find, &data));
+	CloseHandle(find);
+	qsort(names, (size_t)count, sizeof(names[0]), mcc_import_name_compare);
 
 	return count;
 }

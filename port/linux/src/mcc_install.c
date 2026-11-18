@@ -328,7 +328,8 @@ BOOL mcc_install_import(const char *halo1, const char *destination, char *error,
 	total = mcc_import_default_maps(mcc_install.names, MCC_INSTALL_MAXIMUM_MAPS);
 	if (!total || !update_executable_path(executable, sizeof(executable)))
 	{
-		snprintf(error, (size_t)error_size, "This build cannot import the Master Chief Collection's maps.");
+		snprintf(error, (size_t)error_size, "This build cannot import the Master Chief Collection's maps (it needs "
+			"Hunter Importer's data folder, as mcc_patches in the game data folder).");
 		return FALSE;
 	}
 	pthread_mutex_init(&mcc_install.lock, NULL);

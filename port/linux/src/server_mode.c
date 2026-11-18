@@ -35,7 +35,7 @@ without a display to wait for, and its exits.
 /* port/linux/game/mcc_import.c */
 int mcc_import_run(char const *output_folder, char const *const *map_names, int map_count);
 int mcc_import_package_run(char const *output_folder, char const *const *map_names, int map_count);
-/* (port/linux/game/mcc_import_patch.c) the maps the game has the disc's values of */
+/* (port/linux/game/mcc_import_patch.c) the maps the import's data has the disc's values of */
 int mcc_import_default_maps(char names[][64], int maximum_count);
 /* (port/linux/game/mcc_import_fingerprint.c) */
 int mcc_import_fingerprint_print(char const *map_name);
@@ -199,10 +199,26 @@ static void answer_command_line(void)
 		}
 		if (!strcmp(argument, "--keygen"))
 			exit(server_master_keygen() ? EXIT_SUCCESS : SERVER_EXIT_CONFIGURATION);
+		if (!strcmp(argument, "--mcc-data"))
+		{
+			/* halo --mcc-data <folder> before --import-mcc, --mcc-package or
+			--fingerprint: the folder of the import's data (Hunter Importer's
+			data folder), read as i:\ in place of the data root's mcc_patches */
+			char folder[1024];
+
+			if (!posix_command_line_argument(index + 1, folder, sizeof(folder)) || !folder[0])
+			{
+				fprintf(stderr, "--mcc-data: give the folder of the import's data\n");
+				exit(SERVER_EXIT_CONFIGURATION);
+			}
+			platform_set_mcc_data_root(folder);
+			index++;
+			continue;
+		}
 		if (!strcmp(argument, "--fingerprint"))
 		{
 			/* halo --fingerprint <map>: the fingerprint of the data root's
-			maps\<map>.map, as port/assets/mcc/<map>.fp has the disc's
+			maps\<map>.map, as the import's data's <map>.fp has the disc's
 			(port/linux/game/mcc_import_fingerprint.c) */
 			char name[64];
 
@@ -220,7 +236,7 @@ static void answer_command_line(void)
 			steam] [<map>...]: MCC's maps (the data root's, or those of the
 			folder --from names, or of the install Steam has) written as the
 			Xbox's (port/linux/game/mcc_import.c); with no map named, every map
-			the game has the disc's values of */
+			the import's data has the disc's values of */
 			static char names[64][64];
 			char const *maps[64];
 			char output[1024], from[1024];

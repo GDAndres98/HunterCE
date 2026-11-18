@@ -13,7 +13,13 @@ On a first start without game data the desktop builds offer an Xbox disc
 image or MCC on Steam (`port/linux/src/mcc_install.c`, found through Steam's
 libraries, or a folder the player picks). The import itself is
 `halo --import-mcc <output folder> [--from <halo1 folder> | steam] [<map>...]`
-(`port/linux/game/mcc_import.c`). The first start runs it in other copies of
+(`port/linux/game/mcc_import.c`). The disc's values it needs are not in the
+game: they are the import's data, the `data` folder of Hunter Importer (a
+repository of its own, which runs the import), named by
+`halo --mcc-data <folder>` before the command; without it the data root's
+`mcc_patches` folder is read. The data's `version.txt` must be the game's
+`MCC_IMPORT_DATA_VERSION` (`mcc_import.h`), or the import stops. The first
+start runs it in other copies of
 the game, one map each and up to twelve at once (a core and about 0.5 GB of
 memory each), the largest maps first: a campaign map takes about half a
 minute, most of it its sounds, and a multiplayer map a few seconds (all 24
@@ -25,7 +31,7 @@ nothing is written to it. For each map:
 2. The importer's own fixes undo what Halo PC and MCC changed and need no
    data of the disc's (`mcc_import_patch.c`).
 3. The map's operations give its tags the disc's values where they differ,
-   and the disc's tag order (`port/assets/mcc/<map>.p2`, embedded in the game).
+   and the disc's tag order (the import's data's `<map>.p2`).
    A tag MCC has only in another map (the warthog, the ghost's gun) is taken
    from that map of the player's.
 4. The tags are written in the disc's order, with the structure BSPs, the
@@ -41,13 +47,13 @@ nothing is written to it. For each map:
    CELT decoded and encoded as Xbox ADPCM, music in the disc's 65,520-byte
    pieces) and the models' vertex buffers.
 5. The written map's simulation data is fingerprinted and compared with the
-   disc's (`port/assets/mcc/<map>.fp`), leaving out the few differences
-   accepted (`port/assets/mcc/README.md`). A map that matches is the disc's
+   disc's (the import's data's `<map>.fp`), leaving out the few differences
+   its `accepted.txt` accepts (its `README.md` says why). A map that matches is the disc's
    and plays with players of the disc. The import's report says which maps
    match; the map's header carries no mark (maps that do not match are to be
    kept out of the maps folder). `halo --fingerprint <map>` prints a map's
    fingerprint, the disc's or an imported one's, as the `.fp` files have it
-   (`port/assets/mcc/README.md`). Halo PC's seven rebuilds of the multiplayer maps
+   (the import's data's `README.md`). Halo PC's seven rebuilds of the multiplayer maps
    (beavercreek, bloodgulch, boardingaction, carousel, damnation, hangemhigh,
    sidewinder) have other collision, and are always MCC's.
 
@@ -110,7 +116,7 @@ planes made one and no face of more than eight corners, as one convex BSP
 in a collision model of the disc's name. It is close to the disc's, not the
 same: the flag base's lies within the disc's (whose rim is some 13% larger)
 and is 2 cm lower on average; the teleporter base's tops differ by 4.5 cm on
-average. That difference is accepted (`port/assets/mcc/README.md`): these
+average. That difference is accepted (the import's data's `accepted.txt`): these
 maps are the disc's.
 
 What does not import yet:

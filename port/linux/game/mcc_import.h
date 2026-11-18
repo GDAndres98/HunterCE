@@ -66,7 +66,7 @@ tag. Logs what it changed. */
 void mcc_import_fixes_apply(
 	struct mcc_import_tags *tags);
 
-/* Reads the map's operations (d:\mcc_patches\<map>.p2), which give MCC's
+/* Reads the map's operations (the import's data's <map>.p2), which give MCC's
 tags the disc's values where they differ: FALSE if the map has none. */
 boolean mcc_import_operations_read(
 	char const *map_name);
@@ -99,10 +99,16 @@ char *mcc_import_file_read(
 	char const *path,
 	long *size);
 
+/* The version of the import's data this game reads: the number in its
+version.txt. Data of another version is refused (mcc_import_data_check). */
+#define MCC_IMPORT_DATA_VERSION 1
+
 /* The import's file `file_name` ("<map>.p2", the disc's values as operations,
-or "<map>.fp", the fingerprint of the disc's map): the data root's
-mcc_patches folder's, or the game's (port/assets/mcc), NUL-terminated, its
-size in *size; NULL when neither has it. Released with mcc_import_data_free. */
+"<map>.fp", the fingerprint of the disc's map, "accepted.txt", the
+differences the fingerprint accepts): from the import's data, the folder
+--mcc-data names (Hunter Importer's data folder) or else the data root's
+mcc_patches folder, NUL-terminated, its size in *size; NULL when it has
+none. Released with mcc_import_data_free. */
 char *mcc_import_data_read(
 	char const *file_name,
 	long *size);
@@ -110,8 +116,13 @@ char *mcc_import_data_read(
 void mcc_import_data_free(
 	char *text);
 
-/* The maps the game has the disc's values of (port/assets/mcc), at most
-maximum_count of them: the maps an import writes when none is named. */
+/* TRUE if the import's data is there and of MCC_IMPORT_DATA_VERSION; else
+says on stderr why not. */
+boolean mcc_import_data_check(void);
+
+/* The maps the import's data has the disc's values of (its <map>.p2 files),
+in name order, at most maximum_count of them: the maps an import writes when
+none is named. */
 int mcc_import_default_maps(
 	char names[][64],
 	int maximum_count);
@@ -271,7 +282,7 @@ char const *mcc_import_fingerprint(
 
 /* halo --fingerprint <map>: the fingerprint of the data root's maps\<map>.map (an
 Xbox map: the disc's, or one the import wrote), every tag taken for the disc's,
-printed as port/assets/mcc/<map>.fp has it; 0 when it could be made */
+printed as the import's data's <map>.fp has it; 0 when it could be made */
 int mcc_import_fingerprint_print(
 	char const *map_name);
 

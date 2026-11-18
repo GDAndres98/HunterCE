@@ -2750,9 +2750,8 @@ static boolean mcc_import_tags(
 
 /* Whether the written map is the disc's: its fingerprint
 (mcc_import_fingerprint.c) the disc map's, every part of it, from <map>.fp
-(mcc_import_data_read: the data root's mcc_patches folder's, else
-port/assets/mcc's, embedded in the build). Without that file it cannot be
-shown. Logs the parts that differ. */
+(mcc_import_data_read: the import's data, Hunter Importer's). Without that
+file it cannot be shown. Logs the parts that differ. */
 static boolean mcc_import_stock(
 	char const *map_name,
 	struct mcc_import_space const *tags)
@@ -3179,6 +3178,8 @@ int mcc_import_run(
 	physical_memory_allocate();
 	/* (the messages as they come: a failure must not lose the last) */
 	setvbuf(stderr, NULL, _IONBF, 0);
+	if (!mcc_import_data_check())
+		return 1;
 	custom_edition_geometry_import = TRUE;
 	mcc_import_sounds_open();
 	mcc_sounds_muted_proc = mcc_import_sound_muted;
