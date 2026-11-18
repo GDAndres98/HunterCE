@@ -152,9 +152,21 @@ separated by commas), or NULL. */
 char const *mcc_import_operations_bitmap_frames(
 	char const *name);
 
+/* MCC's name of the disc's tag `name` of the group `group` where MCC has it
+under another name (the operations' alias line), or NULL. */
+char const *mcc_import_operations_alias(
+	unsigned long group,
+	char const *name);
+
 /* `size` bytes of zeros that last as long as the operations (a block made
 larger), or NULL. */
 void *mcc_import_operations_allocate(
+	unsigned long size);
+
+/* Whether the `size` bytes at `address` are the operations' own (the bytes
+of a data field a data line gave), not a map's. */
+boolean mcc_import_operations_made(
+	void const *address,
 	unsigned long size);
 
 /* Whether the operations have a line of the kind `kind` that is a flag alone

@@ -87,13 +87,18 @@ lacks, is the port's own in their places (the menus' `map_lacks`): the same
 texts, functions and layout on the PC menus' flat panel. The Xbox's own menus
 (`display.menus = "xbox"`) need the disc's `ui.map`.
 
-A campaign level's pause screen is Halo PC's too: six rows in the small
-font, two of them (SAVE LAST CHECKPOINT, CHANGE SETTINGS) running Halo PC's
-functions, and no B and A prompts. With the PC menus it is made the disc's
-when the level loads (`pause_campaign_pc_convert`, `menu_tags.c`): the
-Xbox's four rows in the large font (QUIT becomes SAVE AND QUIT and opens the
-saving screen, as the disc's does), the Xbox's box and the prompts of the
-level's own `button_key_sm`, then SETTINGS as on the disc's.
+A campaign level's pause screens (a single player's and split-screen
+co-op's) are Halo PC's too: six rows in the small font, two of them (SAVE
+LAST CHECKPOINT, CHANGE SETTINGS) running Halo PC's functions, QUIT leaving
+without the saving screen, a taller box and no B and A prompts. The import
+writes the disc's: the rows of the disc's lists only, in the large font at
+the disc's places, with the disc's handlers (SAVE AND QUIT opens the saving
+screen) and texts (REVERT TO SAVED, SAVE AND QUIT), the box of the disc's
+size and the prompts. These are operations in each level's `.p2`; the box's
+pieces, which MCC has under other names (`pausebox4_left` for the disc's
+`pausebox2_left`), are written in the disc's places by `alias` lines. Only
+the rows' highlight stays MCC's: the disc's `menu_bkds` is not in MCC's
+levels.
 
 What does not import yet:
 

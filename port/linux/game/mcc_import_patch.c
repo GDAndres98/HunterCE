@@ -38,6 +38,9 @@ and, read by the import itself (mcc_import.c, mcc_import_hud):
                pictures of options), which the import writes in that order:
                for each, MCC's frame of the same picture or -1 (written
                empty), by commas ("-1,-1,-1,2")
+  alias        a tag of the disc's that MCC has under another name, written
+               in the disc's place under the disc's name ("DeLa:<MCC's
+               name>"; the operations name it by MCC's)
   hud_values  a HUD interface whose placements the operations give as the
                disc's (only how the HUD looks: the fingerprint has none)
 An element is serialized as its bytes, then for each of its pointer fields
@@ -1539,7 +1542,8 @@ long mcc_import_operations_apply(
 			!strcmp(operation->kind, "handle") || !strcmp(operation->kind, "bitmap_size") ||
 			!strcmp(operation->kind, "hud_values") || !strcmp(operation->kind, "sprite_sizes") ||
 			!strcmp(operation->kind, "sprite_layout") || !strcmp(operation->kind, "donor") ||
-			!strcmp(operation->kind, "bitmaps_to_disc_size") || !strcmp(operation->kind, "bitmap_frames"))
+			!strcmp(operation->kind, "bitmaps_to_disc_size") || !strcmp(operation->kind, "bitmap_frames") ||
+			!strcmp(operation->kind, "alias"))
 		{
 			continue;
 		}
@@ -1662,10 +1666,42 @@ char const *mcc_import_operations_bitmap_frames(
 	return NULL;
 }
 
+char const *mcc_import_operations_alias(
+	unsigned long group,
+	char const *name)
+{
+	long index;
+
+	for (index = 0; index < mcc_patch_globals.operation_count; index++)
+	{
+		struct mcc_patch_operation const *operation = &mcc_patch_globals.operations[index];
+
+		if (!strcmp(operation->kind, "alias") && mcc_patch_length(operation->tag) > 5 &&
+			mcc_patch_group(operation->tag) == group && !strcmp(operation->tag + 5, name) && operation->a &&
+			mcc_patch_length(operation->a) > 5 && mcc_patch_group(operation->a) == group)
+		{
+			return operation->a + 5;
+		}
+	}
+
+	return NULL;
+}
+
 void *mcc_import_operations_allocate(
 	unsigned long size)
 {
 	return mcc_patch_allocate(size);
+}
+
+boolean mcc_import_operations_made(
+	void const *address,
+	unsigned long size)
+{
+	byte const *bytes = address;
+
+	return mcc_patch_globals.arena && bytes >= mcc_patch_globals.arena &&
+		bytes <= mcc_patch_globals.arena + mcc_patch_globals.arena_used &&
+		size <= (unsigned long)(mcc_patch_globals.arena + mcc_patch_globals.arena_used - bytes);
 }
 
 boolean mcc_import_operations_flag(

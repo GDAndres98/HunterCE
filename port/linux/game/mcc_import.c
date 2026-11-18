@@ -703,6 +703,7 @@ static boolean mcc_import_order(
 	char name[80];
 	char *text;
 	char *order = NULL;
+	char const *mcc_name;
 	long index, count, size;
 
 	snprintf(name, sizeof(name), "%s.p2", map_name);
@@ -774,12 +775,15 @@ static boolean mcc_import_order(
 		mcc_import_globals.out_groups[index] = group;
 		mcc_import_globals.out_names[index] = order + 5;
 		mcc_import_globals.out_sources[index] = NONE;
+		/* (MCC's tag of the disc's name, or of the name the operations give
+		it: alias) */
+		mcc_name = mcc_import_globals.operations ? mcc_import_operations_alias(group, order + 5) : NULL;
 		for (old_index = 0; old_index < mcc_import_globals.tag_count; old_index++)
 		{
 			struct mcc_import_tag_instance const *instance = &mcc_import_globals.instances[old_index];
 
 			if ((unsigned long)instance->group_tag == group && mcc_import_globals.old_to_new[old_index] == NONE &&
-				!strcmp(instance->name, order + 5))
+				!strcmp(instance->name, mcc_name ? mcc_name : order + 5))
 			{
 				mcc_import_globals.out_sources[index] = old_index;
 				mcc_import_globals.old_to_new[old_index] = index;
@@ -952,11 +956,13 @@ static void mcc_import_copy_pointers(
 					if (address)
 						csmemcpy(mcc_import_at(space, address), (void const *)source_address, data->size);
 				}
-				else if (data->size > 0 && data->address && space->address != V5_TAG_ADDRESS)
+				else if (data->size > 0 && data->address && (space->address != V5_TAG_ADDRESS ||
+					mcc_import_operations_made(data->address, (unsigned long)data->size)))
 				{
 					/* (a structure BSP's, read outside the tags, and its
-					compressed vertices, made for the import: never a tag's
-					pointer to elsewhere, which a map can hold) */
+					compressed vertices, made for the import, and the bytes
+					an operation gave a tag: never a tag's pointer to
+					elsewhere, which a map can hold) */
 					address = mcc_import_allocate(space, (unsigned long)data->size, 4);
 					if (address)
 						csmemcpy(mcc_import_at(space, address), data->address, data->size);
