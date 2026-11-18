@@ -152,6 +152,21 @@ separated by commas), or NULL. */
 char const *mcc_import_operations_bitmap_frames(
 	char const *name);
 
+/* The tag "group:path" of the table, added (its root zeros) if the table
+has it not: its index, else NONE. */
+long mcc_import_operations_tag_add(
+	struct mcc_import_tags *tags,
+	char const *text);
+
+/* The next operation of the kind `kind` from *cursor on (0 first): its tag,
+and its values a and b; FALSE when there are no more. */
+boolean mcc_import_operations_next(
+	char const *kind,
+	long *cursor,
+	char const **tag,
+	char const **a,
+	char const **b);
+
 /* MCC's name of the disc's tag `name` of the group `group` where MCC has it
 under another name (the operations' alias line), or NULL. */
 char const *mcc_import_operations_alias(
@@ -184,6 +199,13 @@ boolean mcc_import_operations_hud_values(
 /* Releases the operations and what they made. */
 void mcc_import_operations_dispose(
 	void);
+
+/* ---------- prototypes/MCC_IMPORT_COLLISION.C */
+
+/* Builds the collision models the operations' collision_hull lines name,
+from their render models' shapes: how many could not be built. */
+long mcc_import_collision_hulls(
+	struct mcc_import_tags *tags);
 
 /* ---------- prototypes/MCC_IMPORT_SOUNDS.C */
 

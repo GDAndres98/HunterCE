@@ -38,6 +38,9 @@ and, read by the import itself (mcc_import.c, mcc_import_hud):
                pictures of options), which the import writes in that order:
                for each, MCC's frame of the same picture or -1 (written
                empty), by commas ("-1,-1,-1,2")
+  collision_hull  a collision model MCC has empty, built from a render
+               model's shape ("mode:<name>"), of a material ("<type>,<name>")
+               (mcc_import_collision.c)
   alias        a tag of the disc's that MCC has under another name, written
                in the disc's place under the disc's name ("DeLa:<MCC's
                name>"; the operations name it by MCC's)
@@ -804,27 +807,26 @@ static byte *mcc_patch_resolve(
 
 /* "tag": a whole tag added to the table (the disc's order then puts it in
 its place) */
-static boolean mcc_patch_add_tag(
+/* the tag "group:path" added to the table, its root zeros: its index, else
+NONE */
+static long mcc_patch_new_tag(
 	struct mcc_import_tags *tags,
-	struct mcc_patch_operation const *operation)
+	char const *text)
 {
-	unsigned long group = mcc_patch_group(operation->tag);
+	unsigned long group = mcc_patch_group(text);
 	struct tag_schema_group const *schema = mcc_patch_schema(group);
-	struct mcc_patch_reader reader;
 	struct mcc_import_tag_instance *instance;
-	size_t length = mcc_patch_length(operation->tag + 5);
+	size_t length = mcc_patch_length(text + 5);
 	byte *root;
 	char *name;
 
-	if (mcc_patch_tag(tags, operation->tag) >= 0)
-		return TRUE;
 	if (!schema || !schema->definition || tags->count >= tags->maximum_count)
-		return FALSE;
+		return NONE;
 	name = mcc_patch_allocate((unsigned long)length + 1);
 	root = mcc_patch_allocate((unsigned long)schema->definition->size);
 	if (!name || !root)
-		return FALSE;
-	csmemcpy(name, operation->tag + 5, (unsigned long)length + 1);
+		return NONE;
+	csmemcpy(name, text + 5, (unsigned long)length + 1);
 	instance = &tags->instances[tags->count];
 	csmemset(instance, 0, sizeof(*instance));
 	instance->group_tag = (long)group;
@@ -833,12 +835,28 @@ static boolean mcc_patch_add_tag(
 	instance->tag_index = (long)(((unsigned long)(0xE174 + tags->count) << 16) | (unsigned long)tags->count);
 	instance->name = name;
 	instance->base_address = root;
-	tags->count++;
+
+	return tags->count++;
+}
+
+static boolean mcc_patch_add_tag(
+	struct mcc_import_tags *tags,
+	struct mcc_patch_operation const *operation)
+{
+	struct mcc_patch_reader reader;
+	long index;
+
+	if (mcc_patch_tag(tags, operation->tag) >= 0)
+		return TRUE;
+	index = mcc_patch_new_tag(tags, operation->tag);
+	if (index == NONE)
+		return FALSE;
 	/* (its own references may name it: added first, read after) */
 	reader.hex = operation->a;
 	reader.at = 0;
 	reader.failed = FALSE;
-	mcc_patch_read_element(tags, &reader, schema->definition, root);
+	mcc_patch_read_element(tags, &reader, mcc_patch_schema(mcc_patch_group(operation->tag))->definition,
+		tags->instances[index].base_address);
 
 	return !reader.failed;
 }
@@ -1543,7 +1561,7 @@ long mcc_import_operations_apply(
 			!strcmp(operation->kind, "hud_values") || !strcmp(operation->kind, "sprite_sizes") ||
 			!strcmp(operation->kind, "sprite_layout") || !strcmp(operation->kind, "donor") ||
 			!strcmp(operation->kind, "bitmaps_to_disc_size") || !strcmp(operation->kind, "bitmap_frames") ||
-			!strcmp(operation->kind, "alias"))
+			!strcmp(operation->kind, "alias") || !strcmp(operation->kind, "collision_hull"))
 		{
 			continue;
 		}
@@ -1664,6 +1682,44 @@ char const *mcc_import_operations_bitmap_frames(
 	}
 
 	return NULL;
+}
+
+long mcc_import_operations_tag_add(
+	struct mcc_import_tags *tags,
+	char const *text)
+{
+	long index = mcc_patch_tag(tags, text);
+
+	if (index >= 0)
+		return index;
+	if (index == NONE)
+		return NONE;
+
+	return mcc_patch_new_tag(tags, text);
+}
+
+boolean mcc_import_operations_next(
+	char const *kind,
+	long *cursor,
+	char const **tag,
+	char const **a,
+	char const **b)
+{
+	for (; *cursor < mcc_patch_globals.operation_count; (*cursor)++)
+	{
+		struct mcc_patch_operation const *operation = &mcc_patch_globals.operations[*cursor];
+
+		if (!strcmp(operation->kind, kind))
+		{
+			*tag = operation->tag;
+			*a = operation->a;
+			*b = operation->b;
+			(*cursor)++;
+			return TRUE;
+		}
+	}
+
+	return FALSE;
 }
 
 char const *mcc_import_operations_alias(

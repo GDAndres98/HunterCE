@@ -770,3 +770,5 @@ set	unhi:ui\hud\gunner	root.motion_sensor.foreground.element	0x4	0000803f0000803
 set	wphi:vehicles\ghost\ghost gun	root.crosshairs[0].crosshairs.items[0]	0x4	0000803f0000803f
 set	wphi:vehicles\scorpion\scorpion cannon	root.crosshairs[0].crosshairs.items[0]	0x4	0000803f0000803f
 set	wphi:vehicles\scorpion\scorpion cannon	root.crosshairs[1].crosshairs.items[0]	0x4	0000803f0000803f
+collision_hull	coll:scenery\flag_base\flag_base	-	mode:scenery\flag_base\flag_base	5,<none>
+collision_hull	coll:scenery\teleporter_base\teleporter_base	-	mode:scenery\teleporter_base\teleporter_base	6,collision_zone

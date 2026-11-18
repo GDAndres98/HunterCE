@@ -100,6 +100,18 @@ pieces, which MCC has under other names (`pausebox4_left` for the disc's
 the rows' highlight stays MCC's: the disc's `menu_bkds` is not in MCC's
 levels.
 
+The multiplayer maps' flag bases and chillout's teleporter bases have no
+collision in Halo PC, and so in MCC: a player walks through them. The disc's
+are small convex shapes drawn apart from the visible models, which no MCC
+file holds. The import builds one from the visible model instead
+(`mcc_import_collision.c`, the `.p2`'s `collision_hull` lines): the convex
+hull of its opaque parts (not the teleporter's cone of light), nearly equal
+planes made one and no face of more than eight corners, as one convex BSP
+in a collision model of the disc's name. It is close to the disc's, not the
+same: the flag base's lies within the disc's (whose rim is some 13% larger)
+and is 2 cm lower on average; the teleporter base's tops differ by 4.5 cm on
+average. So these maps' fingerprints still differ from the disc's.
+
 What does not import yet:
 
 - Halo PC's six multiplayer maps.

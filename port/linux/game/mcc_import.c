@@ -3007,6 +3007,9 @@ static boolean mcc_import_map(
 	mcc_import_globals.operations = mcc_import_operations_read(map_name);
 	if (mcc_import_globals.operations)
 	{
+		/* (the collision models first: the operations' references name
+		those it adds) */
+		mcc_import_collision_hulls(&mcc_import_globals.table);
 		mcc_import_operations_apply(&mcc_import_globals.table, NULL, NULL);
 		mcc_import_models_complete(&mcc_import_globals.table);
 	}
