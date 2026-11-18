@@ -110,14 +110,15 @@ planes made one and no face of more than eight corners, as one convex BSP
 in a collision model of the disc's name. It is close to the disc's, not the
 same: the flag base's lies within the disc's (whose rim is some 13% larger)
 and is 2 cm lower on average; the teleporter base's tops differ by 4.5 cm on
-average. So these maps' fingerprints still differ from the disc's.
+average. That difference is accepted (`port/assets/mcc/README.md`): these
+maps are the disc's.
 
 What does not import yet:
 
 - Halo PC's six multiplayer maps.
 - A few tags of the disc's are assets MCC lacks or changed as geometry (the
-  flamethrower, `flag_base`, `teleporter_base`, `c_field_generator`, the
-  cyborg's passenger animations): without them a map is written as MCC's.
+  flamethrower, `c_field_generator`, the cyborg's passenger animations):
+  without them a map is written as MCC's. Those differences are accepted.
 - Every multipurpose map is drawn in the Xbox's channel order. MCC's flag
   for the Xbox's order (bit 6 of a model shader's flags) does not say which
   are Halo PC's: the scorpion's and Halo PC's fuel rod gun's

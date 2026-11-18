@@ -141,8 +141,9 @@ static char const *const MODEL_FIELDS[] =
 /* the disc's tag count: ORDER hashes that many */
 static long order_limit;
 
-/* The differences accepted (2026-11-12): parts that MCC's maps have
-otherwise than the disc's, but that change nothing the host decides, left
+/* The differences accepted (2026-11-12, the bases 2026-11-18): parts that
+MCC's maps have otherwise than the disc's, but that change nothing the host
+decides, or little, left
 out of the fingerprint so that the levels play with the disc's players.
 port/assets/mcc/README.md lists them, and why. */
 
@@ -158,6 +159,16 @@ static struct
 {
 	{ "*", "coll:weapons\\flamethrower\\flamethrower" },
 	{ "*", "antr:weapons\\flamethrower\\fp\\fp" },
+	/* the multiplayer bases' collision, which MCC lacks, built from MCC's
+	visible model (mcc_import_collision.c): within a few centimetres of the
+	disc's (accepted 2026-11-18, after games with it) */
+	{ "chillout", "coll:scenery\\flag_base\\flag_base" },
+	{ "chillout", "coll:scenery\\teleporter_base\\teleporter_base" },
+	{ "longest", "coll:scenery\\flag_base\\flag_base" },
+	{ "prisoner", "coll:scenery\\flag_base\\flag_base" },
+	{ "putput", "coll:scenery\\flag_base\\flag_base" },
+	{ "ratrace", "coll:scenery\\flag_base\\flag_base" },
+	{ "wizard", "coll:scenery\\flag_base\\flag_base" },
 	{ NULL, NULL }
 };
 

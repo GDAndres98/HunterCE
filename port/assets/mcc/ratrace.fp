@@ -7,7 +7,6 @@ TAG	coll:scenery\c_field_generator\c_field_generator	73b8c7e36350616050efcab994d
 TAG	effe:scenery\c_field_generator\effects\shield depletion	43c693ad3c5f4b5c2756f6f838053a98
 TAG	scen:scenery\flag_base\flag_base	4f4113cce7c26883911dbb1934ab9e2a
 TAG	mode:scenery\flag_base\flag_base	941a548a865cff477bf36260b90deb88
-TAG	coll:scenery\flag_base\flag_base	774a8f82c98039730d2c48f0b51f88ff
 TAG	bipd:characters\cyborg_mp\cyborg_mp	71e5c0b1894e8ad088e498cc0a7f21a3
 TAG	mode:characters\cyborg\cyborg	b37a1a35e88cebbeda6cc739382cc995
 TAG	antr:characters\cyborg\cyborg	dbae48fdf0b269ef33a71a4acdd9a543
@@ -547,4 +546,4 @@ TAG	jpt!:globals\flaming_death	ebc4a76a902a7ae65a5aa7139f45ea0c
 SCENARIO	levels\test\ratrace\ratrace	5a11206e631ebaa0e81c417aba9d5f61
 SCRIPTS		e3b0c44298fc1c149afbf4c8996fb924
 BSP	levels\test\ratrace\ratrace	c88e003baffc1e84dfab5059a901295c
-MAP	levels\test\ratrace\ratrace	73cbb812fb7fd89c5d018c20be00a89d5b96380036e91bfbf4d05d6e3e9c1081
+MAP	levels\test\ratrace\ratrace	e9802f89e17e8f6566358c79e12dd71c525fef50b834c1aca0744f9f6d9951f6

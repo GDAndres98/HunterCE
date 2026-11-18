@@ -3,7 +3,6 @@ TAG	scen:scenery\teleporter_shield\teleporter	ff617a327bdd67f9ad7dc12609859e5f
 TAG	mode:scenery\teleporter_shield\teleporter_shield	22517c6654fc68323e8e84b970a5cd31
 TAG	scen:scenery\flag_base\flag_base	4f4113cce7c26883911dbb1934ab9e2a
 TAG	mode:scenery\flag_base\flag_base	941a548a865cff477bf36260b90deb88
-TAG	coll:scenery\flag_base\flag_base	774a8f82c98039730d2c48f0b51f88ff
 TAG	itmc:item collections\powerups\powerup health pack	7c5c17125eaac2a60da4249046c4a4da
 TAG	eqip:powerups\health pack	dfcb9f75edba66a6c5855de776efa7ca
 TAG	mode:powerups\healthpack\healthpack	3c77ff75869d9b03763f44ba908775c1
@@ -541,4 +540,4 @@ TAG	jpt!:globals\flaming_death	ebc4a76a902a7ae65a5aa7139f45ea0c
 SCENARIO	levels\test\putput\putput	7c4ae71ce38d7488baf93602da9bcde3
 SCRIPTS		e3b0c44298fc1c149afbf4c8996fb924
 BSP	levels\test\putput\putput	bb4dae8df2b475ac53b98272e6b25945
-MAP	levels\test\putput\putput	4271ade1724a86aee910e1f3a214e227bf8490b5030dd3605aa0c0f7ffccf46e
+MAP	levels\test\putput\putput	21f4099efaf253160f79e6455c37f4535221554f2df8287e774333b3043e0409

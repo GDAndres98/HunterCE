@@ -4,7 +4,6 @@ TAG	scen:scenery\teleporter_shield\teleporter	ff617a327bdd67f9ad7dc12609859e5f
 TAG	mode:scenery\teleporter_shield\teleporter_shield	22517c6654fc68323e8e84b970a5cd31
 TAG	scen:scenery\flag_base\flag_base	4f4113cce7c26883911dbb1934ab9e2a
 TAG	mode:scenery\flag_base\flag_base	941a548a865cff477bf36260b90deb88
-TAG	coll:scenery\flag_base\flag_base	774a8f82c98039730d2c48f0b51f88ff
 TAG	bipd:characters\cyborg_mp\cyborg_mp	71e5c0b1894e8ad088e498cc0a7f21a3
 TAG	mode:characters\cyborg\cyborg	b37a1a35e88cebbeda6cc739382cc995
 TAG	antr:characters\cyborg\cyborg	dbae48fdf0b269ef33a71a4acdd9a543
@@ -553,4 +552,4 @@ TAG	jpt!:globals\flaming_death	ebc4a76a902a7ae65a5aa7139f45ea0c
 SCENARIO	levels\test\wizard\wizard	ec0f1427e71c8b9dd68cf5588cdb5da5
 SCRIPTS		e3b0c44298fc1c149afbf4c8996fb924
 BSP	levels\test\wizard\wizard	cb834ffe54c79fcecdecf296735442a9
-MAP	levels\test\wizard\wizard	8349e9e4ad5eba5eb404c67f89a720af69c6e4ad518e995ee028523015947fe8
+MAP	levels\test\wizard\wizard	dd58116151124dbc5b40f86a6f55857b4f29bab2c6e587a8a26db64ae358fac7

@@ -2,7 +2,6 @@ ORDER		3c6f83fd286a452bd7fb64e03758e83e
 TAG	mode:sky\mp clear afternoon\mp clear afternoon	c2c8dee3ea8fe0ccd324357fde6b2fa1
 TAG	scen:scenery\flag_base\flag_base	4f4113cce7c26883911dbb1934ab9e2a
 TAG	mode:scenery\flag_base\flag_base	941a548a865cff477bf36260b90deb88
-TAG	coll:scenery\flag_base\flag_base	774a8f82c98039730d2c48f0b51f88ff
 TAG	bipd:characters\cyborg_mp\cyborg_mp	71e5c0b1894e8ad088e498cc0a7f21a3
 TAG	mode:characters\cyborg\cyborg	b37a1a35e88cebbeda6cc739382cc995
 TAG	antr:characters\cyborg\cyborg	dbae48fdf0b269ef33a71a4acdd9a543
@@ -542,4 +541,4 @@ TAG	jpt!:globals\flaming_death	ebc4a76a902a7ae65a5aa7139f45ea0c
 SCENARIO	levels\test\prisoner\prisoner	e4d7e66eccc4dd80716eb2a648727c95
 SCRIPTS		e3b0c44298fc1c149afbf4c8996fb924
 BSP	levels\test\prisoner\prisoner	a5b1883b1ce7f7f1fd524725da559500
-MAP	levels\test\prisoner\prisoner	54fb8b7c330e5d7cd4e2c44f46543d8ddc3e365c1a2a48dba0367570df7ac1c4
+MAP	levels\test\prisoner\prisoner	77af4766a21d6cdbb72a0e89a2b1bad32a97f8a0aa93f5b13bd7eb24b7de90f2

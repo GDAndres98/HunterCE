@@ -5,7 +5,6 @@ TAG	mode:scenery\h_barricade_large_gap\h_barricade_large_gap	63b3bb9284d00ea187c
 TAG	coll:scenery\h_barricade_large_gap\h_barricade_large_gap	a83d58816999f4530ce12ad678c63ee3
 TAG	scen:scenery\flag_base\flag_base	4f4113cce7c26883911dbb1934ab9e2a
 TAG	mode:scenery\flag_base\flag_base	941a548a865cff477bf36260b90deb88
-TAG	coll:scenery\flag_base\flag_base	774a8f82c98039730d2c48f0b51f88ff
 TAG	itmc:item collections\powerups\powerup super shield	588bff97903520cbbe221a238c38272f
 TAG	eqip:powerups\over shield	b3a560cb900f9053835f815f7a915e6d
 TAG	mode:powerups\active camoflage\active camoflage	7f5a17acb013ef26d8600053301e6135
@@ -543,4 +542,4 @@ TAG	jpt!:globals\flaming_death	ebc4a76a902a7ae65a5aa7139f45ea0c
 SCENARIO	levels\test\longest\longest	1f4f0990e2a14450c5a89587dfd66c79
 SCRIPTS		e3b0c44298fc1c149afbf4c8996fb924
 BSP	levels\test\longest\longest	04644e8f70608c038aa4fab5adeff9b4
-MAP	levels\test\longest\longest	2f1957a02a2ae6e150cf44bdd29131aece5a07228252111b1c394449899f9929
+MAP	levels\test\longest\longest	bb7f4bc04733c0ead7ae4d012f0b76c3dbdf2afbb3e53553b38ad565363ef1dd

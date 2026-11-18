@@ -3,12 +3,10 @@ TAG	scen:scenery\teleporter_shield\teleporter	ff617a327bdd67f9ad7dc12609859e5f
 TAG	mode:scenery\teleporter_shield\teleporter_shield	22517c6654fc68323e8e84b970a5cd31
 TAG	scen:scenery\teleporter_base\teleporter_base	1d3adb1ee4601bc58bafa476516a4f1b
 TAG	mode:scenery\teleporter_base\teleporter_base	8a217a0d6df339d2486986fde4f98a56
-TAG	coll:scenery\teleporter_base\teleporter_base	c778114b53fd9a1ef69431c5a6af8fa1
 TAG	scen:scenery\hilltop\hilltop	3f738a38ed4372ece4d3097018d5bd64
 TAG	mode:scenery\hilltop\hilltop	e218f1a54afbb95df39f7a4ae31b2f39
 TAG	scen:scenery\flag_base\flag_base	4f4113cce7c26883911dbb1934ab9e2a
 TAG	mode:scenery\flag_base\flag_base	941a548a865cff477bf36260b90deb88
-TAG	coll:scenery\flag_base\flag_base	774a8f82c98039730d2c48f0b51f88ff
 TAG	itmc:item collections\single weapons\plasma rifle	ef3e4030e854ca4ace9cc0f21c414e0a
 TAG	weap:weapons\plasma rifle\plasma rifle	83abeaf44dc29c538b3630c248df0c6a
 TAG	mode:weapons\plasma rifle\plasma rifle	9eb194cd1c9dbfc91a945e3816f5767a
@@ -549,4 +547,4 @@ TAG	jpt!:globals\flaming_death	ebc4a76a902a7ae65a5aa7139f45ea0c
 SCENARIO	levels\test\chillout\chillout	d5ae07bfb374305f772b2ef74af56c0e
 SCRIPTS		e3b0c44298fc1c149afbf4c8996fb924
 BSP	levels\test\chillout\chillout	3914171d3a80ec86c7f280eaa383804b
-MAP	levels\test\chillout\chillout	045bf9bf4ab5037401e6b8f6e9e5a5f1fa9602a450fa117eb6b25e4f77350072
+MAP	levels\test\chillout\chillout	26f0b084074106e00b97987608927330ff3382799799834e88aa78ced30ee994
