@@ -34,7 +34,11 @@ and, read by the import itself (mcc_import.c, mcc_import_hud):
                and its sequences' sprites (by "|", a sequence's by ";", each
                "<bitmap>,<left>,<top>,<right>,<bottom>,<registration x>,
                <registration y>" in pixels)
-  hud_values   a HUD interface whose placements the operations give as the
+  bitmap_frames the disc's frames of a bitmap of one sequence (the menus'
+               pictures of options), which the import writes in that order:
+               for each, MCC's frame of the same picture or -1 (written
+               empty), by commas ("-1,-1,-1,2")
+  hud_values  a HUD interface whose placements the operations give as the
                disc's (only how the HUD looks: the fingerprint has none)
 An element is serialized as its bytes, then for each of its pointer fields
 in schema order: a block's count and elements, a data field's size and
@@ -1535,7 +1539,7 @@ long mcc_import_operations_apply(
 			!strcmp(operation->kind, "handle") || !strcmp(operation->kind, "bitmap_size") ||
 			!strcmp(operation->kind, "hud_values") || !strcmp(operation->kind, "sprite_sizes") ||
 			!strcmp(operation->kind, "sprite_layout") || !strcmp(operation->kind, "donor") ||
-			!strcmp(operation->kind, "bitmaps_to_disc_size"))
+			!strcmp(operation->kind, "bitmaps_to_disc_size") || !strcmp(operation->kind, "bitmap_frames"))
 		{
 			continue;
 		}
@@ -1637,6 +1641,31 @@ boolean mcc_import_operations_sprite_layout(
 	}
 
 	return FALSE;
+}
+
+char const *mcc_import_operations_bitmap_frames(
+	char const *name)
+{
+	long index;
+
+	for (index = 0; index < mcc_patch_globals.operation_count; index++)
+	{
+		struct mcc_patch_operation const *operation = &mcc_patch_globals.operations[index];
+
+		if (!strcmp(operation->kind, "bitmap_frames") && !strncmp(operation->tag, "bitm:", 5) &&
+			!strcmp(operation->tag + 5, name) && operation->a)
+		{
+			return operation->a;
+		}
+	}
+
+	return NULL;
+}
+
+void *mcc_import_operations_allocate(
+	unsigned long size)
+{
+	return mcc_patch_allocate(size);
 }
 
 boolean mcc_import_operations_flag(

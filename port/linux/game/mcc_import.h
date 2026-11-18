@@ -146,6 +146,17 @@ boolean mcc_import_operations_sprite_layout(
 	char const **bitmaps,
 	char const **sequences);
 
+/* The disc's frames of the bitmap `name` (the operations' bitmap_frames line:
+for each of the disc's frames, MCC's frame of the same picture, or -1,
+separated by commas), or NULL. */
+char const *mcc_import_operations_bitmap_frames(
+	char const *name);
+
+/* `size` bytes of zeros that last as long as the operations (a block made
+larger), or NULL. */
+void *mcc_import_operations_allocate(
+	unsigned long size);
+
 /* Whether the operations have a line of the kind `kind` that is a flag alone
 (bitmaps_to_disc_size: every bitmap brought to its bitmap_size, not only the
 HUD's). */

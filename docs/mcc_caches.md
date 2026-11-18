@@ -75,8 +75,12 @@ and the menus' left as they are. ratrace and Halo PC's rebuilds need it.
 draws the PC menus from its own files (`port/assets/menus`), so the import
 writes only what the game reaches of it: the scenario, the globals and the
 tags the code and the menus name, but not Halo PC's main menu and the screens
-it leads to; its bitmaps at the disc's sizes. A picture the menus take from the
-Xbox's map is the PC version's frame of the same place, and one MCC lacks (the
+it leads to; its bitmaps at the disc's sizes. The menus take a few pictures
+from the Xbox's map by their frame's place in the disc's bitmap (the options'
+pictures of the multiplayer, gametype and profile screens), and MCC's bitmaps
+have other frames in another order: the import writes those bitmaps with the
+disc's frames (`bitmap_frames` in `ui.p2`), each MCC's frame of the same
+picture, or empty where MCC has none. A bitmap MCC lacks altogether (the
 controller picture of the profile's settings) is not drawn (`menu_tags.c`).
 ADD PLAYER's screen, the Xbox's four-player profile select, whose widgets MCC
 lacks, is the port's own in their places (the menus' `map_lacks`): the same

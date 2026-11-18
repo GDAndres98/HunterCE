@@ -196,3 +196,6 @@ bitmap_size	bitm:ui\mp_map_ui\ruinedpain	-	128	128
 bitmap_size	bitm:ui\mp_map_ui\sidewinder	-	128	128
 bitmap_size	bitm:ui\mp_map_ui\wizard	-	128	128
 bitmap_size	bitm:ui\mp_map_ui\bonus_level	-	128	128
+bitmap_frames	bitm:ui\shell\main_menu\multiplayer_type_select\mp_options	-	-1,-1,-1,2
+bitmap_frames	bitm:ui\shell\main_menu\settings_select\multiplayer_setup\playlist_edit\gametype_options	-	-1,-1,2,-1,5,-1
+bitmap_frames	bitm:ui\shell\main_menu\settings_select\player_setup\player_profile_edit\profile_options	-	0,2,-1,7,-1

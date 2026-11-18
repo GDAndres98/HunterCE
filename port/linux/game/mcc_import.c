@@ -80,6 +80,8 @@ enum
 	MCC_IMPORT_MAXIMUM_SPRITE_LAYOUTS = 8,
 	MCC_IMPORT_MAXIMUM_LAYOUT_BITMAPS = 8,
 	MCC_IMPORT_MAXIMUM_LAYOUT_SPRITES = 64,
+	/* the frames of a bitmap written in the disc's order (bitmap_frames) */
+	MCC_IMPORT_MAXIMUM_ORDERED_FRAMES = 64,
 	/* (bitmap_group's flags) the digits drawn at half their size */
 	V5_BITMAP_GROUP_HALF_HUD_SCALE_BIT = 4,
 	/* the scenario's script syntax data: a data array of nodes */
@@ -267,6 +269,8 @@ static struct
 	rows left out (mcc_import_lists_disc_rows) */
 	long kept;
 	long rows_dropped;
+	/* the bitmaps given the disc's frames (mcc_import_bitmap_frames) */
+	long frames_ordered;
 	/* the disc's tags, the first of those written */
 	long disc_count;
 	/* the structure BSPs written (for the fingerprint) */
@@ -2086,6 +2090,74 @@ static real mcc_import_sprite_scale(
 	return ratio_count % 2 ? ratios[ratio_count / 2] : 0.5f * (ratios[ratio_count / 2 - 1] + ratios[ratio_count / 2]);
 }
 
+/* The bitmap `tag_index` given the disc's frames, in the disc's order, from
+the operations' bitmap_frames line: for each of the disc's frames, MCC's
+frame of the same picture, or -1 for a picture MCC has not got, written
+empty (of the size and format of the first frame named, without pixels).
+The menus draw a menus' map's frames by their place in the disc's bitmap.
+Only a bitmap of one sequence of all its frames and no sprites, as the
+menus' pictures of options are; another one is said and left as it is. */
+static void mcc_import_bitmap_frames(
+	long tag_index)
+{
+	struct mcc_import_tag_instance const *instance = &mcc_import_globals.instances[tag_index];
+	struct bitmap_group *group = instance->group_tag == 'bitm' ? (struct bitmap_group *)instance->base_address : NULL;
+	char const *text = group ? mcc_import_operations_bitmap_frames(instance->name) : NULL;
+	struct bitmap_group_sequence *sequence;
+	struct bitmap_data *frames;
+	long sources[MCC_IMPORT_MAXIMUM_ORDERED_FRAMES];
+	long count = 0, model = NONE, index;
+	char const *cursor;
+
+	if (!text)
+		return;
+	sequence = group->sequences.count == 1 ?
+		TAG_BLOCK_GET_ELEMENT(&group->sequences, 0, struct bitmap_group_sequence) : NULL;
+	if (!sequence || sequence->first_bitmap_index != 0 || sequence->bitmap_count != group->bitmaps.count ||
+		sequence->sprites.count || group->bitmaps.count <= 0)
+	{
+		mcc_import_error("mcc import: %s: not a bitmap of one sequence of its frames: frames left in MCC's order",
+			instance->name);
+		return;
+	}
+	for (cursor = text; *cursor; )
+	{
+		char *end;
+		long source = strtol(cursor, &end, 10);
+
+		if (end == cursor || count >= MCC_IMPORT_MAXIMUM_ORDERED_FRAMES || source < NONE ||
+			source >= group->bitmaps.count || (*end && *end != ','))
+		{
+			mcc_import_error("mcc import: %s: the frames \"%s\" are not MCC's: frames left in MCC's order",
+				instance->name, text);
+			return;
+		}
+		sources[count++] = source;
+		if (model == NONE)
+			model = source;
+		cursor = *end ? end + 1 : end;
+	}
+	frames = model != NONE ? mcc_import_operations_allocate((unsigned long)count * sizeof(struct bitmap_data)) : NULL;
+	if (!frames)
+	{
+		mcc_import_error("mcc import: %s: no frames of MCC's in \"%s\": frames left in MCC's order", instance->name,
+			text);
+		return;
+	}
+	for (index = 0; index < count; index++)
+	{
+		csmemcpy(&frames[index], TAG_BLOCK_GET_ELEMENT(&group->bitmaps, sources[index] == NONE ? model : sources[index],
+			struct bitmap_data), sizeof(struct bitmap_data));
+		/* (no pixels: mcc_import_bitmaps writes zeros) */
+		if (sources[index] == NONE)
+			frames[index].pixels_offset = NONE;
+	}
+	group->bitmaps.count = count;
+	group->bitmaps.address = frames;
+	sequence->bitmap_count = (short)count;
+	mcc_import_globals.frames_ordered++;
+}
+
 /* MCC's HUD bitmaps are four times the Xbox's, and its placements draw them
 at a half or a quarter (mcc_import_hud_convert, custom_edition_cache_convert): a
 bitmap drawn through placements alone is written at half its size, and its
@@ -2346,7 +2418,8 @@ static boolean mcc_import_bitmaps(
 					return FALSE;
 				}
 			}
-			else
+			/* (a frame MCC has not got: none, mcc_import_bitmap_frames) */
+			else if (bitmap->pixels_offset != NONE)
 				custom_edition_cache_read(tag_index, bitmap->pixels_offset, bitmap->pixels_size, pixels);
 			/* a HUD bitmap at the disc's size (mcc_import_hud) */
 			if (mcc_import_globals.hud_factor && mcc_import_globals.hud_factor[tag_index] > 1)
@@ -2892,6 +2965,7 @@ static boolean mcc_import_map(
 	byte *scenario;
 	char path[512];
 	unsigned long instances_address;
+	long index;
 	short bsp_index;
 	short scenario_type;
 	boolean success = FALSE;
@@ -2934,6 +3008,8 @@ static boolean mcc_import_map(
 		mcc_import_error("mcc import: %s: no operations (%s.p2): MCC's values kept", map_name, map_name);
 	mcc_import_globals.instances = mcc_import_globals.table.instances;
 	mcc_import_globals.tag_count = mcc_import_globals.table.count;
+	for (index = 0; mcc_import_globals.operations && index < mcc_import_globals.tag_count; index++)
+		mcc_import_bitmap_frames(index);
 	if (!mcc_import_order(map_name))
 	{
 		fprintf(stderr, "mcc import: %s: out of memory for the tag order\n", map_name);
@@ -3052,12 +3128,12 @@ static boolean mcc_import_map(
 		success = success && fwrite(&header, 1, sizeof(header), body->file) == sizeof(header);
 		fprintf(stdout, "mcc import: %s: %d structure bsps, %ld bitmaps, %ld sounds (%ld silent), %ld tags (0x%lX bytes; "
 			"%ld empty in the disc's place, %ld of MCC's kept after the disc's, %ld without a schema; %ld rows of lists "
-			"and %ld references to tags left out; %ld HUD bitmaps halved, %ld textures halved to fit), 0x%lX bytes "
-			"before compression\n",
+			"and %ld references to tags left out; %ld bitmaps given the disc's frames; %ld HUD bitmaps halved, %ld "
+			"textures halved to fit), 0x%lX bytes before compression\n",
 			map_name, (int)references->count, mcc_import_globals.bitmaps, mcc_import_globals.sounds,
 			mcc_import_sounds_silent(), mcc_import_globals.out_count, tags.used, mcc_import_globals.placeholders,
 			mcc_import_globals.kept, mcc_import_globals.schemaless, mcc_import_globals.rows_dropped,
-			mcc_import_globals.references_dropped,
+			mcc_import_globals.references_dropped, mcc_import_globals.frames_ordered,
 			mcc_import_globals.hud_bitmaps_halved, mcc_import_globals.fitted, (unsigned long)header.file_length);
 	}
 	deflateEnd(&body->stream);
